@@ -4,6 +4,7 @@
 #include "../DEFS.h"
 #include <fstream>
 #include <iostream>
+#include "../Process/Process.h"
 
 using namespace std;
 
@@ -11,14 +12,14 @@ class Scheduler; //forward class declaration
 
 class UI
 {
-	ifstream LoadedF;
+	ifstream LoadedFile;
 	Scheduler* manager;
 public:
 	UI(Scheduler* app) { manager = app; }
 
 	void LoadFile(ProcessorsInfo&);
-	ProcessorsInfo GetProcessorsInfo()	const;
-	ProcessorsInfo GetProcessorsInfo()	const;
+	IO_process* ProcessIORequestsInput(string IO_string, int size);
+	void PrintOutput();
 };
 
 #endif

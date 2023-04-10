@@ -14,12 +14,28 @@ class Scheduler
 	unsigned timestep;
 	LinkedQueue<Process*> New_List;
 	LinkedQueue<Process*> Terminated_List;
+	LinkedQueue<Process*> Parents_List;
+
+	FCFS* FCFS_Processors;
+	SJF* SJF_Processors;
+	RR* RR_Processors;
+
 public:
 	Scheduler();
 	~Scheduler();
 
-	void AddToNewList(Process*);
-	void AddToTerminatedList(Process*);
+	void SetProcessors();
+
+	// Getters
+	LinkedQueue<Process*>* GetNewList() {	return &New_List; }
+	LinkedQueue<Process*>* GetTerminatedList() { return &Terminated_List; }
+	LinkedQueue<Process*>* GetParentsList() { return &Parents_List; }
+	ProcessorsInfo GetProcessorsInfo() const {	return P_info; }
+
+	void AddToList(LinkedQueue<Process*>*, Process*);
+
+	void Execute();
+	void ReadInput();
 };
 
 #endif

@@ -6,7 +6,9 @@
 #include "../Process/Process.h"
 class FCFS : public LinkedQueue<Process*>
 {
-	
+	LinkedQueue<Process*> RDY;
+	LinkedQueue<Process*> BLK;
+	unsigned int time_left;
 };
 
 #endif

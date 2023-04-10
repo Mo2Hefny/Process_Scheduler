@@ -11,7 +11,7 @@ class Process
 	Process* child;
 
 public:
-	Process();
+	Process(ProcessInfo, IO_process*);
 	~Process();
 };
 

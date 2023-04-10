@@ -140,8 +140,10 @@
   <ItemGroup>
     <ClInclude Include="Data Structures\DS.h" />
     <ClInclude Include="Data Structures\Linked List\LinkedList.h" />
+    <ClInclude Include="Data Structures\Queue\CircularQueue.h" />
     <ClInclude Include="Data Structures\Queue\LinkedQueue.h" />
     <ClInclude Include="Data Structures\Node.h" />
+    <ClInclude Include="Data Structures\Queue\PriorityQueue.h" />
     <ClInclude Include="Data Structures\Queue\QueueADT.h" />
     <ClInclude Include="Data Structures\Stack\ArrayStack.h" />
     <ClInclude Include="Data Structures\Stack\StackADT.h" />
