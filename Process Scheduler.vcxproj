@@ -24,6 +24,7 @@
     <ProjectGuid>{48fb24a0-1dd6-44b6-8146-e80b0e65ef40}</ProjectGuid>
     <RootNamespace>ProcessScheduler</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Process_Scheduler</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -140,7 +141,7 @@
   <ItemGroup>
     <ClInclude Include="Data Structures\DS.h" />
     <ClInclude Include="Data Structures\Linked List\LinkedList.h" />
-    <ClInclude Include="Data Structures\Queue\CircularQueue.h" />
+    <ClInclude Include="Data Structures\Linked List\CircularList.h" />
     <ClInclude Include="Data Structures\Queue\LinkedQueue.h" />
     <ClInclude Include="Data Structures\Node.h" />
     <ClInclude Include="Data Structures\Queue\PriorityQueue.h" />
@@ -148,6 +149,7 @@
     <ClInclude Include="Data Structures\Stack\ArrayStack.h" />
     <ClInclude Include="Data Structures\Stack\StackADT.h" />
     <ClInclude Include="Processors\First_Come_First_Serve.h" />
+    <ClInclude Include="Processors\Processor.h" />
     <ClInclude Include="Processors\Processors.h" />
     <ClInclude Include="Processors\Round_Robin.h" />
     <ClInclude Include="Processors\Shortest_Job_First.h" />

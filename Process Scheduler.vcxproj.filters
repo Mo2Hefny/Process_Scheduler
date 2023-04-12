@@ -92,7 +92,10 @@
     <ClInclude Include="Data Structures\Queue\PriorityQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Data Structures\Queue\CircularQueue.h">
+    <ClInclude Include="Data Structures\Linked List\CircularList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Processors\Processor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
