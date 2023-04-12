@@ -13,6 +13,7 @@ class Process
 public:
 	Process(ProcessInfo, IO_process*);
 	~Process();
+	int GetCPUTime() const { return P_data.CT; }
 };
 
 #endif
