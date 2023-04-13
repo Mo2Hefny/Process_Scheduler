@@ -7,6 +7,8 @@ class FCFS : public Processor
 {
 	LinkedQueue<Process*> RDY;
 	
+public:
+	~FCFS();
 };
 
 #endif

@@ -2,7 +2,7 @@
 #define _UI_
 
 #include "../DEFS.h"
-#include <fstream>
+
 #include <iostream>
 #include "../Process/Process.h"
 
@@ -19,7 +19,11 @@ public:
 
 	void LoadFile(ProcessorsInfo&);
 	IO_process* ProcessIORequestsInput(string IO_string, int size);
+
+
+	// Testing
 	void PrintOutput();
+	void PrintNew();
 };
 
 #endif

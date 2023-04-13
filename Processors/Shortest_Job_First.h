@@ -5,7 +5,10 @@
 
 class SJF : public Processor
 {
-	PriorityQueue<Process*> RDY;
+	PriorityQueue RDY;
+
+public:
+	~SJF();
 };
 
 #endif

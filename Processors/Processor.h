@@ -5,10 +5,26 @@
 #include "../Data Structures/DS.h"
 #include "../Process/Process.h"
 
+class Scheduler; //forward class declaration
+
 class Processor
 {
-	LinkedQueue<Process*> BLK;
-	unsigned int time_left;
+	Scheduler* manager;
+	unsigned int time_left, time_busy, time_idle, total_TRT;
+	ProcessorState state;
+
+public:
+	Processor();
+
+	// Setters
+	void SetScheduler(Scheduler*);
+
+	// Getters
+	unsigned int GetPload() const { return time_busy / total_TRT; }
+	unsigned int GetPUtil() const { return time_busy / (time_busy + time_idle); }
+	unsigned int GetTimeLeft() const { return time_left; }
+
+	void AddTime();
 };
 
 #endif

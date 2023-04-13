@@ -128,8 +128,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Data Structures\Queue\PriorityQueue.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Processors\First_Come_First_Serve.cpp" />
+    <ClCompile Include="Processors\Processor.cpp" />
     <ClCompile Include="Processors\Round_Robin.cpp" />
     <ClCompile Include="Processors\Shortest_Job_First.cpp" />
     <ClCompile Include="DEFS.h" />

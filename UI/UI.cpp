@@ -9,32 +9,7 @@
 */
 void UI::LoadFile(ProcessorsInfo& i)
 {
-	string file_name;
-	do
-	{
-		cout << "Enter the file to load: ";
-		cin >> file_name;
-		file_name += ".txt";
-		LoadedFile.open(file_name);
-	} while (!LoadedFile.is_open());
-	LoadedFile >> i.NF >> i.NS >> i.NR;			// No. of processors of each type.
-	LoadedFile >> i.Time_slice;					// Time slice for RR.
-	LoadedFile >> i.RTF >> i.MaxW >> i.STL >> i.Fork_prob;
-	LoadedFile >> i.Num_process;
-	for (int j = 0; j < i.Num_process; j++)
-	{
-		ProcessInfo P_data;
-		LoadedFile >> P_data.AT >> P_data.PID >> P_data.CT >> P_data.IO_requests;
-		
-		string IO_string;
-		LoadedFile >> IO_string;
-		IO_process*	IO = ProcessIORequestsInput(IO_string, P_data.IO_requests);
-
-		Process* New_Process = new Process(P_data, IO);
-		manager->AddToList(manager->GetNewList(), New_Process);
-	}
-	LoadedFile.close();
-	PrintOutput();
+	
 }
 
 /*
@@ -70,4 +45,23 @@ void UI::PrintOutput()
 	cout << "NF    NS    NR    TS    RTF    MaxW    STL    Forkprob    Processes\n";
 	cout << i.NF << "    " << i.NS << "    " << i.NR << "    " << i.Time_slice << "    " << i.RTF << "    "
 		<< i.MaxW << "    " << i.STL << "    " << i.Fork_prob << "    " << i.Num_process << "    " << endl;
+}
+
+void UI::PrintNew()
+{
+	LinkedQueue<Process*>* n = manager->GetNewList();
+	while (!n->isEmpty())
+	{
+		Process* temp;
+		n->dequeue(temp);
+		ProcessInfo i = temp->GetProcessInfo();
+		printf("AT:%d,PID:%d,CT:%d,N:%d\n",
+			i.AT, i.PID, i.CT, i.IO_requests);
+		IO_process* arr = temp->GetIORequests();
+		for (int j = 0; j < i.IO_requests; j++)
+		{
+			printf("(%d, %d),", arr[j].IO_R, arr[j].IO_D);
+		}
+		cout << endl;
+	}
 }

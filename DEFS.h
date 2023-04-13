@@ -7,12 +7,13 @@ struct ProcessInfo
 	int PID;			// Process ID.
 	int CT;				// CPU time.
 	int IO_requests;	// Number of time the process requests I/O
+	int TT;				// Termination time.
 };
 
 struct IO_process
 {
-	int IO_R;
-	int IO_D;
+	int IO_R;	// The execution intercal after which the process requests for I/O resources.
+	int IO_D;	// The duration required for a process to perform some I/O task.
 };
 
 struct ProcessorsInfo
@@ -29,6 +30,12 @@ struct ProcessorsInfo
 	{
 		NF = NS = NR = Num_process = 0;
 	}
+};
+
+enum ProcessorState
+{
+	BUSY,
+	IDLE
 };
 
 #endif

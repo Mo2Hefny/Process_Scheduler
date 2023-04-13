@@ -8,12 +8,20 @@ class Process
 	ProcessInfo P_data;
 	IO_process* IO;			// Array of I/O requests.
 	bool terminated;
-	Process* child;
+	Process* l_child;
+	Process* r_child;
 
 public:
 	Process(ProcessInfo, IO_process*);
 	~Process();
+
+
 	int GetCPUTime() const { return P_data.CT; }
+	int GetTurnAroundDuration() const { return P_data.TT - P_data.AT;  }
+	int GetWaitingTime() const { return GetTurnAroundDuration() - P_data.CT; }
+	ProcessInfo GetProcessInfo() const { return P_data; }
+	IO_process* GetIORequests() const { return IO; }
+
 };
 
 #endif

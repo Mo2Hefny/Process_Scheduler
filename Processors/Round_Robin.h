@@ -5,7 +5,10 @@
 
 class RR : public Processor
 {
-	CircularList<Process*> RDY;
+	LinkedQueue<Process*> RDY;
+
+public:
+	~RR();
 };
 
 #endif
