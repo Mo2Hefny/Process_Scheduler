@@ -5,7 +5,7 @@
 
 class FCFS : public Processor
 {
-	LinkedQueue<Process*> RDY;
+	LinkedList<Process*> RDY;
 	
 public:
 	~FCFS();
@@ -13,6 +13,7 @@ public:
 	// Setters.
 	virtual void AddToRDY(Process* p) { RDY.enqueue(p); }
 
+	virtual void NextState();
 	virtual void Execute();
 };
 

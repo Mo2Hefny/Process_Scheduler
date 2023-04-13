@@ -9,8 +9,10 @@ class Scheduler; //forward class declaration
 
 class Processor
 {
+protected:
 	Scheduler* manager;
 	unsigned int time_left, time_busy, time_idle, total_TRT;
+	Process* RUN;
 	ProcessorState state;
 
 public:
@@ -26,6 +28,7 @@ public:
 	unsigned int GetTimeLeft() const { return time_left; }
 
 	void AddTime();
+	void NextState();
 	virtual void Execute() = 0;
 };
 

@@ -9,6 +9,7 @@ class LinkedList
 {
 private:
 	Node<T>* Head;	//Pointer to the head of the list
+	int list_size;
 	//You can add tail pointer too (depending on your problem)
 public:
 
@@ -16,6 +17,7 @@ public:
 	LinkedList()
 	{
 		Head = nullptr;
+		list_size = 0;
 	}
 
 	//List is being desturcted ==> delete all items in the list
@@ -54,7 +56,7 @@ public:
 		Node<T>* R = new Node<T>(data);
 		R->setNext(Head);
 		Head = R;
-
+		list_size = 0;
 	}
 	////////////////////////////////////////////////////////////////////////
 	/*
@@ -79,9 +81,23 @@ public:
 	// Implement the following member functions
 
 
-	//[1]InsertEnd 
+	//[1]Enqueue 
 	//inserts a new node at end if the list
-	void InsertEnd(const T& data);
+	void enqueue(const T& data)
+	{
+		if (!Head)
+		{
+			InsertBeg(data);
+			return;
+		}
+
+		Node<T>* R = new Node<T>(data);
+		Node<T>* p = Head;
+		while (p->getNext())
+			p = p->getNext();
+		p->setNext(R);
+		list_size++;
+	}
 
 	//[2]Find 
 	//searches for a given value in the list, returns true if found; false otherwise.
@@ -93,7 +109,16 @@ public:
 
 	//[4] DeleteFirst
 	//Deletes the first node in the list
-	void DeleteFirst();
+	T dequeue()
+	{
+		Node<T>* p = Head;
+		Head = Head->getNext();
+		T excess = p->getItem();
+		p->setItem(NULL);
+		delete p;
+		list_size--;
+		return excess;
+	}
 
 
 	//[5] DeleteLast
@@ -121,6 +146,26 @@ public:
 	//Reverses the linked list (without allocating any new Nodes)
 	void Reverse();
 
+	T DeletePos(int pos)
+	{
+		Node<T>* dummy = new Node<T>;
+		dummy->setNext(Head);
+		Node<T>* prev = dummy, *p = Head;
+		while (p->getNext() && --pos)
+		{
+			p = p->getNext();
+			prev = prev->getNext();
+		}
+		prev->setNext(p->getNext());
+		delete dummy;
+		T excess = p->getItem();
+		p->setItem(NULL);
+		delete p;
+		list_size--;
+		return excess;
+	}
+
+	int size() const { return list_size; }
 };
 
 #endif	

@@ -1,10 +1,13 @@
 #include "Processor.h"
 #include "../Scheduler/Scheduler.h"
+#include <cstdlib>
+#include <ctime>
 
 Processor::Processor()
 {
 	time_left = time_busy = time_idle = 0;
 	state = IDLE;
+	RUN = NULL;
 }
 
 /*
@@ -26,3 +29,4 @@ void Processor::AddTime()
 	else
 		time_idle++;
 }
+

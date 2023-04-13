@@ -44,4 +44,11 @@ enum PQType
 	CT_order
 };
 
+enum ProgramInterface
+{
+	Interactive,
+	Step_by_step,
+	Silent
+};
+
 #endif

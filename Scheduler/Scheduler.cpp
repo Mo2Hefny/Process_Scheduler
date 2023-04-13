@@ -159,6 +159,20 @@ void Scheduler::Execute()
 			Processors[i]->Execute();
 		}
 
+		Process* top = NULL;
+		if (BLK_List.peek(top))
+		{
+			srand(time(0));
+			int move_possibility = rand() % 100 + 1;
+			if (move_possibility <= 10)
+			{
+				BLK_List.dequeue(top);
+				AddToReady(top);
+			}
+		}
+
+		console->PrintOutput();
+
 		timestep++;
 	}
 }
