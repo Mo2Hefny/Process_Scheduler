@@ -38,4 +38,10 @@ enum ProcessorState
 	IDLE
 };
 
+enum PQType
+{
+	AT_order,
+	CT_order
+};
+
 #endif

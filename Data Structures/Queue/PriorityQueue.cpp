@@ -7,11 +7,11 @@ Function: Queue()
 The constructor of the Queue class.
 
 */
-PriorityQueue::PriorityQueue()
+PriorityQueue::PriorityQueue(PQType t)
 {
 	backPtr = nullptr;
 	frontPtr = nullptr;
-
+	type = t;
 }
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -48,30 +48,61 @@ bool PriorityQueue::enqueue(Process*& newEntry)
 		return true;
 	}
 	if (!frontPtr->getNext())
-	{
-		if (newNodePtr->getItem()->GetCPUTime() < frontPtr->getItem()->GetCPUTime())
+	{	
+		if (type == CT_order)
 		{
-			newNodePtr->setNext(frontPtr);
-			backPtr = frontPtr;
-			frontPtr = newNodePtr;
+			if (newNodePtr->getItem()->GetCPUTime() < frontPtr->getItem()->GetCPUTime())
+			{
+				newNodePtr->setNext(frontPtr);
+				backPtr = frontPtr;
+				frontPtr = newNodePtr;
+			}
+			else
+			{
+				frontPtr->setNext(newNodePtr);
+				backPtr = newNodePtr;
+			}
 		}
 		else
 		{
-			frontPtr->setNext(newNodePtr);
-			backPtr = newNodePtr;
+			if (newNodePtr->getItem()->GetArrivalTime() < frontPtr->getItem()->GetArrivalTime())
+			{
+				newNodePtr->setNext(frontPtr);
+				backPtr = frontPtr;
+				frontPtr = newNodePtr;
+			}
+			else
+			{
+				frontPtr->setNext(newNodePtr);
+				backPtr = newNodePtr;
+			}
 		}
 		return true;
 	}
-	if (newNodePtr->getItem()->GetCPUTime() < frontPtr->getItem()->GetCPUTime())
+	
+	if (type == CT_order && newNodePtr->getItem()->GetCPUTime() < frontPtr->getItem()->GetCPUTime())
 	{
 		frontPtr->setNext(newNodePtr);
 		frontPtr = newNodePtr;
 		return true;
 	}
+	else if (type == AT_order && newNodePtr->getItem()->GetArrivalTime() < frontPtr->getItem()->GetArrivalTime())
+	{
+		frontPtr->setNext(newNodePtr);
+		frontPtr = newNodePtr;
+		return true;
+	}
+
 	Node<Process*>* temp1 = frontPtr, * temp2 = frontPtr->getNext();
 	while (temp1 && temp2)
 	{
-		if (newNodePtr->getItem()->GetCPUTime() <= temp2->getItem()->GetCPUTime() && newNodePtr->getItem()->GetCPUTime() >= temp1->getItem()->GetCPUTime())
+		if (type == CT_order && newNodePtr->getItem()->GetCPUTime() <= temp2->getItem()->GetCPUTime())
+		{
+			temp1->setNext(newNodePtr);
+			newNodePtr->setNext(temp2);
+			return true;
+		}
+		else if (type == AT_order && newNodePtr->getItem()->GetArrivalTime() <= temp2->getItem()->GetArrivalTime())
 		{
 			temp1->setNext(newNodePtr);
 			newNodePtr->setNext(temp2);

@@ -1,43 +1,5 @@
 #include "UI.h"
-#include <string>
 #include "../Scheduler/Scheduler.h"
-
-/*
-* LoadFile - Load the Processors and Processes data from an input file.
-* 
-* @param i - Reference to the Processors info to be updated.
-*/
-void UI::LoadFile(ProcessorsInfo& i)
-{
-	
-}
-
-/*
-* ProcessIORequestsInput - Extract the I/O data from the given string of pairs.
-*
-* @param IO_string - The I/O requests string that contains the needed data.
-* @param size - Number of the I/O requests of the process.
-* 
-* @return I/O requests array.
-*/
-IO_process* UI::ProcessIORequestsInput(string IO_string, int size)
-{
-	IO_process* IO = new IO_process[size];
-	string num = "";
-	int i = 0;
-	for (char c : IO_string) {
-		if (isdigit(c)) {
-			num += c;
-		}
-		else if (!num.empty() && (c == ',' || c == ')')) {
-			if (i & 1)	IO[i / 2].IO_D = stoi(num);
-			else IO[i / 2].IO_R = stoi(num);
-			i++;
-			num = "";
-		}
-	}
-	return IO;
-}
 
 void UI::PrintOutput()
 {
@@ -64,4 +26,12 @@ void UI::PrintNew()
 		}
 		cout << endl;
 	}
+}
+
+string UI::GetFileName()
+{
+	string file_name;
+	cout << "Enter the file to load: ";
+	cin >> file_name;
+	return file_name;
 }

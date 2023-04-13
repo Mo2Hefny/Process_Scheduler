@@ -9,6 +9,11 @@ class SJF : public Processor
 
 public:
 	~SJF();
+
+	// Setters.
+	virtual void AddToRDY(Process* p) { RDY.enqueue(p); }
+
+	virtual void Execute();
 };
 
 #endif

@@ -54,12 +54,14 @@ private:
 
 	Node<T>* backPtr;
 	Node<T>* frontPtr;
+	int list_size;
 public:
 	LinkedQueue();
 	bool isEmpty() const;
 	bool enqueue(const T& newEntry);
 	bool dequeue(T& frntEntry);
 	bool peek(T& frntEntry)  const;
+	int size() const { return list_size; }
 	~LinkedQueue();
 
 	//copy constructor
@@ -78,7 +80,7 @@ LinkedQueue<T>::LinkedQueue()
 {
 	backPtr = nullptr;
 	frontPtr = nullptr;
-
+	list_size = 0;
 }
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -115,6 +117,7 @@ bool LinkedQueue<T>::enqueue(const T& newEntry)
 		backPtr->setNext(newNodePtr); // The queue was not empty
 
 	backPtr = newNodePtr; // New node is the last node now
+	list_size++;
 	return true;
 } // end enqueue
 
@@ -144,7 +147,7 @@ bool LinkedQueue<T>::dequeue(T& frntEntry)
 
 	// Free memory reserved for the dequeued node
 	delete nodeToDeletePtr;
-
+	list_size--;
 	return true;
 
 }

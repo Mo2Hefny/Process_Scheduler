@@ -10,11 +10,11 @@ class PriorityQueue
 {
 
 private:
-
+	PQType type;
 	Node<Process*>* backPtr;
 	Node<Process*>* frontPtr;
 public:
-	PriorityQueue();
+	PriorityQueue(PQType = CT_order);
 	bool isEmpty() const;
 	bool enqueue(Process*& newEntry);
 	bool dequeue(Process*& frntEntry);

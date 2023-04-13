@@ -6,10 +6,14 @@
 #include "../Processors/Processors.h"
 #include "../Process/Process.h"
 #include "../Data Structures/DS.h"
+#include <iostream>
+#include <fstream>
 
+using namespace std;
 class Scheduler
 {
 	UI* console;
+	ifstream LoadedFile;
 	ProcessorsInfo P_info;
 	unsigned timestep;
 	LinkedQueue<Process*> New_List;
@@ -22,6 +26,8 @@ class Scheduler
 	RR* RR_Processors;
 	Processor** Processors;
 
+	// TEMPORARY SCHEDULING COUNTER
+	int k;
 public:
 	Scheduler();
 	~Scheduler();
@@ -36,12 +42,13 @@ public:
 	ProcessorsInfo GetProcessorsInfo() const {	return P_info; }
 
 	void AddToList(LinkedQueue<Process*>*, Process*);
-
+	void AddToReady(Process*);
 	void ProcessMigration(Process*);
 
 	void Execute();
 	void ReadInput();
 	void LoadFile();
+	IO_process* ProcessIORequestsInput(string IO_string, int size);
 };
 
 #endif

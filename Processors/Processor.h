@@ -18,6 +18,7 @@ public:
 
 	// Setters
 	void SetScheduler(Scheduler*);
+	virtual void AddToRDY(Process* p) = 0;
 
 	// Getters
 	unsigned int GetPload() const { return time_busy / total_TRT; }
@@ -25,6 +26,7 @@ public:
 	unsigned int GetTimeLeft() const { return time_left; }
 
 	void AddTime();
+	virtual void Execute() = 0;
 };
 
 #endif

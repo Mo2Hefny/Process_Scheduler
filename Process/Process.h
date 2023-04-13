@@ -15,7 +15,8 @@ public:
 	Process(ProcessInfo, IO_process*);
 	~Process();
 
-
+	// Getters.
+	int GetArrivalTime() const { return P_data.AT; }
 	int GetCPUTime() const { return P_data.CT; }
 	int GetTurnAroundDuration() const { return P_data.TT - P_data.AT;  }
 	int GetWaitingTime() const { return GetTurnAroundDuration() - P_data.CT; }
