@@ -25,21 +25,26 @@ void FCFS::NextState()
 		if (num <= 15)
 		{
 			manager->AddToList(manager->GetBlockList(), RUN);
-			RUN = NULL;
-			state = IDLE;
+			RUN = RDY.dequeue();
 		}
 		else if (num >= 20 && num <= 30)
 		{
 			AddToRDY(RUN);
-			RUN = NULL;
-			state = IDLE;
+			RUN = RDY.dequeue();
 		}
 		else if (num >= 50 && num <= 60)
 		{
 			manager->AddToList(manager->GetTerminatedList(), RUN);
-			RUN = NULL;
-			state = IDLE;
+			RUN = RDY.dequeue();
 		}
+		if (!RUN)
+			state = IDLE;
+	}
+	else
+	{
+		RUN = RDY.dequeue();
+		if(RUN)
+		state = BUSY;
 	}
 	int random_termination = rand() % RDY.size() + 1;
 	manager->AddToList(manager->GetTerminatedList(), RDY.DeletePos(random_termination));

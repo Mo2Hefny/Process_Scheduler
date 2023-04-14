@@ -101,7 +101,7 @@ public:
 
 	//[2]Find 
 	//searches for a given value in the list, returns true if found; false otherwise.
-	bool Find(int Key);
+	bool Find(int Key){}
 
 	//[3]CountOccurance
 	//returns how many times a certain value appeared in the list
@@ -111,6 +111,8 @@ public:
 	//Deletes the first node in the list
 	T dequeue()
 	{
+		if (!Head)
+			return nullptr;
 		Node<T>* p = Head;
 		Head = Head->getNext();
 		T excess = p->getItem();
@@ -123,28 +125,31 @@ public:
 
 	//[5] DeleteLast
 	//Deletes the last node in the list
-	void DeleteLast();
+	void DeleteLast(){}
 
 	//[6] DeleteNode
 	//deletes the first node with the given value (if found) and returns true
 	//if not found, returns false
 	//Note: List is not sorted
-	bool DeleteNode(const T& value);
+	bool DeleteNode(const T& value){}
 
 	//[7] DeleteNodes
 	//deletes ALL node with the given value (if found) and returns true
 	//if not found, returns false
 	//Note: List is not sorted
-	bool DeleteNodes(const T& value);
+	bool DeleteNodes(const T& value)
+	{}
 
 	//[8]Merge
 	//Merges the current list to another list L by making the last Node in the current list 
 	//point to the first Node in list L
-	void Merge(const LinkedList& L);
+	void Merge(const LinkedList& L)
+	{}
 
 	//[9] Reverse
 	//Reverses the linked list (without allocating any new Nodes)
-	void Reverse();
+	void Reverse()
+	{}
 
 	T DeletePos(int pos)
 	{
