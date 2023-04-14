@@ -40,6 +40,8 @@ public:
 	LinkedQueue<Process*>* GetTerminatedList() { return &Terminated_List; }
 	LinkedQueue<Process*>* GetParentsList() { return &Parents_List; }
 	ProcessorsInfo GetProcessorsInfo() const {	return P_info; }
+	unsigned GetTimeStep() { return timestep; }
+	Processor** GetProcessors() { return Processors; }
 
 	void AddToList(LinkedQueue<Process*>*, Process*);
 	void AddToReady(Process*);

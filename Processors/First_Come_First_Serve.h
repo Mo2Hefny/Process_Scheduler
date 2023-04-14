@@ -9,6 +9,8 @@ class FCFS : public Processor
 	
 public:
 	~FCFS();
+	// Getters.
+	LinkedList<Process*>GetRDY() { return RDY; }
 
 	// Setters.
 	virtual void AddToRDY(Process* p) { RDY.enqueue(p); }

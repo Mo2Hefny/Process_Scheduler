@@ -26,6 +26,7 @@ public:
 	unsigned int GetPload() const { return time_busy / total_TRT; }
 	unsigned int GetPUtil() const { return time_busy / (time_busy + time_idle); }
 	unsigned int GetTimeLeft() const { return time_left; }
+	Process* GetRun() { return RUN; }
 
 	void AddTime();
 	void NextState();

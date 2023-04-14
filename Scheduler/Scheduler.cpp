@@ -57,6 +57,7 @@ void Scheduler::LoadFile()
 		LoadedFile.open(file_name);
 	} while (!LoadedFile.is_open());
 	LoadedFile >> P_info.NF >> P_info.NS >> P_info.NR;			// No. of processors of each type.
+	P_info.NT = P_info.NF + P_info.NS + P_info.NR;
 	LoadedFile >> P_info.Time_slice;					// Time slice for RR.
 	LoadedFile >> P_info.RTF >> P_info.MaxW >> P_info.STL >> P_info.Fork_prob;
 	LoadedFile >> P_info.Num_process;
@@ -73,8 +74,6 @@ void Scheduler::LoadFile()
 		AddToList(GetNewList(), New_Process);
 	}
 	LoadedFile.close();
-	console->PrintOutput();
-	console->PrintNew();
 }
 
 /*

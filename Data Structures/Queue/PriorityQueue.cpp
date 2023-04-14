@@ -12,6 +12,7 @@ PriorityQueue::PriorityQueue(PQType t)
 	backPtr = nullptr;
 	frontPtr = nullptr;
 	type = t;
+	queue_size = 0;
 }
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,6 +40,7 @@ Output: True if the operation is successful; otherwise false.
 */
 bool PriorityQueue::enqueue(Process*& newEntry)
 {
+	queue_size++;
 	Node<Process*>* newNodePtr = new Node<Process*>(newEntry);
 	// Insert the new node
 	if (isEmpty())//special case if this is the first node to insert
@@ -130,7 +132,6 @@ bool PriorityQueue::dequeue(Process*& frntEntry)
 {
 	if (isEmpty())
 		return false;
-
 	Node<Process*>* nodeToDeletePtr = frontPtr;
 	frntEntry = frontPtr->getItem();
 	frontPtr = frontPtr->getNext();
@@ -140,6 +141,7 @@ bool PriorityQueue::dequeue(Process*& frntEntry)
 
 	// Free memory reserved for the dequeued node
 	delete nodeToDeletePtr;
+	queue_size--;
 
 	return true;
 
@@ -163,6 +165,18 @@ bool PriorityQueue::peek(Process*& frntEntry) const
 }
 ///////////////////////////////////////////////////////////////////////////////////
 /*
+Function: size
+gets the size of the queue
+
+Input : None.
+Output : The size of the queue.
+*/
+int PriorityQueue::size()
+{
+	return queue_size;
+}
+///////////////////////////////////////////////////////////////////////////////////
+/*
 Function: destructor
 removes all nodes from the queue by dequeuing them
 */
@@ -175,6 +189,7 @@ PriorityQueue::~PriorityQueue()
 }
 PriorityQueue::PriorityQueue(const PriorityQueue& LQ)
 {
+	queue_size = LQ.queue_size;
 	Node<Process*>* NodePtr = LQ.frontPtr;
 	if (!NodePtr) //LQ is empty
 	{

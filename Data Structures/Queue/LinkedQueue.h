@@ -195,6 +195,7 @@ Output: none
 template <typename T>
 LinkedQueue<T>::LinkedQueue(const LinkedQueue<T>& LQ)
 {
+	list_size = LQ.list_size;
 	Node<T>* NodePtr = LQ.frontPtr;
 	if (!NodePtr) //LQ is empty
 	{

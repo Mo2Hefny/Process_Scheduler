@@ -13,12 +13,14 @@ private:
 	PQType type;
 	Node<Process*>* backPtr;
 	Node<Process*>* frontPtr;
+	int queue_size;
 public:
 	PriorityQueue(PQType = CT_order);
 	bool isEmpty() const;
 	bool enqueue(Process*& newEntry);
 	bool dequeue(Process*& frntEntry);
 	bool peek(Process*& frntEntry)  const;
+	int size();
 	~PriorityQueue();
 
 	//copy constructor

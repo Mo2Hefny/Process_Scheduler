@@ -41,6 +41,9 @@ void FCFS::NextState()
 			state = IDLE;
 		}
 	}
-	int random_termination = rand() % RDY.size() + 1;
-	manager->AddToList(manager->GetTerminatedList(), RDY.DeletePos(random_termination));
+	if (RDY.size())
+	{
+		int random_termination = rand() % RDY.size() + 1;
+		manager->AddToList(manager->GetTerminatedList(), RDY.DeletePos(random_termination));
+	}
 }
