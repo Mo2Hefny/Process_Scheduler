@@ -140,7 +140,7 @@ void Scheduler::ReadInput()
 void Scheduler::Execute()
 {
 	ReadInput();
-	while (GetTerminatedList()->size() < P_info.Num_process)
+	while (Terminated_List.size() < P_info.Num_process)
 	{
 		for (int i = 0; i < New_List.size(); i++)
 		{

@@ -8,10 +8,7 @@ SJF::~SJF()
 
 void SJF::Execute()
 {
-	if (state == BUSY)
 		NextState();
-
-
 }
 
 
@@ -21,24 +18,32 @@ void SJF::Execute()
 */
 void SJF::NextState()
 {
-	srand(time(0));
-	int num = rand() % 100 + 1;
-	if (num <= 15)
+	if (state == BUSY)
 	{
-		manager->AddToList(manager->GetBlockList(), RUN);
-		RUN = NULL;
-		state = IDLE;
+		srand(time(0));
+		int num = rand() % 100 + 1;
+		if (num <= 15)
+		{
+			manager->AddToList(manager->GetBlockList(), RUN);
+			if(!RDY.dequeue(RUN))
+			state = IDLE;
+		}
+		else if (num >= 20 && num <= 30)
+		{
+			AddToRDY(RUN);
+			if (!RDY.dequeue(RUN))
+				state = IDLE;
+		}
+		else if (num >= 50 && num <= 60)
+		{
+			manager->AddToList(manager->GetTerminatedList(), RUN);
+			if (!RDY.dequeue(RUN))
+				state = IDLE;
+		}
 	}
-	else if (num >= 20 && num <= 30)
+	else
 	{
-		AddToRDY(RUN);
-		RUN = NULL;
-		state = IDLE;
-	}
-	else if (num >= 50 && num <= 60)
-	{
-		manager->AddToList(manager->GetTerminatedList(), RUN);
-		RUN = NULL;
-		state = IDLE;
+		if (RDY.dequeue(RUN))
+			state = BUSY;
 	}
 }
