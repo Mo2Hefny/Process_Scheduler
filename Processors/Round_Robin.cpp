@@ -26,19 +26,28 @@ void RR::NextState()
 		{
 			manager->AddToList(manager->GetBlockList(), RUN);
 			if (!RDY.dequeue(RUN))
+			{
 				state = IDLE;
+				RUN = nullptr;
+			}
 		}
 	    else if (num >= 20 && num <= 30)
 		{
 			AddToRDY(RUN);
 			if (!RDY.dequeue(RUN))
+			{
 				state = IDLE;
+				RUN = nullptr;
+			}
 		}
 		else if (num >= 50 && num <= 60)
 		{
 			manager->AddToList(manager->GetTerminatedList(), RUN);
 			if (!RDY.dequeue(RUN))
+			{
 				state = IDLE;
+				RUN = nullptr;
+			}
 		}
     }
 	else

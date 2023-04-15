@@ -105,18 +105,15 @@ public:
 
 	//[3]CountOccurance
 	//returns how many times a certain value appeared in the list
-	int CountOccurance(const T& value);
+	int CountOccurance(const T& value){}
 
 	//[4] DeleteFirst
 	//Deletes the first node in the list
 	T dequeue()
 	{
-		if (!Head)
-			return nullptr;
 		Node<T>* p = Head;
 		Head = Head->getNext();
 		T excess = p->getItem();
-		p->setItem(NULL);
 		delete p;
 		list_size--;
 		return excess;
@@ -171,6 +168,15 @@ public:
 	}
 
 	int size() const { return list_size; }
+
+
+	bool isempty()
+	{
+		if (!Head)
+			return true;
+		else
+			return false;
+	}
 };
 
 #endif	
