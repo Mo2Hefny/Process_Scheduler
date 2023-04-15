@@ -134,13 +134,14 @@ bool PriorityQueue::dequeue(Process*& frntEntry)
 		return false;
 	Node<Process*>* nodeToDeletePtr = frontPtr;
 	frntEntry = frontPtr->getItem();
+	frontPtr->setItem(NULL);
 	frontPtr = frontPtr->getNext();
 	// Queue is not empty; remove front
 	if (nodeToDeletePtr == backPtr)	 // Special case: last node in the queue
 		backPtr = nullptr;
 
 	// Free memory reserved for the dequeued node
-	//delete nodeToDeletePtr;
+	delete nodeToDeletePtr;
 	queue_size--;
 
 	return true;

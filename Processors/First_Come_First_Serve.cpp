@@ -53,9 +53,4 @@ void FCFS::NextState()
 		if (RDY.dequeue(RUN))
 			state = BUSY;
 	}
-	/*if (!RDY.isempty())
-	{
-		int random_termination = rand() % RDY.size() + 1;
-		manager->AddToList(manager->GetTerminatedList(), RDY.DeletePos(random_termination));
-	}*/
 }

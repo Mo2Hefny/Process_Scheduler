@@ -83,7 +83,7 @@ public:
 
 
 	//[1]Enqueue 
-	//inserts a new node at end if the list
+	//inserts a new node at end of the list
 	void enqueue(const T& data)
 	{
 		if (!Head)
@@ -117,10 +117,11 @@ public:
 
 		Node<T>* nodeToDeletePtr = Head;
 		frntEntry = Head->getItem();
+		Head->setItem(NULL);
 		Head = Head->getNext();
 		// Queue is not empty;
 		// Free memory reserved for the dequeued node
-		//delete nodeToDeletePtr;
+		delete nodeToDeletePtr;
 		list_size--;
 		return true;
 
@@ -129,13 +130,60 @@ public:
 
 	//[5] DeleteLast
 	//Deletes the last node in the list
-	void DeleteLast(){}
+	bool DeleteLast(T& frntEntry)
+	{
+		if (isempty())
+			return false;
+
+		Node<T>* nodeToDeletePtr = Head;
+		Node<T>* dummy = new Node<T>;
+		dummy->setNext(Head);
+		Node<T>* prev = dummy;
+		while (nodeToDeletePtr->getNext())
+		{
+			prev = prev->getNext();
+			nodeToDeletePtr = nodeToDeletePtr->getNext();
+		}
+		if (Head == nodeToDeletePtr)	Head = NULL;
+		frntEntry = nodeToDeletePtr->getItem();
+		nodeToDeletePtr->setItem(NULL);
+		prev->setNext(NULL);
+		// Queue is not empty;
+		// Free memory reserved for the dequeued node
+		delete nodeToDeletePtr;
+		delete dummy;
+		list_size--;
+		return true;
+	}
 
 	//[6] DeleteNode
 	//deletes the first node with the given value (if found) and returns true
 	//if not found, returns false
 	//Note: List is not sorted
-	bool DeleteNode(const T& value){}
+	bool DeleteNode(T& frntEntry, const int& ID)
+	{
+		if (!Head)	return false;
+		Node<T>* dummy = new Node<T>;
+		dummy->setNext(Head);
+		Node<T>* p = Head, *prev = dummy;
+		while (p)
+		{
+			if (p->getItem()->GetProcessInfo().PID == ID)
+			{
+				frntEntry = p->getItem();
+				if (p == Head)	Head = Head->getNext();
+				prev->setNext(p->getNext());
+				p->setItem(NULL);
+				delete p;
+				delete dummy;
+				return true;
+			}
+			prev = prev->getNext();
+			p = p->getNext();
+		}
+		delete dummy;
+		return false;
+	}
 
 	//[7] DeleteNodes
 	//deletes ALL node with the given value (if found) and returns true
@@ -167,6 +215,7 @@ public:
 		}
 		prev->setNext(p->getNext());
 		delete dummy;
+		if (p == Head)	Head = Head->getNext();
 		T excess = p->getItem();
 		p->setItem(NULL);
 		delete p;

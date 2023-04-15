@@ -12,6 +12,7 @@ class Process
 	Process* r_child;
 
 public:
+	Process(const Process&);
 	Process(ProcessInfo, IO_process*);
 	~Process();
 

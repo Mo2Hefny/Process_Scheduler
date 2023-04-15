@@ -10,7 +10,7 @@ class RR : public Processor
 public:
 	~RR();
 	//Getters.
-	LinkedQueue<Process*> GetRDY() { return RDY; }
+	LinkedQueue<Process*>* GetRDY() { return &RDY; }
 
 	// Setters.
 	virtual void AddToRDY(Process* p) { RDY.enqueue(p); }

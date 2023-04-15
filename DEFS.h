@@ -18,7 +18,10 @@ struct IO_process
 
 struct ProcessorsInfo
 {
-	int NF, NS, NR, NT;		// Number of processors.
+	int NF;				// Number of FCFS processors.
+	int NS;				// Number of SJF processors.
+	int NR;				// Number of RR processors.
+	int NT;				// Number of processors.
 	int Time_slice;		// Time slice for RR.
 	int RTF;			// Min time Threshold before process migration from RR to SJF.
 	int STL;			// Stealing Time Limit.
@@ -28,7 +31,7 @@ struct ProcessorsInfo
 
 	ProcessorsInfo()
 	{
-		NF = NS = NR = Num_process = 0;
+		NF = NS = NR = Num_process = NT = 0;
 	}
 };
 

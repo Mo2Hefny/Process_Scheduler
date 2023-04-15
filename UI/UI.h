@@ -4,6 +4,7 @@
 #include "../DEFS.h"
 #include <string>
 #include "../Process/Process.h"
+#include "../Processors/Processors.h"
 
 using namespace std;
 
@@ -22,6 +23,10 @@ public:
 
 	// Testing
 	void PrintOutput();
+	void PrintRDY(int&, Processor**, Process**&);
+	void PrintBLK();
+	void PrintRUN(int, Process**);
+	void PrintTRM();
 	void PrintNew();
 
 	string GetFileName();

@@ -3,6 +3,7 @@
 #include <string>
 Scheduler::Scheduler()
 {
+	srand(time(0));
 	timestep = k = 0;
 	FCFS_Processors = NULL;
 	SJF_Processors = NULL;
@@ -66,9 +67,13 @@ void Scheduler::LoadFile()
 		ProcessInfo P_data;
 		LoadedFile >> P_data.AT >> P_data.PID >> P_data.CT >> P_data.IO_requests;
 
-		string IO_string;
-		LoadedFile >> IO_string;
-		IO_process* IO = ProcessIORequestsInput(IO_string, P_data.IO_requests);
+		string IO_string = "";
+		IO_process* IO = NULL;
+		if (P_data.IO_requests != 0)
+		{
+			LoadedFile >> IO_string;
+			IO = ProcessIORequestsInput(IO_string, P_data.IO_requests);
+		}
 
 		Process* New_Process = new Process(P_data, IO);
 		AddToList(GetNewList(), New_Process);
@@ -135,21 +140,25 @@ void Scheduler::ReadInput()
 }
 
 /*
-* Execute - execution of the system.
+* Execute - Simulation of the system.
 */
 void Scheduler::Execute()
 {
-	int newlsize = New_List.size();
 	ReadInput();
+	bool p_exc = true;
 	while (Terminated_List.size() < P_info.Num_process)
 	{
-		for (int i = 0; i < newlsize; i++)
+		int new_size = New_List.size();
+		for (int i = 0; i < new_size; i++)
 		{
 			Process* current;
 			New_List.dequeue(current);
 
 			if (current->GetArrivalTime() == timestep)
+			{
+				
 				AddToReady(current);
+			}
 			else
 				New_List.enqueue(current);
 		}
@@ -159,10 +168,21 @@ void Scheduler::Execute()
 			Processors[i]->Execute();
 		}
 
+		int random_ID = rand() % P_info.Num_process + 1;
+		for (int i = 0; i < P_info.NF; i++)
+		{
+			Process* process = NULL;
+			FCFS* fcfs = dynamic_cast<FCFS*>(Processors[i]);
+			if (fcfs->GetRDY()->DeleteNode(process, random_ID))
+			{
+				AddToList(GetTerminatedList(), process);
+				break;
+			}
+		}
+
 		Process* top = NULL;
 		if (BLK_List.peek(top))
 		{
-			srand(time(0));
 			int move_possibility = rand() % 100 + 1;
 			if (move_possibility <= 10)
 			{
