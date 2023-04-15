@@ -146,7 +146,7 @@ bool LinkedQueue<T>::dequeue(T& frntEntry)
 		backPtr = nullptr;
 
 	// Free memory reserved for the dequeued node
-	delete nodeToDeletePtr;
+	//delete nodeToDeletePtr;
 	list_size--;
 	return true;
 

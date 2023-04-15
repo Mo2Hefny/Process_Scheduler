@@ -21,7 +21,14 @@ void UI::PrintOutput()
 			run_size++;
 		cout << "processor " << i+1 << " [FCFS]: " << fcfs->GetRDY().size() << " RDY: ";
 		for (int i = 0; i < fcfs->GetRDY().size(); i++)
-			cout << fcfs->GetRDY().dequeue()->GetProcessInfo().PID << ", ";
+		{
+			Process* process;
+			if (fcfs->GetRDY().dequeue(process))
+			{
+				cout << process->GetProcessInfo().PID << ", ";
+				//fcfs->GetRDY().enqueue(process);
+			}
+		}
 		cout << endl;
 	}
 	for (int i = manager->GetProcessorsInfo().NF; i < manager->GetProcessorsInfo().NF+ manager->GetProcessorsInfo().NS; i++)
@@ -49,7 +56,7 @@ void UI::PrintOutput()
 		for (int i = 0; i < rr->GetRDY().size(); i++)
 		{
 			Process* process;
-			rr->GetRDY().dequeue(process);
+			if(rr->GetRDY().dequeue(process))
 			cout << process->GetProcessInfo().PID << ", ";
 		}
 		cout << endl;
@@ -63,11 +70,14 @@ void UI::PrintOutput()
 	LinkedQueue < Process*> blklist;
 	blklist = *(manager->GetBlockList());
 	cout << blklist.size() << " BLK: ";
-	for (int i = 0; i < manager->GetBlockList()->size(); i++)
+	for (int i = 0; i < blklist.size(); i++)
 	{
 		Process* process;
-		blklist.dequeue(process);
-		cout << process->GetProcessInfo().PID << ", ";
+		if (blklist.dequeue(process))
+		{
+			cout << process->GetProcessInfo().PID << ", ";
+			//blklist.enqueue(process);
+		}
 	}
 	cout << endl;
 	for (int i = 0; i < 15; i++)
@@ -79,7 +89,7 @@ void UI::PrintOutput()
 	cout << run_size << " RUN: ";
 	for (int i = 0; i < manager->GetProcessorsInfo().NT; i++)
 	{
-		if (!run[i])
+		if (!run[i])	
 			continue;
 		cout << run[i]->GetProcessInfo().PID << "(P" << i + 1 << "), ";
 	}
@@ -96,8 +106,11 @@ void UI::PrintOutput()
 	for (int i = 0; i < trmlist.size(); i++)
 	{
 		Process* process;
-		trmlist.dequeue(process);
-		cout << process->GetProcessInfo().PID << ", ";
+		if (trmlist.dequeue(process))
+		{
+			cout << process->GetProcessInfo().PID << ", ";
+			//trmlist.enqueue(process); 
+		}
 	}
 	//cout << endl << "PRESS ANY KEY TO MOVE TO THE NEXT STEP !" << endl;
 	cout << endl;

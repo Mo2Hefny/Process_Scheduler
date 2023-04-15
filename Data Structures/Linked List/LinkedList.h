@@ -56,7 +56,7 @@ public:
 		Node<T>* R = new Node<T>(data);
 		R->setNext(Head);
 		Head = R;
-		list_size = 0;
+		list_size++;
 	}
 	////////////////////////////////////////////////////////////////////////
 	/*
@@ -72,6 +72,7 @@ public:
 			delete Head;
 			Head = P;
 		}
+		list_size = 0;
 	}
 
 
@@ -109,14 +110,20 @@ public:
 
 	//[4] DeleteFirst
 	//Deletes the first node in the list
-	T dequeue()
+	bool dequeue(T& frntEntry)
 	{
-		Node<T>* p = Head;
+		if (isempty())
+			return false;
+
+		Node<T>* nodeToDeletePtr = Head;
+		frntEntry = Head->getItem();
 		Head = Head->getNext();
-		T excess = p->getItem();
-		delete p;
+		// Queue is not empty;
+		// Free memory reserved for the dequeued node
+		//delete nodeToDeletePtr;
 		list_size--;
-		return excess;
+		return true;
+
 	}
 
 
@@ -176,6 +183,35 @@ public:
 			return true;
 		else
 			return false;
+	}
+
+	LinkedList(const LinkedList<T>& LQ)
+	{
+		Head = nullptr;
+		list_size = LQ.list_size;
+		Node<T>* NodePtr = LQ.Head;
+		if (!NodePtr) //LQ is empty
+		{
+			Head = nullptr;
+			return;
+		}
+
+		while (NodePtr)
+		{
+			Node<T>* newnode = new Node<T>(NodePtr->getItem());
+			if (!Head)
+				Head = newnode;
+			else
+			{
+				Node<T>* temp = Head;
+				while (temp->getNext())
+				{
+					temp = temp->getNext();
+				}
+				temp->setNext(newnode);
+			}
+			NodePtr = NodePtr->getNext();
+		}
 	}
 };
 

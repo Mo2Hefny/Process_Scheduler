@@ -140,7 +140,7 @@ bool PriorityQueue::dequeue(Process*& frntEntry)
 		backPtr = nullptr;
 
 	// Free memory reserved for the dequeued node
-	delete nodeToDeletePtr;
+	//delete nodeToDeletePtr;
 	queue_size--;
 
 	return true;
