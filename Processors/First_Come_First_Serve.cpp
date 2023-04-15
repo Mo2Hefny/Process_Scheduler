@@ -8,8 +8,6 @@ FCFS::~FCFS()
 void FCFS::Execute()
 {
 	NextState();
-
-    
 }
 
 /*
@@ -25,26 +23,37 @@ void FCFS::NextState()
 		if (num <= 15)
 		{
 			manager->AddToList(manager->GetBlockList(), RUN);
-			RUN = RDY.dequeue();
+			if (!RDY.isempty())
+				RUN = RDY.dequeue();
+			else
+				RUN = nullptr;
 		}
 		else if (num >= 20 && num <= 30)
 		{
 			AddToRDY(RUN);
-			RUN = RDY.dequeue();
+			if (!RDY.isempty())
+				RUN = RDY.dequeue();
+			else
+				RUN = nullptr;
 		}
 		else if (num >= 50 && num <= 60)
 		{
 			manager->AddToList(manager->GetTerminatedList(), RUN);
-			RUN = RDY.dequeue();
+			if (!RDY.isempty())
+				RUN = RDY.dequeue();
+			else
+				RUN = nullptr;
 		}
 		if (!RUN)
 			state = IDLE;
 	}
 	else
 	{
-		RUN = RDY.dequeue();
-		if(RUN)
-		state = BUSY;
+		if (!RDY.isempty())
+		{
+			state = BUSY;
+			RUN = RDY.dequeue();
+		}
 	}
 	int random_termination = rand() % RDY.size() + 1;
 	manager->AddToList(manager->GetTerminatedList(), RDY.DeletePos(random_termination));
