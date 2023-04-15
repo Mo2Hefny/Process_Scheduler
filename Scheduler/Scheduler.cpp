@@ -139,10 +139,11 @@ void Scheduler::ReadInput()
 */
 void Scheduler::Execute()
 {
+	int newlsize = New_List.size();
 	ReadInput();
 	while (Terminated_List.size() < P_info.Num_process)
 	{
-		for (int i = 0; i < New_List.size(); i++)
+		for (int i = 0; i < newlsize; i++)
 		{
 			Process* current;
 			New_List.dequeue(current);
