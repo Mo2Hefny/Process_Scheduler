@@ -176,6 +176,7 @@ public:
 				p->setItem(NULL);
 				delete p;
 				delete dummy;
+				list_size--;
 				return true;
 			}
 			prev = prev->getNext();

@@ -51,7 +51,7 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		run[i] = Processors[i]->GetRun();
 		if (run[i])
 			run_size++;
-		PriorityQueue SJF_RDY = *(sjf->GetRDY());
+		PriorityQueue<Process*> SJF_RDY = *(sjf->GetRDY());
 		cout << "processor " << i + 1 << " [" << SJF_NAME << "]: " << SJF_RDY.size() << " RDY: ";
 		int SJF_RDY_SIZE = SJF_RDY.size();
 		for (int i = 0; i < SJF_RDY_SIZE; i++)

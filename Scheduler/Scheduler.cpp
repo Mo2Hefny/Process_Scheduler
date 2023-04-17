@@ -173,7 +173,7 @@ void Scheduler::Execute()
 		{
 			Process* process = NULL;
 			FCFS* fcfs = dynamic_cast<FCFS*>(Processors[i]);
-			if (fcfs->GetRDY()->DeleteNode(process, random_ID))
+			if (fcfs->GetRDYref().DeleteNode(process, random_ID))
 			{
 				AddToList(GetTerminatedList(), process);
 				break;

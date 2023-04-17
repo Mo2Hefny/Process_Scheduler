@@ -5,12 +5,12 @@
 
 class SJF : public Processor
 {
-	PriorityQueue RDY;
+	PriorityQueue<Process*> RDY;
 
 public:
 	~SJF();
 	//Getters.
-	PriorityQueue* GetRDY() { return &RDY; }
+	PriorityQueue<Process*>* GetRDY() { return &RDY; }
 
 	// Setters.
 	virtual void AddToRDY(Process* p) { RDY.enqueue(p); }

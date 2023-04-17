@@ -128,7 +128,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Data Structures\Queue\PriorityQueue.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Processors\First_Come_First_Serve.cpp" />
     <ClCompile Include="Processors\Processor.cpp" />
