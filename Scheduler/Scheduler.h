@@ -29,10 +29,17 @@ class Scheduler
 	// TEMPORARY SCHEDULING COUNTER
 	int k;
 public:
+	/**
+	* @brief Scheduler class constructor.
+	*/
 	Scheduler();
-	~Scheduler();
 
-	void SetProcessors();
+	/**
+	* @brief Scheduler class destructor.
+	*
+	* @details Deallocates the UI console, the Processors, and the processes.
+	*/
+	~Scheduler();
 
 	// Getters
 	LinkedQueue<Process*>* GetNewList() {	return &New_List; }
@@ -43,14 +50,45 @@ public:
 	unsigned GetTimeStep() { return timestep; }
 	Processor** GetProcessors() { return Processors; }
 
+	/**
+	* @brief Adds process to a chosen list.
+	*
+	* @param List - Chosen list.
+	* @param p - Pointer to the process.
+	*/
 	void AddToList(LinkedQueue<Process*>*, Process*);
-	void AddToReady(Process*);
-	void ProcessMigration(Process*);
 
-	void Execute();
-	void ReadInput();
-	void LoadFile();
+	/**
+	* @brief Schedules the process to a processor's RDY list.
+	*
+	* @param p - Pointer to the process.
+	*/
+	void AddToReady(Process*);
+
+	/**
+	* @brief Extract the I/O data from the given string of pairs.
+	*
+	* @param IO_string - The I/O requests string that contains the needed data.
+	* @param size - Number of the I/O requests of the process.
+	*
+	* @return I/O requests array.
+	*/
 	IO_process* ProcessIORequestsInput(string IO_string, int size);
+
+	/**
+	* @brief Load the Processors and Processes data from an input file.
+	*/
+	void LoadFile();
+
+	/**
+	* @brief Read system's information and initialize processors.
+	*/
+	void ReadInput();
+
+	/**
+	* @brief Simulation of the system.
+	*/
+	void Execute();
 };
 
 #endif

@@ -3,8 +3,8 @@
 #include <iostream>
 #include <conio.h>
 
-/*
-* PrintRDY - Print Processors' RDY Lists.
+/**
+* @brief Print Processors' RDY Lists.
 * 
 * @param run_size - Number of processes in RUN state.
 * @param Processors - System's Processors.
@@ -91,8 +91,8 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 	}
 }
 
-/*
-* PrintBLK - Print Processes in BLK List.
+/**
+* @brief Print Processes in BLK List.
 */
 void UI::PrintBLK()
 {
@@ -119,8 +119,8 @@ void UI::PrintBLK()
 	cout << endl;
 }
 
-/*
-* PrintRUN - Print Processes in RUN state.
+/**
+* @brief Print Processes in RUN state.
 *
 * @param run_size - Number of processes in RUN state.
 * @param run - RUN List of processors.
@@ -146,8 +146,8 @@ void UI::PrintRUN(int run_size, Process** run)
 	cout << endl;
 }
 
-/*
-* PrintTRM - Print Processes in TRM List.
+/**
+* @brief Print Processes in TRM List.
 */
 void UI::PrintTRM()
 {
@@ -175,8 +175,8 @@ void UI::PrintTRM()
 }
 
 
-/*
-* PrintOutput - Allows the user to monitor the processes transition between different states.
+/**
+* @brief Allows the user to monitor the processes transition between different states.
 */
 void UI::PrintOutput()
 {
@@ -198,25 +198,11 @@ void UI::PrintOutput()
 	std::cout << "\033[2J\033[1;1H";		// Clears Console
 }
 
-void UI::PrintNew()
-{
-	LinkedQueue<Process*>* n = manager->GetNewList();
-	while (!n->isEmpty())
-	{
-		Process* temp;
-		n->dequeue(temp);
-		ProcessInfo i = temp->GetProcessInfo();
-		printf("AT:%d,PID:%d,CT:%d,N:%d\n",
-			i.AT, i.PID, i.CT, i.IO_requests);
-		IO_process* arr = temp->GetIORequests();
-		for (int j = 0; j < i.IO_requests; j++)
-		{
-			printf("(%d, %d),", arr[j].IO_R, arr[j].IO_D);
-		}
-		cout << endl;
-	}
-}
-
+/**
+* @brief Reads the File name from the user.
+*
+* @return File name.
+*/
 string UI::GetFileName()
 {
 	string file_name;

@@ -1,6 +1,10 @@
 #include "Scheduler.h"
 #include <fstream>
 #include <string>
+
+/**
+* @brief Scheduler class constructor.
+*/
 Scheduler::Scheduler()
 {
 	timestep = k = 0;
@@ -11,6 +15,11 @@ Scheduler::Scheduler()
 	Execute();
 }
 
+/**
+* @brief Scheduler class destructor.
+* 
+* @details Deallocates the UI console, the Processors, and the processes.
+*/
 Scheduler::~Scheduler()
 {
 	if (console)
@@ -21,10 +30,14 @@ Scheduler::~Scheduler()
 		delete[] SJF_Processors;
 	if (RR_Processors)
 		delete[] RR_Processors;
+
+	Process* process;
+	while (Terminated_List.dequeue(process))
+		delete process;
 }
 
-/*
-* AddToList - Adds process to a chosen list.
+/**
+* @brief Adds process to a chosen list.
 * 
 * @param List - Chosen list.
 * @param p - Pointer to the process.
@@ -35,8 +48,8 @@ void Scheduler::AddToList(LinkedQueue<Process*>* List, Process* p)
 	List->enqueue(p);
 }
 
-/*
-* AddToReady - Schedules the process to a processor's RDY list.
+/**
+* @brief Schedules the process to a processor's RDY list.
 * 
 * @param p - Pointer to the process.
 */
@@ -47,8 +60,8 @@ void Scheduler::AddToReady(Process* p)
 	k = (k + 1) % (P_info.NF + P_info.NS + P_info.NR);
 }
 
-/*
-* LoadFile - Load the Processors and Processes data from an input file.
+/**
+* @brief Load the Processors and Processes data from an input file.
 */
 void Scheduler::LoadFile()
 {
@@ -82,8 +95,8 @@ void Scheduler::LoadFile()
 	LoadedFile.close();
 }
 
-/*
-* ProcessIORequestsInput - Extract the I/O data from the given string of pairs.
+/**
+* @brief Extract the I/O data from the given string of pairs.
 *
 * @param IO_string - The I/O requests string that contains the needed data.
 * @param size - Number of the I/O requests of the process.
@@ -109,8 +122,8 @@ IO_process* Scheduler::ProcessIORequestsInput(string IO_string, int size)
 	return IO;
 }
 
-/*
-* ReadInput - Read system's information.
+/**
+* @brief Read system's information and initialize processors.
 */
 void Scheduler::ReadInput()
 {
@@ -140,8 +153,8 @@ void Scheduler::ReadInput()
 	}
 }
 
-/*
-* Execute - Simulation of the system.
+/**
+* @brief Simulation of the system.
 */
 void Scheduler::Execute()
 {
