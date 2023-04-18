@@ -1,19 +1,17 @@
 #include "Round_Robin.h"
 #include "../Scheduler/Scheduler.h"
 
-RR::~RR()
-{
-
-}
-
+/**
+* @brief The simulation of the processor's algorithm.
+*/
 void RR::Execute()
 {
-		NextState();
+	NextState();
 }
 
 
 /*
-* NextState - Generate a random number from 1 to 100 to set the next
+* @brief Generates a random number from 1 to 100 to set the next
 * state of each process in RUN state.
 */
 void RR::NextState()

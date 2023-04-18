@@ -3,18 +3,44 @@
 
 #include "../DEFS.h"
 
+/**
+* @class Process
+* 
+* @brief The encapsulation of the input processes from the Loaded File.
+*/
 class Process
 {
 	ProcessInfo P_data;
 	IO_process* IO;			// Array of I/O requests.
 	bool terminated;
-	Process* l_child;
-	Process* r_child;
 	int Transition_Time;		// Time of the last list transition.
 
+	// Forking.
+	Process* l_child;
+	Process* r_child;
+
 public:
+
+	/**
+	* @brief Process class copy constructor.
+	*
+	* @param other - The other constructor from which it copies the data.
+	*/
 	Process(const Process&);
+
+	/**
+	* @brief Process class constructor.
+	*
+	* @param P_info - The Process Information as AT, CT, PID, etc...
+	* @param IO_requests - The I/O requests array for this process.
+	*/
 	Process(ProcessInfo, IO_process*);
+
+	/**
+	* @brief Process class destructor.
+	*
+	* @details Deallocates the I/O requests array.
+	*/
 	~Process();
 
 	// Setters.

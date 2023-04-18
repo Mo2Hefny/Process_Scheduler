@@ -1,11 +1,9 @@
 #include "Shortest_Job_First.h"
 #include "../Scheduler/Scheduler.h"
 
-SJF::~SJF()
-{
-
-}
-
+/**
+* @brief The simulation of the processor's algorithm.
+*/
 void SJF::Execute()
 {
 		NextState();
@@ -13,7 +11,7 @@ void SJF::Execute()
 
 
 /*
-* NextState - Generate a random number from 1 to 100 to set the next
+* @brief Generates a random number from 1 to 100 to set the next
 * state of each process in RUN state.
 */
 void SJF::NextState()

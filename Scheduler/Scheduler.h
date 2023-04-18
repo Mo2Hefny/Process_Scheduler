@@ -10,17 +10,26 @@
 #include <fstream>
 
 using namespace std;
+/**
+* @class Scheduler
+* 
+* @brief Responsible for calling the processors, scheduling processes,
+* and the whole structure of the simulation.
+*/
 class Scheduler
 {
 	UI* console;
 	ifstream LoadedFile;
 	ProcessorsInfo P_info;
 	unsigned timestep;
+
+	// Lists.
 	LinkedQueue<Process*> New_List;
 	LinkedQueue<Process*> BLK_List;
 	LinkedQueue<Process*> Terminated_List;
 	LinkedQueue<Process*> Parents_List;
 
+	// Processors.
 	FCFS* FCFS_Processors;
 	SJF* SJF_Processors;
 	RR* RR_Processors;

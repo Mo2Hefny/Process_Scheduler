@@ -1,5 +1,11 @@
 #include "Process.h"
 
+/**
+* @brief Process class constructor.
+* 
+* @param P_info - The Process Information as AT, CT, PID, etc...
+* @param IO_requests - The I/O requests array for this process.
+*/
 Process::Process(ProcessInfo P_info, IO_process* IO_requests)
 {
 	P_data = P_info;
@@ -8,6 +14,11 @@ Process::Process(ProcessInfo P_info, IO_process* IO_requests)
 	Transition_Time = -1;
 }
 
+/**
+* @brief Process class copy constructor.
+* 
+* @param other - The other constructor from which it copies the data.
+*/
 Process::Process(const Process& other)
 {
 	P_data = other.P_data;
@@ -23,6 +34,11 @@ Process::Process(const Process& other)
 	Transition_Time = other.Transition_Time;
 }
 
+/**
+* @brief Process class destructor.
+*
+* @details Deallocates the I/O requests array.
+*/
 Process::~Process()
 {
 	if (IO)

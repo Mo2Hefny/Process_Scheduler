@@ -7,6 +7,11 @@
 
 class Scheduler; //forward class declaration
 
+/**
+* @class Processor
+* 
+* @brief The parent class of the processors which contains the processors data and analytics.
+*/
 class Processor
 {
 protected:
@@ -16,10 +21,19 @@ protected:
 	ProcessorState state;
 
 public:
+
+	/**
+	* @brief Processor class constructor.
+	*/
 	Processor();
 
-	// Setters
+	/*
+	* @brief Sets a pointer to the Scheduler Manager to call its functions.
+	* 
+	* @param Pointer to the Scheduler Manager.
+	*/
 	void SetScheduler(Scheduler*);
+
 	virtual void AddToRDY(Process* p) = 0;
 
 	// Getters
@@ -28,8 +42,12 @@ public:
 	unsigned int GetTimeLeft() const { return time_left; }
 	Process* GetRun() { return RUN; }
 
+	/*
+	* @brief  Adds to the busy/idle total time depending on the
+	* processor's state.
+	*/
 	void AddTime();
-	void NextState();
+
 	virtual void Execute() = 0;
 };
 

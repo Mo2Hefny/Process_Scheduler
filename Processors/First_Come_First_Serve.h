@@ -3,12 +3,16 @@
 
 #include "Processor.h"
 
+/**
+* @class FCFS
+*
+* @brief Processor working with First Come First Serve algorithm.
+*/
 class FCFS : public Processor
 {
 	LinkedList<Process*> RDY;
 	
 public:
-	~FCFS();
 	// Getters.
 	LinkedList<Process*>* GetRDY() { return &RDY; }
 
@@ -16,7 +20,15 @@ public:
 	// Setters.
 	virtual void AddToRDY(Process* p) { RDY.enqueue(p); }
 
+	/*
+	* @brief Generates a random number from 1 to 100 to set the next
+	* state of each process in RUN state.
+	*/
 	virtual void NextState();
+
+	/**
+	* @brief The simulation of the processor's algorithm.
+	*/
 	virtual void Execute();
 };
 

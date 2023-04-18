@@ -1,17 +1,16 @@
 #include "First_Come_First_Serve.h"
 #include "../Scheduler/Scheduler.h"
-FCFS::~FCFS()
-{
-    // Destructor code here
-}
 
+/**
+* @brief The simulation of the processor's algorithm.
+*/
 void FCFS::Execute()
 {
 	NextState();
 }
 
 /*
-* NextState - Generate a random number from 1 to 100 to set the next
+* @brief Generates a random number from 1 to 100 to set the next
 * state of each process in RUN state.
 */
 void FCFS::NextState()
