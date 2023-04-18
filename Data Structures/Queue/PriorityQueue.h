@@ -161,18 +161,16 @@ class PriorityQueue <Process*>
 {
 
 private:
-	PQType type;
 	Node<Process*>* backPtr;
 	Node<Process*>* frontPtr;
 	int queue_size;
 public:
 
 
-	PriorityQueue(PQType t= CT_order)
+	PriorityQueue()
 	{
 		backPtr = nullptr;
 		frontPtr = nullptr;
-		type = t;
 		queue_size = 0;
 	}
 
@@ -196,72 +194,20 @@ public:
 			backPtr = newNodePtr;
 			return true;
 		}
-		if (!frontPtr->getNext())
+		if (newNodePtr->getItem()->GetCPUTime() < frontPtr->getItem()->GetCPUTime())
 		{
-			if (type == CT_order)
-			{
-				if (newNodePtr->getItem()->GetCPUTime() < frontPtr->getItem()->GetCPUTime())
-				{
-					newNodePtr->setNext(frontPtr);
-					backPtr = frontPtr;
-					frontPtr = newNodePtr;
-				}
-				else
-				{
-					frontPtr->setNext(newNodePtr);
-					backPtr = newNodePtr;
-				}
-			}
-			else
-			{
-				if (newNodePtr->getItem()->GetArrivalTime() < frontPtr->getItem()->GetArrivalTime())
-				{
-					newNodePtr->setNext(frontPtr);
-					backPtr = frontPtr;
-					frontPtr = newNodePtr;
-				}
-				else
-				{
-					frontPtr->setNext(newNodePtr);
-					backPtr = newNodePtr;
-				}
-			}
-			return true;
-		}
-
-		if (type == CT_order && newNodePtr->getItem()->GetCPUTime() < frontPtr->getItem()->GetCPUTime())
-		{
-			frontPtr->setNext(newNodePtr);
-			frontPtr = newNodePtr;
-			return true;
-		}
-		else if (type == AT_order && newNodePtr->getItem()->GetArrivalTime() < frontPtr->getItem()->GetArrivalTime())
-		{
-			frontPtr->setNext(newNodePtr);
+			newNodePtr->setNext(frontPtr);
 			frontPtr = newNodePtr;
 			return true;
 		}
 
-		Node<Process*>* temp1 = frontPtr, * temp2 = frontPtr->getNext();
-		while (temp1 && temp2)
-		{
-			if (type == CT_order && newNodePtr->getItem()->GetCPUTime() <= temp2->getItem()->GetCPUTime())
-			{
-				temp1->setNext(newNodePtr);
-				newNodePtr->setNext(temp2);
-				return true;
-			}
-			else if (type == AT_order && newNodePtr->getItem()->GetArrivalTime() <= temp2->getItem()->GetArrivalTime())
-			{
-				temp1->setNext(newNodePtr);
-				newNodePtr->setNext(temp2);
-				return true;
-			}
-			temp1 = temp2;
-			temp2 = temp2->getNext();
-		}
-		backPtr->setNext(newNodePtr);
-		backPtr = newNodePtr;
+		Node<Process*>* temp = frontPtr;
+		while (temp->getNext() && temp->getNext()->getItem()->GetCPUTime() <= newNodePtr->getItem()->GetCPUTime())
+			temp = temp->getNext();
+		newNodePtr->setNext(temp->getNext());
+		temp->setNext(newNodePtr);
+		if (!newNodePtr->getNext())
+			backPtr = newNodePtr;
 		return true;
 	}
 
@@ -290,14 +236,11 @@ public:
 
 	bool peek(Process*& frntEntry)  const
 	{
-		{
-			if (isEmpty())
-				return false;
+		if (isEmpty())
+			return false;
 
-			frntEntry = frontPtr->getItem();
-			return true;
-
-		}
+		frntEntry = frontPtr->getItem();
+		return true;
 	}
 
 

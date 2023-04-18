@@ -3,6 +3,7 @@
 
 int main()
 {
+	std::srand(std::time(nullptr));
 	Scheduler* schedule_manager = new Scheduler;
 
 	if (schedule_manager)

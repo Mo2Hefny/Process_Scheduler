@@ -18,9 +18,8 @@ void RR::Execute()
 */
 void RR::NextState()
 {
-	if (state == BUSY)
+	if (state == BUSY && RUN->GetTransitionTime() != manager->GetTimeStep())
 	{
-		srand(time(0));
 		int num = rand() % 100 + 1;
 		if (num <= 15)
 		{
@@ -52,6 +51,12 @@ void RR::NextState()
     }
 	else
 	{
+		Process* process;
+
+		// Process has already transitioned in this timestep.
+		if (RDY.peek(process) && process->GetTransitionTime() == manager->GetTimeStep())
+			return;
+
 		if (RDY.dequeue(RUN))
 			state = BUSY;
 	}

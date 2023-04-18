@@ -3,7 +3,6 @@
 #include <string>
 Scheduler::Scheduler()
 {
-	srand(time(0));
 	timestep = k = 0;
 	FCFS_Processors = NULL;
 	SJF_Processors = NULL;
@@ -32,6 +31,7 @@ Scheduler::~Scheduler()
 */
 void Scheduler::AddToList(LinkedQueue<Process*>* List, Process* p)
 {
+	p->SetTransitionTime(timestep);
 	List->enqueue(p);
 }
 
@@ -42,6 +42,7 @@ void Scheduler::AddToList(LinkedQueue<Process*>* List, Process* p)
 */
 void Scheduler::AddToReady(Process* p)
 {
+	p->SetTransitionTime(timestep);
 	Processors[k]->AddToRDY(p);
 	k = (k + 1) % (P_info.NF + P_info.NS + P_info.NR);
 }
@@ -173,7 +174,7 @@ void Scheduler::Execute()
 		{
 			Process* process = NULL;
 			FCFS* fcfs = dynamic_cast<FCFS*>(Processors[i]);
-			if (fcfs->GetRDYref().DeleteNode(process, random_ID))
+			if (fcfs->GetRDYref().DeleteNode(process, random_ID, timestep))
 			{
 				AddToList(GetTerminatedList(), process);
 				break;

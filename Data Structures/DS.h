@@ -5,6 +5,5 @@
 #include "Queue/LinkedQueue.h"
 #include "Stack/ArrayStack.h"
 #include "Queue/PriorityQueue.h"
-#include "Linked List/CircularList.h"
 
 #endif

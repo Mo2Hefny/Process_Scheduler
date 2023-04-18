@@ -16,8 +16,7 @@ void FCFS::Execute()
 */
 void FCFS::NextState()
 {
-	srand(time(0));
-	if (state == BUSY)
+	if (state == BUSY && RUN->GetTransitionTime() != manager->GetTimeStep())
 	{
 		int num = rand() % 100 + 1;
 		if (num <= 15)
@@ -50,6 +49,12 @@ void FCFS::NextState()
 	}
 	else
 	{
+		Process* process;
+
+		// Process has already transitioned in this timestep.
+		if (RDY.peek(process) && process->GetTransitionTime() == manager->GetTimeStep())
+			return;
+
 		if (RDY.dequeue(RUN))
 			state = BUSY;
 	}

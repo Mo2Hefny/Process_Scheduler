@@ -100,6 +100,13 @@ public:
 		list_size++;
 	}
 
+	bool peek(T& frntEntry)	const
+	{
+		if (isempty())	return false;
+		frntEntry = Head->getItem();
+		return true;
+	}
+
 	//[2]Find 
 	//searches for a given value in the list, returns true if found; false otherwise.
 	bool Find(int Key){}
@@ -160,7 +167,7 @@ public:
 	//deletes the first node with the given value (if found) and returns true
 	//if not found, returns false
 	//Note: List is not sorted
-	bool DeleteNode(T& frntEntry, const int& ID)
+	bool DeleteNode(T& frntEntry, const int& ID, const int& timestep)
 	{
 		if (!Head)	return false;
 		Node<T>* dummy = new Node<T>;
@@ -170,6 +177,8 @@ public:
 		{
 			if (p->getItem()->GetProcessInfo().PID == ID)
 			{
+				if (p->getItem()->GetTransitionTime() == timestep)
+					return false;
 				frntEntry = p->getItem();
 				if (p == Head)	Head = Head->getNext();
 				prev->setNext(p->getNext());
@@ -227,7 +236,7 @@ public:
 	int size() const { return list_size; }
 
 
-	bool isempty()
+	bool isempty()	const
 	{
 		if (!Head)
 			return true;

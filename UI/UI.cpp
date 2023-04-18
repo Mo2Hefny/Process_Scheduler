@@ -140,7 +140,8 @@ void UI::PrintRUN(int run_size, Process** run)
 		if (!run[i])
 			continue;
 		cout << run[i]->GetProcessInfo().PID << "(P" << i + 1;
-		cout << (i != manager->GetProcessorsInfo().NT - 1 ? "), " : ")");
+		run_size--;
+		cout << (run_size ? "), " : ")");
 	}
 	cout << endl;
 }
