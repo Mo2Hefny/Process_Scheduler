@@ -195,7 +195,7 @@ void UI::PrintOutput()
 	
 	cout << "PRESS ANY KEY TO MOVE TO THE NEXT STEP !" << endl;
 	_getch();								// Waits for any key input
-	std::cout << "\033[2J\033[1;1H";		// Clears Console
+	//std::cout << "\033[2J\033[1;1H";		// Clears Console
 }
 
 /**

@@ -163,18 +163,12 @@ void Scheduler::Execute()
 	while (Terminated_List.size() < P_info.Num_process)
 	{
 		int new_size = New_List.size();
-		for (int i = 0; i < new_size; i++)
+		Process* current;
+		New_List.peek(current);
+		if (current->GetArrivalTime() == timestep)
 		{
-			Process* current;
 			New_List.dequeue(current);
-
-			if (current->GetArrivalTime() == timestep)
-			{
-				
-				AddToReady(current);
-			}
-			else
-				New_List.enqueue(current);
+			AddToReady(current);
 		}
 
 		for (int i = 0; i < P_info.NF + P_info.NS + P_info.NR; i++)
