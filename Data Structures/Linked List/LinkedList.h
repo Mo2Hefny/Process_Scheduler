@@ -167,7 +167,7 @@ public:
 	//deletes the first node with the given value (if found) and returns true
 	//if not found, returns false
 	//Note: List is not sorted
-	bool DeleteNode(T& frntEntry, const int& ID, const int& timestep)
+	bool DeleteNode(T& frntEntry, const int& ID)
 	{
 		if (!Head)	return false;
 		Node<T>* dummy = new Node<T>;
@@ -177,8 +177,6 @@ public:
 		{
 			if (p->getItem()->GetProcessInfo().PID == ID)
 			{
-				if (p->getItem()->GetTransitionTime() == timestep)
-					return false;
 				frntEntry = p->getItem();
 				if (p == Head)	Head = Head->getNext();
 				prev->setNext(p->getNext());

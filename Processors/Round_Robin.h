@@ -11,10 +11,13 @@
 class RR : public Processor
 {
 	LinkedQueue<Process*> RDY;
+	int Time_slice;
 
 public:
 	// Setters.
-	virtual void AddToRDY(Process* p) { RDY.enqueue(p); }
+	virtual void AddToRDY(Process* p);
+	void SetTimeSlice(int TS) { Time_slice = TS; }
+
 
 	//Getters.
 	LinkedQueue<Process*>* GetRDY() { return &RDY; }
@@ -25,6 +28,11 @@ public:
 	*/
 	virtual void NextState();
 	
+	/**
+	* @brief The processor's algorithm.
+	*/
+	virtual void Algorithm();
+
 	/**
 	* @brief The simulation of the processor's algorithm.
 	*/

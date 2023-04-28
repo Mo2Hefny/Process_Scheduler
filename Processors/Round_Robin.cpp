@@ -1,12 +1,29 @@
 #include "Round_Robin.h"
 #include "../Scheduler/Scheduler.h"
 
+void RR::AddToRDY(Process* p)
+{
+	RDY.enqueue(p);
+	AddTimeleft(p->GetCPUTime());
+}
+
+
 /**
 * @brief The simulation of the processor's algorithm.
 */
 void RR::Execute()
 {
 	NextState();
+
+	if (state == BUSY)
+		Algorithm();
+	else
+	{
+		SetTimeSlice(manager->GetProcessorsInfo().Time_slice);
+	}
+
+	AddTime();		// Adds to the processor's BUSY/IDLE time.
+	DecTimeleft();	// Decreases the processor's time left.
 }
 
 
@@ -16,7 +33,7 @@ void RR::Execute()
 */
 void RR::NextState()
 {
-	if (state == BUSY && RUN->GetTransitionTime() != manager->GetTimeStep())
+	if (state == BUSY)
 	{
 		int num = rand() % 100 + 1;
 		if (num <= 15)
@@ -57,5 +74,52 @@ void RR::NextState()
 
 		if (RDY.dequeue(RUN))
 			state = BUSY;
+	}
+}
+
+/**
+* @brief The processor's algorithm.
+*/
+void RR::Algorithm()
+{
+	//Check Process Migration
+	if (RUN->GetCPUTime() < manager->GetProcessorsInfo().RTF)
+	{
+		manager->AddToSJF(RUN);
+		if (!RDY.dequeue(RUN))
+		{
+			state = IDLE;
+			RUN = nullptr;
+		}
+	}
+
+	// Process in RUN state executes for the Time_slice.
+	if (state == BUSY && Time_slice)
+	{
+		Time_slice--;
+		RUN->ExecutingProcess();
+		if (RUN->IsFinished())
+		{
+			manager->AddToList(manager->GetTerminatedList(), RUN);
+			if (!RDY.dequeue(RUN))
+			{
+				state = IDLE;
+				RUN = nullptr;
+			}
+			SetTimeSlice(manager->GetProcessorsInfo().Time_slice);
+		}
+	}
+	else
+	{
+		// Time Slice finished
+		if (RUN)
+			RDY.enqueue(RUN);
+
+		if (!RDY.dequeue(RUN))
+		{
+			state = IDLE;
+			RUN = nullptr;
+		}
+		SetTimeSlice(manager->GetProcessorsInfo().Time_slice);
 	}
 }

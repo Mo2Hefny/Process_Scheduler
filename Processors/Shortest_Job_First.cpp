@@ -1,12 +1,22 @@
 #include "Shortest_Job_First.h"
 #include "../Scheduler/Scheduler.h"
 
+void SJF::AddToRDY(Process* p)
+{
+	RDY.enqueue(p);
+	AddTimeleft(p->GetCPUTime());
+}
+
+
 /**
 * @brief The simulation of the processor's algorithm.
 */
 void SJF::Execute()
 {
-		NextState();
+	NextState();
+
+	AddTime();		// Adds to the processor's BUSY/IDLE time.
+	DecTimeleft();	// Decreases the processor's time left.
 }
 
 
@@ -58,4 +68,12 @@ void SJF::NextState()
 		if (RDY.dequeue(RUN))
 			state = BUSY;
 	}
+}
+
+/**
+* @brief The processor's algorithm.
+*/
+void SJF::Algorithm()
+{
+
 }

@@ -36,3 +36,12 @@ void Processor::AddTime()
 		time_idle++;
 }
 
+/*
+* @brief  Adds to the total time left for the processor's queue.
+* 
+* @parame time - Time of the remaining CT of the process.
+*/
+void Processor::AddTimeleft(int time)
+{
+	time_left += time;
+}

@@ -5,9 +5,16 @@ struct ProcessInfo
 {
 	int AT;				// Arrival time.
 	int PID;			// Process ID.
+	int RT;				// Response Time.
 	int CT;				// CPU time.
+	int ET;				// Execution time.
 	int IO_requests;	// Number of time the process requests I/O
 	int TT;				// Termination time.
+
+	ProcessInfo()
+	{
+		RT = TT = -1;
+	}
 };
 
 struct IO_process

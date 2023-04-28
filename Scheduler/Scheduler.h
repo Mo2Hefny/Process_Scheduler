@@ -35,8 +35,6 @@ class Scheduler
 	RR* RR_Processors;
 	Processor** Processors;
 
-	// TEMPORARY SCHEDULING COUNTER
-	int k;
 public:
 	/**
 	* @brief Scheduler class constructor.
@@ -73,6 +71,20 @@ public:
 	* @param p - Pointer to the process.
 	*/
 	void AddToReady(Process*);
+
+	/**
+	* @brief Migrates the process to a SJF processor's RDY list.
+	*
+	* @param p - Pointer to the process.
+	*/
+	void AddToSJF(Process*);
+
+	/**
+	* @brief Migrates the process to a RR processor's RDY list.
+	*
+	* @param p - Pointer to the process.
+	*/
+	void AddToRR(Process*);
 
 	/**
 	* @brief Extract the I/O data from the given string of pairs.

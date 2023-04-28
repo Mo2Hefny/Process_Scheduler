@@ -12,6 +12,9 @@ Process::Process(ProcessInfo P_info, IO_process* IO_requests)
 	IO = IO_requests;
 	terminated = false;
 	Transition_Time = -1;
+
+	l_child = nullptr;
+	r_child = nullptr;
 }
 
 /**
@@ -43,4 +46,15 @@ Process::~Process()
 {
 	if (IO)
 		delete[] IO;
+}
+
+/**
+* @breif Terminates the process and its children.
+*/
+void Process::Terminate()
+{
+	terminated = true;
+
+	if (l_child)	l_child->Terminate();
+	if (r_child)	r_child->Terminate();
 }

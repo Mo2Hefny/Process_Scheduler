@@ -13,7 +13,7 @@ class Process
 	ProcessInfo P_data;
 	IO_process* IO;			// Array of I/O requests.
 	bool terminated;
-	int Transition_Time;		// Time of the last list transition.
+	//int Transition_Time;		// Time of the last list transition.
 
 	// Forking.
 	Process* l_child;
@@ -44,16 +44,33 @@ public:
 	~Process();
 
 	// Setters.
-	void SetTransitionTime(int t) { Transition_Time = t; }
+	//void SetTransitionTime(int t) { Transition_Time = t; }
 
 	// Getters.
 	int GetArrivalTime() const { return P_data.AT; }
 	int GetCPUTime() const { return P_data.CT; }
 	int GetTurnAroundDuration() const { return P_data.TT - P_data.AT;  }
 	int GetWaitingTime() const { return GetTurnAroundDuration() - P_data.CT; }
-	int GetTransitionTime() const { return Transition_Time; }
+	//int GetTransitionTime() const { return Transition_Time; }
 	ProcessInfo GetProcessInfo() const { return P_data; }
 	IO_process* GetIORequests() const { return IO; }
+
+	/**
+	* @breif Adds to the total execution time for the process.
+	*/
+	void ExecutingProcess() { P_data.ET++; }
+
+	/**
+	* @brief Checks if the process is ready for termination.
+	* 
+	* @returns Boolean
+	*/
+	bool IsFinished() const { return P_data.CT == P_data.ET; }
+
+	/**
+	* @breif Terminates the process and its children.
+	*/
+	void Terminate();
 };
 
 #endif

@@ -1,12 +1,23 @@
 #include "First_Come_First_Serve.h"
 #include "../Scheduler/Scheduler.h"
 
+
+void FCFS::AddToRDY(Process* p)
+{
+	RDY.enqueue(p);
+	AddTimeleft(p->GetCPUTime());
+}
+
+
 /**
 * @brief The simulation of the processor's algorithm.
 */
 void FCFS::Execute()
 {
 	NextState();
+
+	AddTime();		// Adds to the processor's BUSY/IDLE time.
+	DecTimeleft();	// Decreases the processor's time left.
 }
 
 /*
@@ -57,4 +68,12 @@ void FCFS::NextState()
 		if (RDY.dequeue(RUN))
 			state = BUSY;
 	}
+}
+
+/**
+* @brief The processor's algorithm.
+*/
+void FCFS::Algorithm()
+{
+
 }

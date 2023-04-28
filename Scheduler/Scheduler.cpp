@@ -7,7 +7,7 @@
 */
 Scheduler::Scheduler()
 {
-	timestep = k = 0;
+	timestep = 0;
 	FCFS_Processors = NULL;
 	SJF_Processors = NULL;
 	RR_Processors = NULL;
@@ -44,20 +44,65 @@ Scheduler::~Scheduler()
 */
 void Scheduler::AddToList(LinkedQueue<Process*>* List, Process* p)
 {
-	p->SetTransitionTime(timestep);
+	//p->SetTransitionTime(timestep);
 	List->enqueue(p);
 }
 
 /**
-* @brief Schedules the process to a processor's RDY list.
+* @brief Schedules the process to the processor with the shortest queue.
 * 
 * @param p - Pointer to the process.
 */
 void Scheduler::AddToReady(Process* p)
 {
-	p->SetTransitionTime(timestep);
-	Processors[k]->AddToRDY(p);
-	k = (k + 1) % (P_info.NF + P_info.NS + P_info.NR);
+	int shortestqueue_index = 0;
+	for (int i = 1; i < P_info.NT; i++)
+	{
+		if (Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft())
+			shortestqueue_index = i;
+	}
+
+	p->SetTransitionTime(timestep);		//MIGHT BE REMOVED//
+
+	Processors[shortestqueue_index]->AddToRDY(p);
+}
+
+/**
+* @brief Migrates the process to a SJF processor's RDY list.
+*
+* @param p - Pointer to the process.
+*/
+void Scheduler::AddToSJF(Process* p)
+{
+	int shortestqueue_index = 0;
+	for (int i = P_info.NF; i < P_info.NF + P_info.NS; i++)
+	{
+		if (Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft())
+			shortestqueue_index = i;
+	}
+
+	p->SetTransitionTime(timestep);		//MIGHT BE REMOVED//
+
+	Processors[shortestqueue_index]->AddToRDY(p);
+}
+
+/**
+* @brief Migrates the process to a RR processor's RDY list.
+*
+* @param p - Pointer to the process.
+*/
+void Scheduler::AddToRR(Process* p)
+{
+	int shortestqueue_index = 0;
+	for (int i = P_info.NF + P_info.NS; i < P_info.NT; i++)
+	{
+		if (Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft())
+			shortestqueue_index = i;
+	}
+
+	p->SetTransitionTime(timestep);		//MIGHT BE REMOVED//
+
+	Processors[shortestqueue_index]->AddToRDY(p);
 }
 
 /**
@@ -180,7 +225,7 @@ void Scheduler::Execute()
 		{
 			Process* process = NULL;
 			FCFS* fcfs = dynamic_cast<FCFS*>(Processors[i]);
-			if (fcfs->GetRDYref().DeleteNode(process, random_ID, timestep))
+			if (fcfs->GetRDYref().DeleteNode(process, random_ID))
 			{
 				AddToList(GetTerminatedList(), process);
 				break;
@@ -191,7 +236,7 @@ void Scheduler::Execute()
 		if (BLK_List.peek(top))
 		{
 			int move_possibility = rand() % 100 + 1;
-			if (move_possibility <= 10 && top->GetTransitionTime() != timestep)
+			if (move_possibility <= 10)
 			{
 				BLK_List.dequeue(top);
 				AddToReady(top);

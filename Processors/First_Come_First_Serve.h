@@ -18,13 +18,18 @@ public:
 
 	LinkedList<Process*>& GetRDYref() { return RDY; }
 	// Setters.
-	virtual void AddToRDY(Process* p) { RDY.enqueue(p); }
+	virtual void AddToRDY(Process* p);
 
 	/*
 	* @brief Generates a random number from 1 to 100 to set the next
 	* state of each process in RUN state.
 	*/
 	virtual void NextState();
+
+	/**
+	* @brief The processor's algorithm.
+	*/
+	virtual void Algorithm();
 
 	/**
 	* @brief The simulation of the processor's algorithm.

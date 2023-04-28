@@ -43,11 +43,25 @@ public:
 	Process* GetRun() { return RUN; }
 
 	/*
+	* @brief  Adds to the total time left for the processor's queue.
+	* 
+	* @parame time - Time of the remaining CT of the process.
+	*/
+	void AddTimeleft(int time);
+
+	/*
 	* @brief  Adds to the busy/idle total time depending on the
 	* processor's state.
 	*/
 	void AddTime();
 
+	/*
+	* @brief  Decrease from the total time left for the processor's
+	* queue each timestep.
+	*/
+	void DecTimeleft() { (time_left > 0) ? time_left-- : 0; };
+
+	virtual void Algorithm() = 0;
 	virtual void Execute() = 0;
 };
 

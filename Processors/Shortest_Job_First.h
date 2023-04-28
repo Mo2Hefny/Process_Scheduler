@@ -26,6 +26,11 @@ public:
 	virtual void NextState();
 
 	/**
+	* @brief The processor's algorithm.
+	*/
+	virtual void Algorithm();
+
+	/**
 	* @brief The simulation of the processor's algorithm.
 	*/
 	virtual void Execute();
