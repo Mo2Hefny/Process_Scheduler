@@ -21,7 +21,11 @@ void FCFS::NextState()
 		if (num <= 15)
 		{
 			manager->AddToList(manager->GetBlockList(), RUN);
-			if (!RDY.dequeue(RUN))
+			if (RDY.peek(RUN)&& RUN->GetTransitionTime() != manager->GetTimeStep())
+			{
+				RDY.dequeue(RUN);
+			}
+			else
 			{
 				state = IDLE;
 				RUN = nullptr;
@@ -30,7 +34,11 @@ void FCFS::NextState()
 		else if (num >= 20 && num <= 30)
 		{
 			AddToRDY(RUN);
-			if (!RDY.dequeue(RUN))
+			if (RDY.peek(RUN) && RUN->GetTransitionTime() != manager->GetTimeStep())
+			{
+				RDY.dequeue(RUN);
+			}
+			else
 			{
 				state = IDLE;
 				RUN = nullptr;
@@ -39,7 +47,11 @@ void FCFS::NextState()
 		else if (num >= 50 && num <= 60)
 		{
 			manager->AddToList(manager->GetTerminatedList(), RUN);
-			if (!RDY.dequeue(RUN))
+			if (RDY.peek(RUN) && RUN->GetTransitionTime() != manager->GetTimeStep())
+			{
+				RDY.dequeue(RUN);
+			}
+			else
 			{
 				state = IDLE;
 				RUN = nullptr;
