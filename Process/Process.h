@@ -54,7 +54,6 @@ public:
 	int GetTransitionTime() const { return Transition_Time; }
 	ProcessInfo GetProcessInfo() const { return P_data; }
 	IO_process* GetIORequests() const { return IO; }
-
 };
 
 #endif

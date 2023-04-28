@@ -159,7 +159,6 @@ void Scheduler::ReadInput()
 void Scheduler::Execute()
 {
 	ReadInput();
-	bool p_exc = true;
 	while (Terminated_List.size() < P_info.Num_process)
 	{
 		int new_size = New_List.size();
@@ -192,7 +191,7 @@ void Scheduler::Execute()
 		if (BLK_List.peek(top))
 		{
 			int move_possibility = rand() % 100 + 1;
-			if (move_possibility <= 10)
+			if (move_possibility <= 10 && top->GetTransitionTime() != timestep)
 			{
 				BLK_List.dequeue(top);
 				AddToReady(top);
