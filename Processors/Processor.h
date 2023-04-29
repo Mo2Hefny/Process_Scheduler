@@ -43,7 +43,7 @@ public:
 	Process* GetRun() { return RUN; }
 
 	// Setters
-	void SetTimeLeft(unsigned int t) { time_left = t; }
+
 	/*
 	* @brief  Adds to the total time left for the processor's queue.
 	* 

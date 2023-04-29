@@ -5,7 +5,7 @@
 void FCFS::AddToRDY(Process* p)
 {
 	RDY.enqueue(p);
-	AddTimeleft(p->GetCPUTime());
+	AddTimeleft(p->GetRemainingTime());
 }
 
 
@@ -16,8 +16,12 @@ void FCFS::Execute()
 {
 	NextState();
 
+	if (state == BUSY)
+	{
+		DecTimeleft();	// Decreases the processor's time left.
+		Algorithm();
+	}
 	AddTime();		// Adds to the processor's BUSY/IDLE time.
-	DecTimeleft();	// Decreases the processor's time left.
 }
 
 /*
@@ -28,44 +32,21 @@ void FCFS::NextState()
 {
 	if (state == BUSY)
 	{
-		IO_process* IO=RUN->GetIORequests();
-		if (IO&& (IO+IO->i)->IO_R == RUN->GetProcessInfo().CT - RUN->GetCPUTime())
+		IO_process* IO = RUN->GetIORequests();
+
+		// Checks for IO requests for the executed process by the CPU.
+		if (IO && (IO + IO->i)->IO_R == RUN->GetExecutedTime())
 		{
+			// Sends process to the BLK list.
 			(IO + IO->i)->IO_T = manager->GetTimeStep();
-			time_left -= RUN->GetCPUTime();
+			time_left -= RUN->GetRemainingTime();
 			manager->AddToList(manager->GetBlockList(), RUN);
-			if (RDY.peek(RUN)&& RUN->GetTransitionTime() != manager->GetTimeStep())
-			{
-				RDY.dequeue(RUN);
-				RUN->SetCPUTime(RUN->GetCPUTime() - 1);
-				time_left--;
-			}
-			else
+
+			if (!RDY.dequeue(RUN))
 			{
 				state = IDLE;
 				RUN = nullptr;
 			}
-		}
-		else if (RUN->GetCPUTime()==0)
-		{
-			AddTimeleft(-(RUN->GetRemainingTime()));
-			manager->AddToList(manager->GetTerminatedList(), RUN);
-			if (RDY.peek(RUN) && RUN->GetTransitionTime() != manager->GetTimeStep())
-			{
-				RDY.dequeue(RUN);
-				RUN->SetCPUTime(RUN->GetCPUTime() - 1);
-				time_left--;
-			}
-			else
-			{
-				state = IDLE;
-				RUN = nullptr;
-			}
-		}
-		else
-		{
-			RUN->SetCPUTime(RUN->GetCPUTime() - 1);
-			time_left--;
 		}
 	}
 	else
@@ -73,8 +54,6 @@ void FCFS::NextState()
 		if (RDY.dequeue(RUN))
 		{
 			state = BUSY;
-			RUN->SetCPUTime(RUN->GetCPUTime()-1);
-			time_left--;
 		}
 	}
 }
@@ -84,5 +63,19 @@ void FCFS::NextState()
 */
 void FCFS::Algorithm()
 {
+	RUN->ExecutingProcess();
 
+	// If the Process finishes execution.
+	if (!RUN->GetRemainingTime())
+	{
+		RUN->Terminate();
+		manager->AddToList(manager->GetTerminatedList(), RUN);
+		if (RUN->HasChild())
+			manager->CheckOrphans();
+		if (!RDY.dequeue(RUN))
+		{
+			state = IDLE;
+			RUN = nullptr;
+		}
+	}
 }

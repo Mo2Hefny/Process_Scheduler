@@ -231,6 +231,13 @@ public:
 		return excess;
 	}
 
+	bool FindOrphan(const T& value) {
+		if (!Head->getItem())
+		{
+		
+		}
+	}
+
 	int size() const { return list_size; }
 
 

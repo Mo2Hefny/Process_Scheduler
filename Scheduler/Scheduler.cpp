@@ -106,6 +106,24 @@ void Scheduler::AddToRR(Process* p)
 }
 
 /**
+* @brief Checks for orphan processes in the FCFS processors
+* after any process ermination.
+*/
+
+void Scheduler::CheckOrphans()
+{
+	for (int i = 0; i < P_info.NF; i++)
+	{
+		Process* process = NULL;
+		while (FCFS_Processors[i].GetRDY()->FindOrphan(process))
+		{
+			AddToList(&Terminated_List, process);
+			process = NULL;
+		}
+	}
+}
+
+/**
 * @brief Load the Processors and Processes data from an input file.
 */
 void Scheduler::LoadFile()
@@ -228,9 +246,12 @@ void Scheduler::Execute()
 			FCFS* fcfs = dynamic_cast<FCFS*>(Processors[i]);
 			if (fcfs->GetRDYref().DeleteNode(process, random_ID))
 			{
-				fcfs->SetTimeLeft(fcfs->GetTimeLeft() - process->GetCPUTime());
-				process->SetCPUTime(0);
+				fcfs->AddTimeleft(-(process->GetRemainingTime()));
+				//process->SetCPUTime(0);
+				process->Terminate();
 				AddToList(GetTerminatedList(), process);
+				if (process->HasChild())
+					CheckOrphans();
 				break;
 			}
 		}

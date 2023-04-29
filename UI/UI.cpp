@@ -36,7 +36,7 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 			Process* process = NULL;
 			if (FCFS_RDY.dequeue(process))
 			{
-				cout << process->GetProcessInfo().PID<<'('<<process->GetCPUTime()<<')';
+				cout << process->GetProcessInfo().PID<<'('<<process->GetRemainingTime()<<')';
 				if (!FCFS_RDY.isempty())
 					cout << ", ";
 			}
@@ -59,7 +59,7 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 			Process* process = NULL;
 			if (SJF_RDY.dequeue(process))
 			{
-				cout << process->GetProcessInfo().PID << '(' << process->GetCPUTime() << ')';
+				cout << process->GetProcessInfo().PID << '(' << process->GetRemainingTime() << ')';
 				if (!SJF_RDY.isEmpty())
 					cout << ", ";
 			}
@@ -82,7 +82,7 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 			Process* process = NULL;
 			if (RR_RDY.dequeue(process))
 			{
-				cout << process->GetProcessInfo().PID << '(' << process->GetCPUTime() << ')';
+				cout << process->GetProcessInfo().PID << '(' << process->GetRemainingTime() << ')';
 				if (!RR_RDY.isEmpty())
 					cout << ", ";
 			}
@@ -111,7 +111,7 @@ void UI::PrintBLK()
 		Process* process = NULL;
 		if (BLK_LIST.dequeue(process))
 		{
-			cout << process->GetProcessInfo().PID << '(' << process->GetCPUTime() << ')';
+			cout << process->GetProcessInfo().PID << '(' << process->GetRemainingTime() << ')';
 			if (!BLK_LIST.isEmpty())
 			cout << ", ";
 		}
@@ -139,7 +139,7 @@ void UI::PrintRUN(int run_size, Process** run)
 	{
 		if (!run[i])
 			continue;
-		cout << run[i]->GetProcessInfo().PID <<'(' << run[i]->GetCPUTime() << ')' << "(P" << i + 1;
+		cout << run[i]->GetProcessInfo().PID <<'(' << run[i]->GetRemainingTime() << ')' << "(P" << i + 1;
 		run_size--;
 		cout << (run_size ? "), " : ")");
 	}
@@ -166,7 +166,7 @@ void UI::PrintTRM()
 		Process* process = NULL;
 		if (TRM_LIST.dequeue(process))
 		{
-			cout << process->GetProcessInfo().PID << '(' << process->GetCPUTime() << ')';
+			cout << process->GetProcessInfo().PID << '(' << process->GetRemainingTime() << ')';
 			if (!TRM_LIST.isEmpty())
 				cout << ", ";
 		}
@@ -195,7 +195,7 @@ void UI::PrintOutput()
 	
 	cout << "PRESS ANY KEY TO MOVE TO THE NEXT STEP !" << endl;
 	_getch();								// Waits for any key input
-	std::cout << "\033[2J\033[1;1H";		// Clears Console
+	//std::cout << "\033[2J\033[1;1H";		// Clears Console
 }
 
 /**

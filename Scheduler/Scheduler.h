@@ -87,6 +87,13 @@ public:
 	void AddToRR(Process*);
 
 	/**
+	* @brief Checks for orphan processes in the FCFS processors
+	* after any process ermination.
+	*/
+
+	void CheckOrphans();
+
+	/**
 	* @brief Extract the I/O data from the given string of pairs.
 	*
 	* @param IO_string - The I/O requests string that contains the needed data.
