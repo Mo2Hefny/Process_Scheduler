@@ -14,7 +14,7 @@ class SJF : public Processor
 
 public:
 	// Setters.
-	virtual void AddToRDY(Process* p) { RDY.enqueue(p); }
+	virtual void AddToRDY(Process* p);
 
 	//Getters.
 	PriorityQueue<Process*>* GetRDY() { return &RDY; }

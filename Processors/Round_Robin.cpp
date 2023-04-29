@@ -4,7 +4,7 @@
 void RR::AddToRDY(Process* p)
 {
 	RDY.enqueue(p);
-	AddTimeleft(p->GetCPUTime());
+	AddTimeleft(p->GetRemainingTime());
 }
 
 
@@ -16,14 +16,12 @@ void RR::Execute()
 	NextState();
 
 	if (state == BUSY)
-		Algorithm();
-	else
 	{
-		SetTimeSlice(manager->GetProcessorsInfo().Time_slice);
+		Algorithm();
+		DecTimeleft();	// Decreases the processor's time left.
 	}
 
 	AddTime();		// Adds to the processor's BUSY/IDLE time.
-	DecTimeleft();	// Decreases the processor's time left.
 }
 
 
@@ -38,6 +36,7 @@ void RR::NextState()
 		int num = rand() % 100 + 1;
 		if (num <= 15)
 		{
+			AddTimeleft(-(RUN->GetRemainingTime()));
 			manager->AddToList(manager->GetBlockList(), RUN);
 			if (!RDY.dequeue(RUN))
 			{
@@ -47,6 +46,7 @@ void RR::NextState()
 		}
 	    else if (num >= 20 && num <= 30)
 		{
+			AddTimeleft(-(RUN->GetRemainingTime()));
 			AddToRDY(RUN);
 			if (!RDY.dequeue(RUN))
 			{
@@ -56,6 +56,7 @@ void RR::NextState()
 		}
 		else if (num >= 50 && num <= 60)
 		{
+			AddTimeleft(-(RUN->GetRemainingTime()));
 			manager->AddToList(manager->GetTerminatedList(), RUN);
 			if (!RDY.dequeue(RUN))
 			{
@@ -66,12 +67,6 @@ void RR::NextState()
     }
 	else
 	{
-		Process* process;
-
-		// Process has already transitioned in this timestep.
-		if (RDY.peek(process) && process->GetTransitionTime() == manager->GetTimeStep())
-			return;
-
 		if (RDY.dequeue(RUN))
 			state = BUSY;
 	}
@@ -83,7 +78,7 @@ void RR::NextState()
 void RR::Algorithm()
 {
 	//Check Process Migration
-	if (RUN->GetCPUTime() < manager->GetProcessorsInfo().RTF)
+	if (RUN->GetRemainingTime() < manager->GetProcessorsInfo().RTF && manager->GetProcessorsInfo().NS)
 	{
 		manager->AddToSJF(RUN);
 		if (!RDY.dequeue(RUN))
@@ -98,7 +93,7 @@ void RR::Algorithm()
 	{
 		Time_slice--;
 		RUN->ExecutingProcess();
-		if (RUN->IsFinished())
+		if (!RUN->GetRemainingTime())
 		{
 			manager->AddToList(manager->GetTerminatedList(), RUN);
 			if (!RDY.dequeue(RUN))

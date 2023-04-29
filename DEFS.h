@@ -13,6 +13,7 @@ struct ProcessInfo
 
 	ProcessInfo()
 	{
+		ET = 0;
 		RT = TT = -1;
 	}
 };

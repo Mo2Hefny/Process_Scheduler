@@ -62,7 +62,7 @@ void Scheduler::AddToReady(Process* p)
 			shortestqueue_index = i;
 	}
 
-	p->SetTransitionTime(timestep);		//MIGHT BE REMOVED//
+	//p->SetTransitionTime(timestep);		//MIGHT BE REMOVED//
 
 	Processors[shortestqueue_index]->AddToRDY(p);
 }
@@ -81,7 +81,7 @@ void Scheduler::AddToSJF(Process* p)
 			shortestqueue_index = i;
 	}
 
-	p->SetTransitionTime(timestep);		//MIGHT BE REMOVED//
+	//p->SetTransitionTime(timestep);		//MIGHT BE REMOVED//
 
 	Processors[shortestqueue_index]->AddToRDY(p);
 }
@@ -100,7 +100,7 @@ void Scheduler::AddToRR(Process* p)
 			shortestqueue_index = i;
 	}
 
-	p->SetTransitionTime(timestep);		//MIGHT BE REMOVED//
+	//p->SetTransitionTime(timestep);		//MIGHT BE REMOVED//
 
 	Processors[shortestqueue_index]->AddToRDY(p);
 }
@@ -194,6 +194,7 @@ void Scheduler::ReadInput()
 	for (int i = 0; i < P_info.NR; i++)
 	{
 		RR_Processors[i].SetScheduler(this);
+		RR_Processors[i].SetTimeSlice(P_info.Time_slice);
 		Processors[i + P_info.NF + P_info.NS] = &RR_Processors[i];
 	}
 }

@@ -11,7 +11,7 @@ Process::Process(ProcessInfo P_info, IO_process* IO_requests)
 	P_data = P_info;
 	IO = IO_requests;
 	terminated = false;
-	Transition_Time = -1;
+	//Transition_Time = -1;
 
 	l_child = nullptr;
 	r_child = nullptr;
@@ -34,7 +34,7 @@ Process::Process(const Process& other)
 	terminated = other.terminated;
 	l_child = other.l_child;
 	r_child = other.r_child;
-	Transition_Time = other.Transition_Time;
+	//Transition_Time = other.Transition_Time;
 }
 
 /**
