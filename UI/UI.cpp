@@ -29,14 +29,14 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		if (run[i])
 			run_size++;
 		LinkedList<Process*> FCFS_RDY = *(fcfs->GetRDY());
-		cout << "processor " << i + 1 << " [FCFS]: " << FCFS_RDY.size() << " RDY: ";
+		cout << "processor " << i + 1 << " [FCFS]"<<'('<<fcfs->GetTimeLeft()<<')' << ':' << FCFS_RDY.size() << " RDY: ";
 		int FCFS_RDY_SIZE = FCFS_RDY.size();
 		for (int i = 0; i < FCFS_RDY_SIZE; i++)
 		{
 			Process* process = NULL;
 			if (FCFS_RDY.dequeue(process))
 			{
-				cout << process->GetProcessInfo().PID;
+				cout << process->GetProcessInfo().PID<<'('<<process->GetCPUTime()<<')';
 				if (!FCFS_RDY.isempty())
 					cout << ", ";
 			}
@@ -52,14 +52,14 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		if (run[i])
 			run_size++;
 		PriorityQueue<Process*> SJF_RDY = *(sjf->GetRDY());
-		cout << "processor " << i + 1 << " [" << SJF_NAME << "]: " << SJF_RDY.size() << " RDY: ";
+		cout << "processor " << i + 1 << " [" << SJF_NAME << "] " << '(' << sjf->GetTimeLeft() << ')' << ':' << SJF_RDY.size() << " RDY: ";
 		int SJF_RDY_SIZE = SJF_RDY.size();
 		for (int i = 0; i < SJF_RDY_SIZE; i++)
 		{
 			Process* process = NULL;
 			if (SJF_RDY.dequeue(process))
 			{
-				cout << process->GetProcessInfo().PID;
+				cout << process->GetProcessInfo().PID << '(' << process->GetCPUTime() << ')';
 				if (!SJF_RDY.isEmpty())
 					cout << ", ";
 			}
@@ -75,14 +75,14 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		if (run[i])
 			run_size++;
 		LinkedQueue<Process*> RR_RDY = *(rr->GetRDY());
-		cout << "processor " << i + 1 << " [" << RR_NAME << "]: " << RR_RDY.size() << " RDY: ";
+		cout << "processor " << i + 1 << " [" << RR_NAME << "] " << '(' << rr->GetTimeLeft() << ')' << ':' << RR_RDY.size() << " RDY: ";
 		int RR_RDY_SIZE = RR_RDY.size();
 		for (int i = 0; i < RR_RDY_SIZE; i++)
 		{
 			Process* process = NULL;
 			if (RR_RDY.dequeue(process))
 			{
-				cout << process->GetProcessInfo().PID;
+				cout << process->GetProcessInfo().PID << '(' << process->GetCPUTime() << ')';
 				if (!RR_RDY.isEmpty())
 					cout << ", ";
 			}
@@ -111,7 +111,7 @@ void UI::PrintBLK()
 		Process* process = NULL;
 		if (BLK_LIST.dequeue(process))
 		{
-			cout << process->GetProcessInfo().PID;
+			cout << process->GetProcessInfo().PID << '(' << process->GetCPUTime() << ')';
 			if (!BLK_LIST.isEmpty())
 			cout << ", ";
 		}
@@ -139,7 +139,7 @@ void UI::PrintRUN(int run_size, Process** run)
 	{
 		if (!run[i])
 			continue;
-		cout << run[i]->GetProcessInfo().PID << "(P" << i + 1;
+		cout << run[i]->GetProcessInfo().PID <<'(' << run[i]->GetCPUTime() << ')' << "(P" << i + 1;
 		run_size--;
 		cout << (run_size ? "), " : ")");
 	}
@@ -166,7 +166,7 @@ void UI::PrintTRM()
 		Process* process = NULL;
 		if (TRM_LIST.dequeue(process))
 		{
-			cout << process->GetProcessInfo().PID;
+			cout << process->GetProcessInfo().PID << '(' << process->GetCPUTime() << ')';
 			if (!TRM_LIST.isEmpty())
 				cout << ", ";
 		}
@@ -195,7 +195,7 @@ void UI::PrintOutput()
 	
 	cout << "PRESS ANY KEY TO MOVE TO THE NEXT STEP !" << endl;
 	_getch();								// Waits for any key input
-	//std::cout << "\033[2J\033[1;1H";		// Clears Console
+	std::cout << "\033[2J\033[1;1H";		// Clears Console
 }
 
 /**

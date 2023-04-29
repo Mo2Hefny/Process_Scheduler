@@ -228,6 +228,8 @@ void Scheduler::Execute()
 			FCFS* fcfs = dynamic_cast<FCFS*>(Processors[i]);
 			if (fcfs->GetRDYref().DeleteNode(process, random_ID))
 			{
+				fcfs->SetTimeLeft(fcfs->GetTimeLeft() - process->GetCPUTime());
+				process->SetCPUTime(0);
 				AddToList(GetTerminatedList(), process);
 				break;
 			}
@@ -236,9 +238,10 @@ void Scheduler::Execute()
 		Process* top = NULL;
 		if (BLK_List.peek(top))
 		{
-			int move_possibility = rand() % 100 + 1;
-			if (move_possibility <= 10)
+			IO_process* IO = top->GetIORequests();
+			if ((IO + IO->i)->IO_D == timestep - (IO + IO->i)->IO_T)
 			{
+				IO->i++;
 				BLK_List.dequeue(top);
 				AddToReady(top);
 			}

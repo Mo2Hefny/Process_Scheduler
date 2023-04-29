@@ -54,7 +54,7 @@ public:
 	int GetWaitingTime() const { return GetTurnAroundDuration() - P_data.CT; }
 	//int GetTransitionTime() const { return Transition_Time; }
 	ProcessInfo GetProcessInfo() const { return P_data; }
-	IO_process* GetIORequests() const { return IO; }
+	IO_process* GetIORequests() { return IO; }
 
 	/**
 	* @breif Adds to the total execution time for the process.
