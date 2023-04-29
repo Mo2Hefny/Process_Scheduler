@@ -45,15 +45,16 @@ public:
 
 	// Setters.
 	void SetTransitionTime(int t) { Transition_Time = t; }
+	void SetCPUTime(int t) { P_data.CurrCT = t; }
 
 	// Getters.
 	int GetArrivalTime() const { return P_data.AT; }
-	int GetCPUTime() const { return P_data.CT; }
+	int GetCPUTime() const { return P_data.CurrCT; }
 	int GetTurnAroundDuration() const { return P_data.TT - P_data.AT;  }
 	int GetWaitingTime() const { return GetTurnAroundDuration() - P_data.CT; }
 	int GetTransitionTime() const { return Transition_Time; }
 	ProcessInfo GetProcessInfo() const { return P_data; }
-	IO_process* GetIORequests() const { return IO; }
+	IO_process* GetIORequests() { return IO; }
 
 };
 

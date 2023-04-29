@@ -42,6 +42,8 @@ public:
 	unsigned int GetTimeLeft() const { return time_left; }
 	Process* GetRun() { return RUN; }
 
+	// Setters
+	void SetTimeLeft(unsigned int t) { time_left = t; }
 	/*
 	* @brief  Adds to the busy/idle total time depending on the
 	* processor's state.

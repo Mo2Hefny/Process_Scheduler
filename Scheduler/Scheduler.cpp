@@ -57,6 +57,7 @@ void Scheduler::AddToReady(Process* p)
 {
 	p->SetTransitionTime(timestep);
 	Processors[k]->AddToRDY(p);
+	Processors[k]->SetTimeLeft(Processors[k]->GetTimeLeft()+p->GetCPUTime());
 	k = (k + 1) % (P_info.NF + P_info.NS + P_info.NR);
 }
 
@@ -80,7 +81,7 @@ void Scheduler::LoadFile()
 	{
 		ProcessInfo P_data;
 		LoadedFile >> P_data.AT >> P_data.PID >> P_data.CT >> P_data.IO_requests;
-
+		P_data.CurrCT = P_data.CT;
 		string IO_string = "";
 		IO_process* IO = NULL;
 		if (P_data.IO_requests != 0)
@@ -183,6 +184,8 @@ void Scheduler::Execute()
 			FCFS* fcfs = dynamic_cast<FCFS*>(Processors[i]);
 			if (fcfs->GetRDYref().DeleteNode(process, random_ID, timestep))
 			{
+				fcfs->SetTimeLeft(fcfs->GetTimeLeft() - process->GetCPUTime());
+				process->SetCPUTime(0);
 				AddToList(GetTerminatedList(), process);
 				break;
 			}
@@ -191,9 +194,10 @@ void Scheduler::Execute()
 		Process* top = NULL;
 		if (BLK_List.peek(top))
 		{
-			int move_possibility = rand() % 100 + 1;
-			if (move_possibility <= 10)
+			IO_process* IO = top->GetIORequests();
+			if ((IO + IO->i)->IO_D == timestep - (IO + IO->i)->IO_T)
 			{
+				IO->i++;
 				BLK_List.dequeue(top);
 				AddToReady(top);
 			}

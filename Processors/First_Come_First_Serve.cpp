@@ -17,13 +17,17 @@ void FCFS::NextState()
 {
 	if (state == BUSY && RUN->GetTransitionTime() != manager->GetTimeStep())
 	{
-		int num = rand() % 100 + 1;
-		if (num <= 15)
+		IO_process* IO=RUN->GetIORequests();
+		if (IO&& (IO+IO->i)->IO_R == RUN->GetProcessInfo().CT - RUN->GetCPUTime())
 		{
+			(IO + IO->i)->IO_T = manager->GetTimeStep();
+			time_left -= RUN->GetCPUTime();
 			manager->AddToList(manager->GetBlockList(), RUN);
 			if (RDY.peek(RUN)&& RUN->GetTransitionTime() != manager->GetTimeStep())
 			{
 				RDY.dequeue(RUN);
+				RUN->SetCPUTime(RUN->GetCPUTime() - 1);
+				time_left--;
 			}
 			else
 			{
@@ -31,31 +35,25 @@ void FCFS::NextState()
 				RUN = nullptr;
 			}
 		}
-		else if (num >= 20 && num <= 30)
-		{
-			AddToRDY(RUN);
-			if (RDY.peek(RUN) && RUN->GetTransitionTime() != manager->GetTimeStep())
-			{
-				RDY.dequeue(RUN);
-			}
-			else
-			{
-				state = IDLE;
-				RUN = nullptr;
-			}
-		}
-		else if (num >= 50 && num <= 60)
+		else if (RUN->GetCPUTime()==0)
 		{
 			manager->AddToList(manager->GetTerminatedList(), RUN);
 			if (RDY.peek(RUN) && RUN->GetTransitionTime() != manager->GetTimeStep())
 			{
 				RDY.dequeue(RUN);
+				RUN->SetCPUTime(RUN->GetCPUTime() - 1);
+				time_left--;
 			}
 			else
 			{
 				state = IDLE;
 				RUN = nullptr;
 			}
+		}
+		else
+		{
+			RUN->SetCPUTime(RUN->GetCPUTime() - 1);
+			time_left--;
 		}
 	}
 	else
@@ -67,6 +65,10 @@ void FCFS::NextState()
 			return;
 
 		if (RDY.dequeue(RUN))
+		{
 			state = BUSY;
+			RUN->SetCPUTime(RUN->GetCPUTime()-1);
+			time_left--;
+		}
 	}
 }

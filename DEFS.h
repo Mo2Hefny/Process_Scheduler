@@ -6,6 +6,7 @@ struct ProcessInfo
 	int AT;				// Arrival time.
 	int PID;			// Process ID.
 	int CT;				// CPU time.
+	int CurrCT;         // CPU time left.
 	int IO_requests;	// Number of time the process requests I/O
 	int TT;				// Termination time.
 };
@@ -14,6 +15,13 @@ struct IO_process
 {
 	int IO_R;	// The execution intercal after which the process requests for I/O resources.
 	int IO_D;	// The duration required for a process to perform some I/O task.
+	int i;      // Counter to loop over IO array
+	int IO_T;   // Timestep process asked for IO
+
+	IO_process()
+	{
+		i = 0;
+	}
 };
 
 struct ProcessorsInfo
