@@ -18,6 +18,7 @@ void RR::Execute()
 	if (state == BUSY)
 	{
 		DecTimeleft();	// Decreases the processor's time left.
+		Migrate();		//Check Process Migration
 	}
 	Algorithm();
 
@@ -58,12 +59,12 @@ void RR::NextState()
 }
 
 /**
-* @brief The processor's algorithm.
+* @brief Handles process migration to suitable processors for more
+* time efficiency.
 */
-void RR::Algorithm()
+void RR::Migrate()
 {
-	//Check Process Migration
-	if (state == BUSY && RUN->GetRemainingTime() < manager->GetProcessorsInfo().RTF && manager->GetProcessorsInfo().NS)
+	while (RUN && RUN->GetRemainingTime() < manager->GetProcessorsInfo().RTF && manager->GetProcessorsInfo().NS)
 	{
 		AddTimeleft(-(RUN->GetRemainingTime()));
 		manager->AddToSJF(RUN);
@@ -73,7 +74,13 @@ void RR::Algorithm()
 			RUN = nullptr;
 		}
 	}
+}
 
+/**
+* @brief The processor's algorithm.
+*/
+void RR::Algorithm()
+{
 	// Process in RUN state executes for the Time_slice.
 	if (state == BUSY && Time_slice)
 	{
@@ -81,7 +88,7 @@ void RR::Algorithm()
 		RUN->ExecutingProcess();
 		if (!RUN->GetRemainingTime())
 		{
-			RUN->Terminate();
+			RUN->Terminate(manager->GetTimeStep());
 			manager->AddToList(manager->GetTerminatedList(), RUN);
 			if (RUN->HasChild())
 				manager->CheckOrphans();

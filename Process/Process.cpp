@@ -48,13 +48,29 @@ Process::~Process()
 		delete[] IO;
 }
 
+bool Process::ForkChild(Process* child)
+{
+	if (l_child && r_child)
+		return false;
+	if (!l_child)
+	{
+		l_child = child;
+		return true;
+	}
+	if (!r_child) r_child = child;
+
+	return true;
+}
+
 /**
 * @breif Terminates the process and its children.
+* 
+* @parameter time - Termination time.
 */
-void Process::Terminate()
+void Process::Terminate(int time)
 {
 	terminated = true;
-
-	if (l_child)	l_child->Terminate();
-	if (r_child)	r_child->Terminate();
+	P_data.TT = time;
+	if (l_child)	l_child->Terminate(time);
+	if (r_child)	r_child->Terminate(time);
 }

@@ -68,6 +68,25 @@ void Scheduler::AddToReady(Process* p)
 }
 
 /**
+* @brief Sets the child process to a FCFS processor's RDY list.
+*
+* @param p - Pointer to the process.
+*/
+void Scheduler::AddToFCFS(Process* p)
+{
+	int shortestqueue_index = 0;
+	for (int i = 0; i < P_info.NF; i++)
+	{
+		if (Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft())
+			shortestqueue_index = i;
+	}
+
+	//p->SetTransitionTime(timestep);		//MIGHT BE REMOVED//
+
+	Processors[shortestqueue_index]->AddToRDY(p);
+}
+
+/**
 * @brief Migrates the process to a SJF processor's RDY list.
 *
 * @param p - Pointer to the process.
@@ -109,17 +128,21 @@ void Scheduler::AddToRR(Process* p)
 * @brief Checks for orphan processes in the FCFS processors
 * after any process ermination.
 */
-
 void Scheduler::CheckOrphans()
 {
+	LinkedList <Process*> orphans;
 	for (int i = 0; i < P_info.NF; i++)
 	{
-		Process* process = NULL;
-		while (FCFS_Processors[i].GetRDY()->FindOrphan(process))
-		{
-			AddToList(&Terminated_List, process);
-			process = NULL;
-		}
+		Process* RUN = FCFS_Processors[i].GetRun();
+		if (RUN && RUN->IsTerminated())
+			FCFS_Processors[i].TerminateRUN();
+		FCFS_Processors[i].GetRDY()->FindOrphans(orphans);
+	}
+
+	Process* process;
+	while (orphans.dequeue(process))
+	{
+		AddToList(&Terminated_List, process);
 	}
 }
 
@@ -154,6 +177,12 @@ void Scheduler::LoadFile()
 
 		Process* New_Process = new Process(P_data, IO);
 		AddToList(GetNewList(), New_Process);
+	}
+
+	int t, id;
+	while (LoadedFile >> t >> id) {
+		SIGKILL* sigkill = new SIGKILL(t, id);
+		SIGKILL_orders.enqueue(sigkill);
 	}
 	LoadedFile.close();
 }
@@ -239,22 +268,18 @@ void Scheduler::Execute()
 			Processors[i]->Execute();
 		}
 
-		int random_ID = rand() % P_info.Num_process + 1;
-		for (int i = 0; i < P_info.NF; i++)
+		SIGKILL* latest_order;
+		if (SIGKILL_orders.peek(latest_order) && latest_order->time == timestep)
 		{
-			Process* process = NULL;
-			FCFS* fcfs = dynamic_cast<FCFS*>(Processors[i]);
-			if (fcfs->GetRDYref().DeleteNode(process, random_ID))
+			SIGKILL_orders.dequeue(latest_order);
+			for (int i = 0; i < P_info.NF; i++)
 			{
-				fcfs->AddTimeleft(-(process->GetRemainingTime()));
-				//process->SetCPUTime(0);
-				process->Terminate();
-				AddToList(GetTerminatedList(), process);
-				if (process->HasChild())
-					CheckOrphans();
-				break;
+				if (FCFS_Processors[i].CheckSIGKILL(latest_order->ID))
+					break;
 			}
+			delete latest_order;
 		}
+		
 
 		Process* top = NULL;
 		if (BLK_List.peek(top))

@@ -29,6 +29,12 @@ public:
 	virtual void NextState();
 	
 	/**
+	* @brief Handles process migration to suitable processors for more
+	* time efficiency.
+	*/
+	void Migrate();
+
+	/**
 	* @brief The processor's algorithm.
 	*/
 	virtual void Algorithm();

@@ -58,6 +58,9 @@ public:
 	IO_process* GetIORequests() { return IO; }
 
 	bool HasChild() const {	return l_child || r_child; }
+	bool IsTerminated() const { return terminated; }
+
+	bool ForkChild(Process* child);
 
 	/**
 	* @breif Adds to the total execution time for the process.
@@ -66,10 +69,11 @@ public:
 
 	/**
 	* @breif Terminates the process and its children.
+	* 
+	* @parameter time - Termination time.
 	*/
-	void Terminate();
+	void Terminate(int time);
 
-	bool operator! () { return terminated == true; }
 };
 
 #endif

@@ -27,6 +27,20 @@ public:
 	virtual void NextState();
 
 	/**
+	* @brief Handles process migration to suitable processors for more
+	* time efficiency.
+	*/
+	void Migrate();
+
+	/**
+	* @brief Handles the Forking possibility for the current process in RUN state.
+	* 
+	* @details A process can fork another process and add it to the shortest RDY queues
+	* of FCFS processors.
+	*/
+	void Fork();
+
+	/**
 	* @brief The processor's algorithm.
 	*/
 	virtual void Algorithm();
@@ -35,6 +49,20 @@ public:
 	* @brief The simulation of the processor's algorithm.
 	*/
 	virtual void Execute();
+
+	/**
+	* @breif Checks its RUN process and RDY list for the SEGKILL order.
+	* 
+	* @param ID - Process's ID to kill.
+	* 
+	* @returns True if the process is found, False otherwise.
+	*/
+	bool CheckSIGKILL(int ID);
+
+	/**
+	* @breif Terminates the RUN process.
+	*/
+	void TerminateRUN();
 };
 
 #endif

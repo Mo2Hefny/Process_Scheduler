@@ -13,7 +13,7 @@ struct ProcessInfo
 
 	ProcessInfo()
 	{
-		ET = 0;
+		ET = IO_requests = 0;
 		RT = TT = -1;
 	}
 };
@@ -28,6 +28,18 @@ struct IO_process
 	IO_process()
 	{
 		i = 0;
+	}
+};
+
+struct SIGKILL
+{
+	int time;	// Kill time.
+	int ID;		// PID of the process to kill.
+
+	SIGKILL(int t = 0, int id = 0)
+	{
+		time = t;
+		ID = id;
 	}
 };
 

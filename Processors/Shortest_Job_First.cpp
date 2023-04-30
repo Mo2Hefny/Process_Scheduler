@@ -68,7 +68,7 @@ void SJF::Algorithm()
 	// If the Process finishes execution.
 	if (!RUN->GetRemainingTime())
 	{
-		RUN->Terminate();
+		RUN->Terminate(manager->GetTimeStep());
 		manager->AddToList(manager->GetTerminatedList(), RUN);
 		if (RUN->HasChild())
 			manager->CheckOrphans();

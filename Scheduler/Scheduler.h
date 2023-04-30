@@ -28,6 +28,7 @@ class Scheduler
 	LinkedQueue<Process*> BLK_List;
 	LinkedQueue<Process*> Terminated_List;
 	LinkedQueue<Process*> Parents_List;
+	LinkedQueue<SIGKILL*> SIGKILL_orders;
 
 	// Processors.
 	FCFS* FCFS_Processors;
@@ -70,21 +71,28 @@ public:
 	*
 	* @param p - Pointer to the process.
 	*/
-	void AddToReady(Process*);
+	void AddToReady(Process* p);
+
+	/**
+	* @brief Sets the child process to a FCFS processor's RDY list.
+	*
+	* @param p - Pointer to the process.
+	*/
+	void AddToFCFS(Process* p);
 
 	/**
 	* @brief Migrates the process to a SJF processor's RDY list.
 	*
 	* @param p - Pointer to the process.
 	*/
-	void AddToSJF(Process*);
+	void AddToSJF(Process* p);
 
 	/**
 	* @brief Migrates the process to a RR processor's RDY list.
 	*
 	* @param p - Pointer to the process.
 	*/
-	void AddToRR(Process*);
+	void AddToRR(Process* p);
 
 	/**
 	* @brief Checks for orphan processes in the FCFS processors

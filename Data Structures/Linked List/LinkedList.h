@@ -231,11 +231,31 @@ public:
 		return excess;
 	}
 
-	bool FindOrphan(const T& value) {
-		if (!Head->getItem())
+	void FindOrphans(LinkedList <T>& orph_list) {
+		Node<T>* dummy = new Node<T>;
+		dummy->setNext(Head);
+		Node<T>* prev = dummy, * p = Head;
+		while (p)
 		{
-		
+			if (p->getItem()->IsTerminated())
+			{
+				list_size--;
+				if (p == Head)
+					Head = Head->getNext();
+				T item = p->getItem();
+				orph_list.InsertBeg(item);
+				prev->setNext(p->getNext());
+				p->setItem(NULL);
+				delete p;
+				p = prev->getNext();
+			}
+			else
+			{
+				prev = prev->getNext();
+				p = p->getNext();
+			}
 		}
+		delete dummy;
 	}
 
 	int size() const { return list_size; }
