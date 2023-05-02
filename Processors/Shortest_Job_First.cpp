@@ -13,6 +13,9 @@ void SJF::AddToRDY(Process* p)
 */
 void SJF::Execute()
 {
+	OverHeat();
+	if (state == OVERHEAT)	return;
+
 	NextState();
 
 	Algorithm();

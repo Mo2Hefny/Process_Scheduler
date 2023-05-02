@@ -55,10 +55,12 @@ struct ProcessorsInfo
 	int NR;				// Number of RR processors.
 	int NT;				// Number of processors.
 	int Time_slice;		// Time slice for RR.
+	int cooldown;		// Overheat Cooldown.
 	int RTF;			// Min time Threshold before process migration from RR to SJF.
 	int STL;			// Stealing Time Limit.
 	int MaxW;			// Max time Threshold before process migration from FCFS to RR.
 	int Fork_prob;		// Fork probability.
+	int Heat_prob;		// Overheat probability.
 	int Num_process;	// Number of processes.
 
 	ProcessorsInfo()
@@ -70,7 +72,8 @@ struct ProcessorsInfo
 enum ProcessorState
 {
 	BUSY,
-	IDLE
+	IDLE,
+	OVERHEAT
 };
 
 enum ProgramInterface

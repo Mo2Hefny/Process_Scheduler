@@ -16,7 +16,7 @@ class Processor
 {
 protected:
 	Scheduler* manager;
-	unsigned int time_left, time_busy, time_idle, total_TRT;
+	unsigned int time_left, time_busy, time_idle, total_TRT, cooldown;
 	Process* RUN;
 	ProcessorState state;
 
@@ -28,7 +28,7 @@ public:
 	Processor();
 	virtual ~Processor();
 
-	/*
+	/**
 	* @brief Sets a pointer to the Scheduler Manager to call its functions.
 	* 
 	* @param Pointer to the Scheduler Manager.
@@ -41,28 +41,34 @@ public:
 	unsigned int GetPload() const { return time_busy / total_TRT; }
 	unsigned int GetPUtil() const { return time_busy / (time_busy + time_idle); }
 	unsigned int GetTimeLeft() const { return time_left; }
+	ProcessorState GetState() const { return state; }
 	Process* GetRun() { return RUN; }
 
 	// Setters
 
-	/*
+	/**
 	* @brief  Adds to the total time left for the processor's queue.
 	* 
 	* @parame time - Time of the remaining CT of the process.
 	*/
 	void AddTimeleft(int time);
 
-	/*
+	/**
 	* @brief  Adds to the busy/idle total time depending on the
 	* processor's state.
 	*/
 	void AddTime();
 
-	/*
+	/**
 	* @brief  Decrease from the total time left for the processor's
 	* queue each timestep.
 	*/
 	void DecTimeleft() { (time_left > 0 && state == BUSY) ? time_left-- : 0; };
+
+	/**
+	* @brief Generates a random number to check if the processor overheats.
+	*/
+	void OverHeat();
 
 	virtual void Algorithm() = 0;
 	virtual void Execute() = 0;

@@ -25,6 +25,8 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 	for (int i = 0; i < manager->GetProcessorsInfo().NF; i++)
 	{
 		FCFS* fcfs = dynamic_cast<FCFS*>(Processors[i]);
+		if (fcfs->GetState() == OVERHEAT)
+			printf("\x1B[31m");
 		run[i] = Processors[i]->GetRun();
 		if (run[i])
 			run_size++;
@@ -42,12 +44,16 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 			}
 		}
 		cout << endl;
+		if (fcfs->GetState() == OVERHEAT)
+			printf("\033[0m");
 	}
 	
 	// Print SJF Processors' RDY Lists.
 	for (int i = manager->GetProcessorsInfo().NF; i < manager->GetProcessorsInfo().NF + manager->GetProcessorsInfo().NS; i++)
 	{
 		SJF* sjf = dynamic_cast<SJF*>(Processors[i]);
+		if (sjf->GetState() == OVERHEAT)
+			printf("\x1B[31m");
 		run[i] = Processors[i]->GetRun();
 		if (run[i])
 			run_size++;
@@ -65,12 +71,16 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 			}
 		}
 		cout << endl;
+		if (sjf->GetState() == OVERHEAT)
+			printf("\033[0m");
 	}
 	
 	// Print RR Processors' RDY Lists.
 	for (int i = manager->GetProcessorsInfo().NF + manager->GetProcessorsInfo().NS; i < manager->GetProcessorsInfo().NT; i++)
 	{
 		RR* rr = dynamic_cast<RR*>(Processors[i]);
+		if (rr->GetState() == OVERHEAT)
+			printf("\x1B[31m");
 		run[i] = Processors[i]->GetRun();
 		if (run[i])
 			run_size++;
@@ -88,6 +98,8 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 			}
 		}
 		cout << endl;
+		if (rr->GetState() == OVERHEAT)
+			printf("\033[0m");
 	}
 }
 

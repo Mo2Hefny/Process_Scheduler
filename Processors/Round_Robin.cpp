@@ -13,6 +13,9 @@ void RR::AddToRDY(Process* p)
 */
 void RR::Execute()
 {
+	OverHeat();
+	if (state == OVERHEAT)	return;
+
 	NextState();
 
 	Migrate();		//Check Process Migration

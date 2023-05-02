@@ -42,6 +42,9 @@ void FCFS::TerminateRUN()
 */
 void FCFS::Execute()
 {
+	OverHeat();
+	if (state == OVERHEAT)	return;
+
 	CheckSIGKILL();
 
 	NextState();

@@ -161,8 +161,8 @@ void Scheduler::LoadFile()
 	} while (!LoadedFile.is_open());
 	LoadedFile >> P_info.NF >> P_info.NS >> P_info.NR;			// No. of processors of each type.
 	P_info.NT = P_info.NF + P_info.NS + P_info.NR;
-	LoadedFile >> P_info.Time_slice;					// Time slice for RR.
-	LoadedFile >> P_info.RTF >> P_info.MaxW >> P_info.STL >> P_info.Fork_prob;
+	LoadedFile >> P_info.Time_slice >> P_info.cooldown;					// Time slice for RR && Overheating cooldown for processors.
+	LoadedFile >> P_info.RTF >> P_info.MaxW >> P_info.STL >> P_info.Fork_prob >> P_info.Heat_prob;
 	LoadedFile >> P_info.Num_process;
 	for (int j = 0; j < P_info.Num_process; j++)
 	{
