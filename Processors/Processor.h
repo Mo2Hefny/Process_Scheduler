@@ -26,6 +26,7 @@ public:
 	* @brief Processor class constructor.
 	*/
 	Processor();
+	virtual ~Processor();
 
 	/*
 	* @brief Sets a pointer to the Scheduler Manager to call its functions.
@@ -61,7 +62,7 @@ public:
 	* @brief  Decrease from the total time left for the processor's
 	* queue each timestep.
 	*/
-	void DecTimeleft() { (time_left > 0) ? time_left-- : 0; };
+	void DecTimeleft() { (time_left > 0 && state == BUSY) ? time_left-- : 0; };
 
 	virtual void Algorithm() = 0;
 	virtual void Execute() = 0;

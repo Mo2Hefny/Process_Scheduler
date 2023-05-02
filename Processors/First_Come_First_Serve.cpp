@@ -1,6 +1,23 @@
 #include "First_Come_First_Serve.h"
 #include "../Scheduler/Scheduler.h"
 
+FCFS::~FCFS()
+{
+	CleanSIGKILL();
+}
+
+/**
+* @brief Cleans up the SIGKILL orders from the memory.
+*/
+void FCFS::CleanSIGKILL()
+{
+	SIGKILL* sigkill;
+	while (KILL_orders.dequeue(sigkill))
+		delete sigkill;
+}
+
+// Define the static member variable KILL_orders
+LinkedList<SIGKILL*> FCFS::KILL_orders;
 
 void FCFS::AddToRDY(Process* p)
 {
@@ -25,15 +42,13 @@ void FCFS::TerminateRUN()
 */
 void FCFS::Execute()
 {
-	NextState();
+	CheckSIGKILL();
 
-	if (state == BUSY)
-	{
-		DecTimeleft();	// Decreases the processor's time left.
-		Migrate();
-		Fork();
-		Algorithm();
-	}
+	NextState();
+	Migrate();
+	Fork();
+	Algorithm();
+	
 	AddTime();		// Adds to the processor's BUSY/IDLE time.
 }
 
@@ -112,7 +127,10 @@ void FCFS::Fork()
 		delete New_Process;
 	}
 	else
+	{
+		manager->IncrementProcessNum();
 		manager->AddToFCFS(New_Process);
+	}
 }
 
 /**
@@ -120,8 +138,14 @@ void FCFS::Fork()
 */
 void FCFS::Algorithm()
 {
+	if (manager->GetTimeStep() == 117)
+	{
+		int a;
+		if (state == IDLE) return;
+	}
+	if (state == IDLE) return;
 	RUN->ExecutingProcess();
-
+	DecTimeleft();	// Decreases the processor's time left.
 	// If the Process finishes execution.
 	if (!RUN->GetRemainingTime())
 	{
@@ -143,14 +167,31 @@ void FCFS::Algorithm()
 
 /**
 * @brief Checks its RUN process and RDY list for the SEGKILL order.
-*
-* @param ID - Process's ID to kill.
-* 
-* @returns True if the process is found, False otherwise.
 */
-bool FCFS::CheckSIGKILL(int ID)
+void FCFS::CheckSIGKILL()
 {
 	Process* process = NULL;
+	SIGKILL* latest_order;
+	int timestep = manager->GetTimeStep(), ID = -1;
+
+	if (!FCFS::KILL_orders.peek(latest_order))	return;
+
+	// If the processor was overheated and didn't check past SIGKILLs
+	while (latest_order->time < timestep)
+	{
+		FCFS::KILL_orders.dequeue(latest_order);
+		delete latest_order;
+		if (!FCFS::KILL_orders.peek(latest_order))	return;
+	}
+	// The SIGKILL order's time didn't come yet.
+	if (latest_order->time != timestep)
+		return;
+
+	// If the time matches then it searches for the process.
+	ID = latest_order->ID;
+	
+	
+
 	if (RDY.DeleteNode(process, ID))
 	{
 		AddTimeleft(-(process->GetRemainingTime()));
@@ -158,7 +199,10 @@ bool FCFS::CheckSIGKILL(int ID)
 		manager->AddToList(manager->GetTerminatedList(), process);
 		if (process->HasChild())
 			manager->CheckOrphans();
-		return true;
+		// Deletes order after executing it.
+		FCFS::KILL_orders.dequeue(latest_order);
+		delete latest_order;
+		return;
 	}
 	if (state == BUSY && RUN->GetProcessInfo().PID == ID)
 	{
@@ -175,7 +219,8 @@ bool FCFS::CheckSIGKILL(int ID)
 			state = IDLE;
 			RUN = nullptr;
 		}
-		return true;
+		// Deletes order after executing it.
+		FCFS::KILL_orders.dequeue(latest_order);
+		delete latest_order;
 	}
-	return false;
 }

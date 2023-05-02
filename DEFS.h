@@ -41,6 +41,11 @@ struct SIGKILL
 		time = t;
 		ID = id;
 	}
+	SIGKILL(const SIGKILL& other)
+	{
+		ID = other.ID;
+		time = other.time;
+	}
 };
 
 struct ProcessorsInfo

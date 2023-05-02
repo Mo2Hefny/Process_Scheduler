@@ -10,16 +10,24 @@
 */
 class FCFS : public Processor
 {
+	static LinkedList<SIGKILL*> KILL_orders;	// SIGKILL orders list shared between all FCFS processors.
 	LinkedList<Process*> RDY;
 	
 public:
+	virtual ~FCFS();
+
 	// Getters.
 	LinkedList<Process*>* GetRDY() { return &RDY; }
 
 	LinkedList<Process*>& GetRDYref() { return RDY; }
 	// Setters.
 	virtual void AddToRDY(Process* p);
+	static LinkedList<SIGKILL*>* GetSIGKILL() { return &KILL_orders; }
 
+	/**
+	* @brief Cleans up the SIGKILL orders from the memory.
+	*/
+	static void CleanSIGKILL();
 	/*
 	* @brief Generates a random number from 1 to 100 to set the next
 	* state of each process in RUN state.
@@ -52,12 +60,8 @@ public:
 
 	/**
 	* @breif Checks its RUN process and RDY list for the SEGKILL order.
-	* 
-	* @param ID - Process's ID to kill.
-	* 
-	* @returns True if the process is found, False otherwise.
 	*/
-	bool CheckSIGKILL(int ID);
+	void CheckSIGKILL();
 
 	/**
 	* @breif Terminates the RUN process.

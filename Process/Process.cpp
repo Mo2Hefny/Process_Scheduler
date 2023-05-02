@@ -13,6 +13,7 @@ Process::Process(ProcessInfo P_info, IO_process* IO_requests)
 	terminated = false;
 	//Transition_Time = -1;
 
+	parent = nullptr;
 	l_child = nullptr;
 	r_child = nullptr;
 }
@@ -52,12 +53,13 @@ bool Process::ForkChild(Process* child)
 {
 	if (l_child && r_child)
 		return false;
+	child->parent = this;
 	if (!l_child)
 	{
 		l_child = child;
 		return true;
 	}
-	if (!r_child) r_child = child;
+	r_child = child;
 
 	return true;
 }
@@ -70,6 +72,13 @@ bool Process::ForkChild(Process* child)
 void Process::Terminate(int time)
 {
 	terminated = true;
+	if (parent && !parent->IsTerminated())
+	{
+		if (parent->l_child == this) parent->l_child = nullptr;
+		else if (parent->r_child == this) parent->r_child = nullptr;
+	}
+
+
 	P_data.TT = time;
 	if (l_child)	l_child->Terminate(time);
 	if (r_child)	r_child->Terminate(time);

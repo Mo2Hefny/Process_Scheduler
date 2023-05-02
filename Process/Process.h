@@ -16,6 +16,7 @@ class Process
 	//int Transition_Time;		// Time of the last list transition.
 
 	// Forking.
+	Process* parent;
 	Process* l_child;
 	Process* r_child;
 
