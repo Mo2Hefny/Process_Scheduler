@@ -75,7 +75,7 @@ void Scheduler::AddToReady(Process* p)
 void Scheduler::AddToFCFS(Process* p)
 {
 	int shortestqueue_index = 0;
-	for (int i = 0; i < P_info.NF; i++)
+	for (int i = 1; i < P_info.NF; i++)
 	{
 		if (Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft())
 			shortestqueue_index = i;
@@ -93,8 +93,8 @@ void Scheduler::AddToFCFS(Process* p)
 */
 void Scheduler::AddToSJF(Process* p)
 {
-	int shortestqueue_index = 0;
-	for (int i = P_info.NF; i < P_info.NF + P_info.NS; i++)
+	int shortestqueue_index = P_info.NF;
+	for (int i = P_info.NF + 1; i < P_info.NF + P_info.NS; i++)
 	{
 		if (Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft())
 			shortestqueue_index = i;
@@ -112,8 +112,8 @@ void Scheduler::AddToSJF(Process* p)
 */
 void Scheduler::AddToRR(Process* p)
 {
-	int shortestqueue_index = 0;
-	for (int i = P_info.NF + P_info.NS; i < P_info.NT; i++)
+	int shortestqueue_index = P_info.NF + P_info.NS;
+	for (int i = P_info.NF + P_info.NS + 1; i < P_info.NT; i++)
 	{
 		if (Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft())
 			shortestqueue_index = i;
@@ -135,14 +135,16 @@ void Scheduler::CheckOrphans()
 	{
 		Process* RUN = FCFS_Processors[i].GetRun();
 		if (RUN && RUN->IsTerminated())
+		{
 			FCFS_Processors[i].TerminateRUN();
+		}
 		FCFS_Processors[i].GetRDY()->FindOrphans(orphans);
-	}
-
-	Process* process;
-	while (orphans.dequeue(process))
-	{
-		AddToList(&Terminated_List, process);
+		Process* process;
+		while (orphans.dequeue(process))
+		{
+			FCFS_Processors[i].AddTimeleft(-(process->GetRemainingTime()));
+			AddToList(&Terminated_List, process);
+		}
 	}
 }
 
@@ -180,9 +182,10 @@ void Scheduler::LoadFile()
 	}
 
 	int t, id;
+	LinkedList<SIGKILL*>* sigkill_list = FCFS::GetSIGKILL();
 	while (LoadedFile >> t >> id) {
 		SIGKILL* sigkill = new SIGKILL(t, id);
-		SIGKILL_orders.enqueue(sigkill);
+		sigkill_list->enqueue(sigkill);
 	}
 	LoadedFile.close();
 }
@@ -263,29 +266,22 @@ void Scheduler::Execute()
 			AddToReady(current);
 		}
 
+		if (timestep >= 70)
+		{
+			int a = 10;
+			cout << a;
+		}
+
 		for (int i = 0; i < P_info.NF + P_info.NS + P_info.NR; i++)
 		{
 			Processors[i]->Execute();
 		}
-
-		SIGKILL* latest_order;
-		if (SIGKILL_orders.peek(latest_order) && latest_order->time == timestep)
-		{
-			SIGKILL_orders.dequeue(latest_order);
-			for (int i = 0; i < P_info.NF; i++)
-			{
-				if (FCFS_Processors[i].CheckSIGKILL(latest_order->ID))
-					break;
-			}
-			delete latest_order;
-		}
 		
-
 		Process* top = NULL;
 		if (BLK_List.peek(top))
 		{
 			IO_process* IO = top->GetIORequests();
-			if ((IO + IO->i)->IO_D == timestep - (IO + IO->i)->IO_T)
+			if ((IO + IO->i)->IO_D <= timestep - (IO + IO->i)->IO_T)
 			{
 				IO->i++;
 				BLK_List.dequeue(top);

@@ -28,7 +28,6 @@ class Scheduler
 	LinkedQueue<Process*> BLK_List;
 	LinkedQueue<Process*> Terminated_List;
 	LinkedQueue<Process*> Parents_List;
-	LinkedQueue<SIGKILL*> SIGKILL_orders;
 
 	// Processors.
 	FCFS* FCFS_Processors;
@@ -57,6 +56,11 @@ public:
 	ProcessorsInfo GetProcessorsInfo() const {	return P_info; }
 	unsigned GetTimeStep() { return timestep; }
 	Processor** GetProcessors() { return Processors; }
+	
+	/**
+	* @brief Increases the number of total processes after forking.
+	*/
+	void IncrementProcessNum() { P_info.Num_process++; }
 
 	/**
 	* @brief Adds process to a chosen list.
