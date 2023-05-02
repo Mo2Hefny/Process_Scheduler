@@ -138,11 +138,6 @@ void FCFS::Fork()
 */
 void FCFS::Algorithm()
 {
-	if (manager->GetTimeStep() == 117)
-	{
-		int a;
-		if (state == IDLE) return;
-	}
 	if (state == IDLE) return;
 	RUN->ExecutingProcess();
 	DecTimeleft();	// Decreases the processor's time left.

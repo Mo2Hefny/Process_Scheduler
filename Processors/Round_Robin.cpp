@@ -15,11 +15,7 @@ void RR::Execute()
 {
 	NextState();
 
-	if (state == BUSY)
-	{
-		DecTimeleft();	// Decreases the processor's time left.
-		Migrate();		//Check Process Migration
-	}
+	Migrate();		//Check Process Migration
 	Algorithm();
 
 	AddTime();		// Adds to the processor's BUSY/IDLE time.
@@ -86,6 +82,7 @@ void RR::Algorithm()
 	{
 		Time_slice--;
 		RUN->ExecutingProcess();
+		DecTimeleft();	// Decreases the processor's time left.
 		if (!RUN->GetRemainingTime())
 		{
 			RUN->Terminate(manager->GetTimeStep());

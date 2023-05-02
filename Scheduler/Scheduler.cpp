@@ -263,13 +263,8 @@ void Scheduler::Execute()
 		if (current->GetArrivalTime() == timestep)
 		{
 			New_List.dequeue(current);
+			current->SetResponseTime(timestep);
 			AddToReady(current);
-		}
-
-		if (timestep >= 70)
-		{
-			int a = 10;
-			cout << a;
 		}
 
 		for (int i = 0; i < P_info.NF + P_info.NS + P_info.NR; i++)

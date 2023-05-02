@@ -45,10 +45,12 @@ public:
 	~Process();
 
 	// Setters.
+	void SetResponseTime(int t) { P_data.RT = t; }
 	//void SetTransitionTime(int t) { Transition_Time = t; }
 
 	// Getters.
 	int GetArrivalTime() const { return P_data.AT; }
+	int GetResponseTime() const { return P_data.RT; }
 	int GetCPUTime() const { return P_data.CT; }
 	int GetRemainingTime() const { return P_data.CT - P_data.ET; }
 	int GetExecutedTime() const { return P_data.ET; }

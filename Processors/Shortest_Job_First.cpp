@@ -15,11 +15,7 @@ void SJF::Execute()
 {
 	NextState();
 
-	if (state == BUSY)
-	{
-		DecTimeleft();	// Decreases the processor's time left.
-		Algorithm();
-	}
+	Algorithm();
 	AddTime();		// Adds to the processor's BUSY/IDLE time.
 }
 
@@ -63,8 +59,9 @@ void SJF::NextState()
 */
 void SJF::Algorithm()
 {
+	if (state == IDLE)	return;
 	RUN->ExecutingProcess();
-
+	DecTimeleft();	// Decreases the processor's time left.
 	// If the Process finishes execution.
 	if (!RUN->GetRemainingTime())
 	{
