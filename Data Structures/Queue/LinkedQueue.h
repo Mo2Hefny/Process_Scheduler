@@ -57,6 +57,7 @@ private:
 	int list_size;
 public:
 	LinkedQueue();
+	void PrintList() const;
 	bool isEmpty() const;
 	bool enqueue(const T& newEntry);
 	bool dequeue(T& frntEntry);
@@ -95,6 +96,20 @@ template <typename T>
 bool LinkedQueue<T>::isEmpty() const
 {
 	return (frontPtr == nullptr);
+}
+
+template <typename T>
+void  LinkedQueue<T>::PrintList() const
+{
+	Node<T>* p = frontPtr;
+
+	while (p)
+	{
+		cout << p->getItem();
+		cout << (p->getNext() ? ", " : " ");
+		p = p->getNext();
+	}
+	printf("\033[0m\n");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

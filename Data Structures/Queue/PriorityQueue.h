@@ -181,7 +181,18 @@ public:
 		return (frontPtr == nullptr);
 	}
 
+	void PrintList()	const
+	{
+		Node<Process*>* p = frontPtr;
 
+		while (p)
+		{
+			cout << p->getItem();
+			cout << (p->getNext() ? ", " : " ");
+			p = p->getNext();
+		}
+		printf("\033[0m\n");
+	}
 
 	bool enqueue(Process*& newEntry)
 	{

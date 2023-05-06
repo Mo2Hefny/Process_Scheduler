@@ -30,20 +30,10 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		run[i] = Processors[i]->GetRun();
 		if (run[i])
 			run_size++;
-		LinkedList<Process*> FCFS_RDY = *(fcfs->GetRDY());
-		cout << "processor " << i + 1 << " [FCFS]"<<'('<<fcfs->GetTimeLeft()<<')' << ':' << FCFS_RDY.size() << " RDY: ";
-		int FCFS_RDY_SIZE = FCFS_RDY.size();
-		for (int i = 0; i < FCFS_RDY_SIZE; i++)
-		{
-			Process* process = NULL;
-			if (FCFS_RDY.dequeue(process))
-			{
-				cout << process->GetProcessInfo().PID<<'('<<process->GetRemainingTime()<<')';
-				if (!FCFS_RDY.isempty())
-					cout << ", ";
-			}
-		}
-		cout << endl;
+		LinkedList<Process*>* FCFS_RDY = fcfs->GetRDY();
+		cout << "processor " << i + 1 << " [FCFS]"<<'('<<fcfs->GetTimeLeft()<<')' << ':' << FCFS_RDY->size() << " RDY: ";
+		FCFS_RDY->PrintList();
+		
 		if (fcfs->GetState() == OVERHEAT)
 			printf("\033[0m");
 	}
@@ -57,20 +47,10 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		run[i] = Processors[i]->GetRun();
 		if (run[i])
 			run_size++;
-		PriorityQueue<Process*> SJF_RDY = *(sjf->GetRDY());
-		cout << "processor " << i + 1 << " [" << SJF_NAME << "] " << '(' << sjf->GetTimeLeft() << ')' << ':' << SJF_RDY.size() << " RDY: ";
-		int SJF_RDY_SIZE = SJF_RDY.size();
-		for (int i = 0; i < SJF_RDY_SIZE; i++)
-		{
-			Process* process = NULL;
-			if (SJF_RDY.dequeue(process))
-			{
-				cout << process->GetProcessInfo().PID << '(' << process->GetRemainingTime() << ')';
-				if (!SJF_RDY.isEmpty())
-					cout << ", ";
-			}
-		}
-		cout << endl;
+		PriorityQueue<Process*>* SJF_RDY = sjf->GetRDY();
+		cout << "processor " << i + 1 << " [" << SJF_NAME << "] " << '(' << sjf->GetTimeLeft() << ')' << ':' << SJF_RDY->size() << " RDY: ";
+		SJF_RDY->PrintList();
+
 		if (sjf->GetState() == OVERHEAT)
 			printf("\033[0m");
 	}
@@ -84,20 +64,9 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		run[i] = Processors[i]->GetRun();
 		if (run[i])
 			run_size++;
-		LinkedQueue<Process*> RR_RDY = *(rr->GetRDY());
-		cout << "processor " << i + 1 << " [" << RR_NAME << "] " << '(' << rr->GetTimeLeft() << ')' << ':' << RR_RDY.size() << " RDY: ";
-		int RR_RDY_SIZE = RR_RDY.size();
-		for (int i = 0; i < RR_RDY_SIZE; i++)
-		{
-			Process* process = NULL;
-			if (RR_RDY.dequeue(process))
-			{
-				cout << process->GetProcessInfo().PID << '(' << process->GetRemainingTime() << ')';
-				if (!RR_RDY.isEmpty())
-					cout << ", ";
-			}
-		}
-		cout << endl;
+		LinkedQueue<Process*>* RR_RDY = rr->GetRDY();
+		cout << "processor " << i + 1 << " [" << RR_NAME << "] " << '(' << rr->GetTimeLeft() << ')' << ':' << RR_RDY->size() << " RDY: ";
+		RR_RDY->PrintList();
 		if (rr->GetState() == OVERHEAT)
 			printf("\033[0m");
 	}
@@ -115,20 +84,9 @@ void UI::PrintBLK()
 	cout << endl;
 
 	// Print Processes in BLK List
-	LinkedQueue < Process*> BLK_LIST = *(manager->GetBlockList());
-	int BLK_LIST_SIZE = BLK_LIST.size();
-	cout << BLK_LIST_SIZE << " BLK: ";
-	for (int i = 0; i < BLK_LIST_SIZE; i++)
-	{
-		Process* process = NULL;
-		if (BLK_LIST.dequeue(process))
-		{
-			cout << process->GetProcessInfo().PID << '(' << process->GetRemainingTime() << ')';
-			if (!BLK_LIST.isEmpty())
-			cout << ", ";
-		}
-	}
-	cout << endl;
+	LinkedQueue < Process*>* BLK_LIST = manager->GetBlockList();
+	cout << BLK_LIST->size() << " BLK: ";
+	BLK_LIST->PrintList();
 }
 
 /**
@@ -151,9 +109,9 @@ void UI::PrintRUN(int run_size, Process** run)
 	{
 		if (!run[i])
 			continue;
-		cout << run[i]->GetProcessInfo().PID <<'(' << run[i]->GetRemainingTime() << ')' << "(P" << i + 1;
+		cout << run[i];
 		run_size--;
-		cout << (run_size ? "), " : ")");
+		if (run_size)	cout << ", ";
 	}
 	cout << endl;
 }
@@ -170,20 +128,9 @@ void UI::PrintTRM()
 	cout << endl;
 
 	// Print Processes in TRM List
-	LinkedQueue<Process*> TRM_LIST = *(manager->GetTerminatedList());
-	int TRM_LIST_SIZE = TRM_LIST.size();
-	cout << TRM_LIST_SIZE << " TRM: ";
-	for (int i = 0; i < TRM_LIST_SIZE; i++)
-	{
-		Process* process = NULL;
-		if (TRM_LIST.dequeue(process))
-		{
-			cout << process->GetProcessInfo().PID << '(' << process->GetRemainingTime() << ')';
-			if (!TRM_LIST.isEmpty())
-				cout << ", ";
-		}
-	}
-	cout << endl;
+	LinkedQueue<Process*>* TRM_LIST = manager->GetTerminatedList();
+	cout << TRM_LIST->size() << " TRM: ";
+	TRM_LIST->PrintList();
 }
 
 

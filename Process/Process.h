@@ -2,6 +2,8 @@
 #define _PROCESS_
 
 #include "../DEFS.h"
+#include <iostream>
+using namespace std;
 
 /**
 * @class Process
@@ -76,6 +78,8 @@ public:
 	* @parameter time - Termination time.
 	*/
 	void Terminate(int time);
+
+	friend ostream& operator<< (ostream& out, const Process* process);
 
 };
 

@@ -83,3 +83,20 @@ void Process::Terminate(int time)
 	if (l_child)	l_child->Terminate(time);
 	if (r_child)	r_child->Terminate(time);
 }
+
+ostream& operator<< (ostream& out, const Process* process)
+{
+	if (process->parent)
+	{
+		printf("\033[3;104;30m");
+	}
+	else if (process->HasChild())
+	{
+		printf("\033[3;100;30m");
+	}
+
+	out << process->P_data.PID << '(' << process->GetRemainingTime() << ')';
+
+	printf("\033[0m");
+	return out;
+}

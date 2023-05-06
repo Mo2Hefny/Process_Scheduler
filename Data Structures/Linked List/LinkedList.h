@@ -32,16 +32,15 @@ public:
 	*/
 	void PrintList()	const
 	{
-		cout << "\nprinting list contents:\n\n";
 		Node<T>* p = Head;
 
 		while (p)
 		{
-			cout << "[ " << p->getItem() << " ]";
-			cout << "--->";
+			cout << p->getItem();
+			cout << (p->getNext() ? ", " : " ");
 			p = p->getNext();
 		}
-		cout << "NULL\n";
+		printf("\033[0m\n");
 	}
 	////////////////////////////////////////////////////////////////////////
 	/*
