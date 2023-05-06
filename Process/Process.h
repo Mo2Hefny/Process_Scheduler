@@ -63,6 +63,7 @@ public:
 	IO_process* GetIORequests() { return IO; }
 
 	bool HasChild() const {	return l_child || r_child; }
+	bool HasParent() const { return parent; }
 	bool IsTerminated() const { return terminated; }
 
 	bool ForkChild(Process* child);

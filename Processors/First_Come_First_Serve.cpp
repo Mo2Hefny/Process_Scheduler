@@ -95,7 +95,7 @@ void FCFS::NextState()
 */
 void FCFS::Migrate()
 {
-	while (RUN && RUN->GetRemainingTime() > manager->GetProcessorsInfo().MaxW && manager->GetProcessorsInfo().NR)
+	while (RUN && !RUN->HasParent() && RUN->GetRemainingTime() > manager->GetProcessorsInfo().MaxW && manager->GetProcessorsInfo().NR)
 	{
 		AddTimeleft(-(RUN->GetRemainingTime()));
 		manager->AddToRR(RUN);
