@@ -14,13 +14,13 @@ void RR::AddToRDY(Process* p)
 void RR::Execute()
 {
 	OverHeat();
-	if (state == OVERHEAT)	return;
+	if (state != OVERHEAT)
+	{
+		NextState();
 
-	NextState();
-
-	Migrate();		//Check Process Migration
-	Algorithm();
-
+		Migrate();		//Check Process Migration
+		Algorithm();
+	}
 	AddTime();		// Adds to the processor's BUSY/IDLE time.
 }
 
@@ -63,9 +63,13 @@ void RR::NextState()
 */
 void RR::Migrate()
 {
+	// Forces current RUN state to finish its duration if it was denied migration in the first time.
+	if (Time_slice != manager->GetProcessorsInfo().Time_slice)	return;
+
 	while (RUN && RUN->GetRemainingTime() < manager->GetProcessorsInfo().RTF && manager->GetProcessorsInfo().NS)
 	{
 		AddTimeleft(-(RUN->GetRemainingTime()));
+		manager->Increment_RRmigration();
 		manager->AddToSJF(RUN);
 		if (!RDY.dequeue(RUN))
 		{
@@ -89,6 +93,7 @@ void RR::Algorithm()
 		if (!RUN->GetRemainingTime())
 		{
 			RUN->Terminate(manager->GetTimeStep());
+			total_TRT += RUN->GetTurnAroundDuration();
 			manager->AddToList(manager->GetTerminatedList(), RUN);
 			if (RUN->HasChild())
 				manager->CheckOrphans();
@@ -123,6 +128,7 @@ void RR::Algorithm()
 /**
 * @brief The processor dequeues a process from its RDY list or enqueues it
 * depending on the mode.
+* 
 * @param process - Reference to a pointer to the process.
 * @param mode - The processor acts as the donor if 0, acts as the receiver otherwise.\
 *

@@ -32,6 +32,7 @@ void FCFS::TerminateRUN()
 {
 	AddTimeleft(-(RUN->GetRemainingTime()));
 	RUN->Terminate(manager->GetTimeStep());
+	total_TRT += RUN->GetTurnAroundDuration();
 	manager->AddToList(manager->GetTerminatedList(), RUN);
 	state = IDLE;
 	RUN = nullptr;
@@ -43,14 +44,15 @@ void FCFS::TerminateRUN()
 void FCFS::Execute()
 {
 	OverHeat();
-	if (state == OVERHEAT)	return;
+	if (state != OVERHEAT)
+	{
+		CheckSIGKILL();
 
-	CheckSIGKILL();
-
-	NextState();
-	Migrate();
-	Fork();
-	Algorithm();
+		NextState();
+		Migrate();
+		Fork();
+		Algorithm();
+	}
 	
 	AddTime();		// Adds to the processor's BUSY/IDLE time.
 }
@@ -98,6 +100,7 @@ void FCFS::Migrate()
 	while (RUN && !RUN->HasParent() && RUN->GetRemainingTime() > manager->GetProcessorsInfo().MaxW && manager->GetProcessorsInfo().NR)
 	{
 		AddTimeleft(-(RUN->GetRemainingTime()));
+		manager->Increment_FCFSmigration();
 		manager->AddToRR(RUN);
 		if (!RDY.dequeue(RUN))
 		{
@@ -120,7 +123,7 @@ void FCFS::Fork()
 		return;
 
 	ProcessInfo new_P_data;
-	new_P_data.AT = manager->GetTimeStep();
+	new_P_data.AT = new_P_data.RT = manager->GetTimeStep();
 	new_P_data.CT = RUN->GetRemainingTime();
 	new_P_data.PID = rand() % 1000;
 	Process* New_Process = new Process(new_P_data, NULL);
@@ -132,6 +135,7 @@ void FCFS::Fork()
 	else
 	{
 		manager->IncrementProcessNum();
+		manager->IncrementFork();
 		manager->AddToFCFS(New_Process);
 	}
 }
@@ -149,6 +153,7 @@ void FCFS::Algorithm()
 	{
 		AddTimeleft(-(RUN->GetRemainingTime()));
 		RUN->Terminate(manager->GetTimeStep());
+		total_TRT += RUN->GetTurnAroundDuration();
 		manager->AddToList(manager->GetTerminatedList(), RUN);
 		if (RUN->HasChild())
 		{
@@ -194,10 +199,12 @@ void FCFS::CheckSIGKILL()
 	{
 		AddTimeleft(-(process->GetRemainingTime()));
 		process->Terminate(manager->GetTimeStep());
+		total_TRT += process->GetTurnAroundDuration();
 		manager->AddToList(manager->GetTerminatedList(), process);
 		if (process->HasChild())
 			manager->CheckOrphans();
 		// Deletes order after executing it.
+		manager->IncrementKill();
 		FCFS::KILL_orders.dequeue(latest_order);
 		delete latest_order;
 		return;
@@ -206,6 +213,7 @@ void FCFS::CheckSIGKILL()
 	{
 		AddTimeleft(-(RUN->GetRemainingTime()));
 		RUN->Terminate(manager->GetTimeStep());
+		total_TRT += RUN->GetTurnAroundDuration();
 		manager->AddToList(manager->GetTerminatedList(), RUN);
 		if (RUN->HasChild())
 		{
@@ -218,6 +226,7 @@ void FCFS::CheckSIGKILL()
 			RUN = nullptr;
 		}
 		// Deletes order after executing it.
+		manager->IncrementKill();
 		FCFS::KILL_orders.dequeue(latest_order);
 		delete latest_order;
 	}
@@ -226,6 +235,7 @@ void FCFS::CheckSIGKILL()
 /**
 * @brief The processor dequeues a process from its RDY list or enqueues it
 * depending on the mode.
+* 
 * @param process - Reference to a pointer to the process.
 * @param mode - The processor acts as the donor if 0, acts as the receiver otherwise.\
 *

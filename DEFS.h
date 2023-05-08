@@ -10,10 +10,11 @@ struct ProcessInfo
 	int ET;				// Execution time.
 	int IO_requests;	// Number of time the process requests I/O
 	int TT;				// Termination time.
+	int total_IO_D;
 
 	ProcessInfo()
 	{
-		ET = IO_requests = 0;
+		ET = IO_requests = total_IO_D = 0;
 		RT = TT = -1;
 	}
 };
@@ -66,6 +67,20 @@ struct ProcessorsInfo
 	ProcessorsInfo()
 	{
 		NF = NS = NR = Num_process = NT = 0;
+	}
+};
+
+struct Statistics
+{
+	int RR_SJF_migrations;
+	int FCFS_RR_migrations;
+	int total_steal;
+	int total_fork;
+	int total_killed;
+
+	Statistics()
+	{
+		RR_SJF_migrations = FCFS_RR_migrations = total_steal = total_fork = total_killed = 0;
 	}
 };
 

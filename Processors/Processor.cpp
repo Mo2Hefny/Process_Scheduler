@@ -9,7 +9,7 @@
 */
 Processor::Processor()
 {
-	time_left = time_busy = time_idle = 0;
+	time_left = time_busy = time_idle = total_TRT = 0;
 	state = IDLE;
 	RUN = NULL;
 	cooldown = 0;

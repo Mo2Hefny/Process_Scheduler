@@ -38,8 +38,8 @@ public:
 	virtual void AddToRDY(Process* p) = 0;
 
 	// Getters
-	unsigned int GetPload() const { return time_busy / total_TRT; }
-	unsigned int GetPUtil() const { return time_busy / (time_busy + time_idle); }
+	float GetPload() const { return time_busy * 100.0/ total_TRT; }
+	float GetPUtil() const { return time_busy * 100.0 / (time_busy + time_idle); }
 	unsigned int GetTimeLeft() const { return time_left; }
 	ProcessorState GetState() const { return state; }
 	Process* GetRun() { return RUN; }

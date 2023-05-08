@@ -1,6 +1,10 @@
 #include "Scheduler.h"
 #include <fstream>
+#include <algorithm>
+#include <cctype>
 #include <string>
+#include <thread>
+#include <conio.h>
 
 /**
 * @brief Scheduler class constructor.
@@ -30,7 +34,6 @@ Scheduler::~Scheduler()
 		delete[] SJF_Processors;
 	if (RR_Processors)
 		delete[] RR_Processors;
-
 	Process* process;
 	while (Terminated_List.dequeue(process))
 		delete process;
@@ -154,6 +157,7 @@ void Scheduler::WorkStealing()
 		if (LQF->Work_Stealing(process, 0))
 		{
 			SQF->Work_Stealing(process, 1);
+			IncrementSteal();
 		}
 		sqf_time = SQF->GetTimeLeft();
 		lqf_time = LQF->GetTimeLeft();
@@ -209,12 +213,13 @@ void Scheduler::LoadFile()
 
 		string IO_string = "";
 		IO_process* IO = NULL;
+		int total = 0;
 		if (P_data.IO_requests != 0)
 		{
 			LoadedFile >> IO_string;
-			IO = ProcessIORequestsInput(IO_string, P_data.IO_requests);
+			IO = ProcessIORequestsInput(IO_string, P_data.IO_requests, total);
 		}
-
+		P_data.total_IO_D = total;
 		Process* New_Process = new Process(P_data, IO);
 		AddToList(GetNewList(), New_Process);
 	}
@@ -233,10 +238,11 @@ void Scheduler::LoadFile()
 *
 * @param IO_string - The I/O requests string that contains the needed data.
 * @param size - Number of the I/O requests of the process.
+* @param total - total IO requests durations.
 *
 * @return I/O requests array.
 */
-IO_process* Scheduler::ProcessIORequestsInput(string IO_string, int size)
+IO_process* Scheduler::ProcessIORequestsInput(string IO_string, int size, int &total)
 {
 	IO_process* IO = new IO_process[size];
 	string num = "";
@@ -246,8 +252,15 @@ IO_process* Scheduler::ProcessIORequestsInput(string IO_string, int size)
 			num += c;
 		}
 		else if (!num.empty() && (c == ',' || c == ')')) {
-			if (i & 1)	IO[i / 2].IO_D = stoi(num);
-			else IO[i / 2].IO_R = stoi(num);
+			if (i & 1)
+			{
+				IO[i / 2].IO_D = stoi(num);
+				total += stoi(num);
+			}
+			else
+			{
+				IO[i / 2].IO_R = stoi(num);
+			}
 			i++;
 			num = "";
 		}
@@ -329,4 +342,102 @@ void Scheduler::Execute()
 
 		timestep++;
 	}
+	cout << "Creating an output file......\n";
+	// Pause for 1 second
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+	WriteOutput();
+}
+
+/**
+* @brief Sets the output file name and organizes its path.
+*/
+void Scheduler::SetOutputFile()
+{
+	std::cout << "\033[2J\033[1;1H";		// Clears Console
+	string file_name;
+	cout << "Enter the name of the output file: ";
+	cin >> file_name;
+	string path = "C:\\Users\\Moamen\\OneDrive\\GitHub\\Process_Scheduler\\Outputs\\";
+	file_name = file_name + ".txt";
+	while (ifstream(path + file_name))
+	{
+		cout << "File already exists. Do you want to overwrite it? (y / n)\n";
+		char c;
+		do
+		{
+			c = getchar();
+			c = tolower(c);
+		} while (c != 'y' && c != 'n');
+		if (c == 'n')
+		{
+			file_name = console->GetFileName();
+			file_name = file_name + ".txt";
+		}
+		else
+			break;
+	}
+	OutputFile.open(path + file_name);
+	if (!OutputFile)
+	{
+		cout << "ERROR OCCURED\n";
+		exit(1);
+	}
+
+}
+
+/**
+* @brief Write the simulation results data into an output file.
+*/
+void Scheduler::WriteOutput()
+{
+	SetOutputFile();
+	OutputFile << "TT\t\t\t\tPID\t\t\t\tAT\t\t\t\tCT\t\t\t\tIO_D\t\t\t\t\tWT\t\t\t\tRT\t\t\t\tTRT\n";
+	Process* process;
+	int total_WT = 0, total_RT = 0, total_TRT = 0;
+	while (Terminated_List.dequeue(process))
+	{
+		ProcessInfo i = process->GetProcessInfo();
+		OutputFile << i.TT << "\t\t\t\t";
+		OutputFile << i.PID << "\t\t\t\t";
+		OutputFile << i.AT << "\t\t\t\t";
+		OutputFile << i.CT << "\t\t\t\t";
+		OutputFile << i.total_IO_D << " \t\t\t\t\t\t";
+		OutputFile << process->GetWaitingTime() << "\t\t\t\t";
+		OutputFile << i.RT << "\t\t\t\t";
+		OutputFile << process->GetTurnAroundDuration() << "\n";
+		total_WT += process->GetWaitingTime();
+		total_RT += i.RT;
+		total_TRT += process->GetTurnAroundDuration();
+		delete process;
+	}
+	float n = (P_info.Num_process ? P_info.Num_process : 1);
+	OutputFile << "\nProcesses: " << P_info.Num_process;
+	OutputFile << "\nAvg WT: " << total_WT / (int)n << ", \t\tAvg RT = " << total_RT / (int)n << ", \t\tAvg TRT = " << total_TRT / (int)n;
+	OutputFile << "\nMigration %: \t\t\tRTF = " << stats.RR_SJF_migrations * 100.0 / n << "%, \t\tMaxW = " << stats.FCFS_RR_migrations * 100.0 / n << "%";
+	OutputFile << "\nWork Steal %: " << stats.total_steal * 100.0 / n << "%";
+	OutputFile << "\nForked Process: " << stats.total_fork * 100.0 / n << "%";
+	OutputFile << "\nKilled Process: " << stats.total_killed * 100.0 / n << "%";
+
+	OutputFile << "\n\nProcessors: " << P_info.NT << "[" << P_info.NF << " FCFS, " << P_info.NS << " SJR, " << P_info.NR << "RR]";
+	OutputFile << "\nProcessors Load\n";
+	for (int i = 0; i < P_info.NT; i++)
+	{
+		OutputFile << "p" << i + 1 << " = " << Processors[i]->GetPload() << "%";
+		if (i != P_info.NT - 1)
+			OutputFile << ",\t\t";
+	}
+	float total_util = 0;
+	OutputFile << "\n\n\nProcessors Utiliz\n";
+	for (int i = 0; i < P_info.NT; i++)
+	{
+		total_util += Processors[i]->GetPUtil();
+		OutputFile << "p" << i + 1 << " = " << Processors[i]->GetPUtil() << "%";
+		if (i != P_info.NT - 1)
+			OutputFile << ",\t\t";
+	}
+	OutputFile << "\nAvg utilization = " << total_util / P_info.NT << endl;
+
+
+	cout << "Output file has been created.\nCheck the \"Outputs\" folder.\n";
+	OutputFile.close();
 }

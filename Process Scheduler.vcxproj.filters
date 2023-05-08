@@ -36,9 +36,6 @@
     <ClCompile Include="Process\Process.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Process\ChildProcess.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UI\UI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -80,9 +77,6 @@
     <ClInclude Include="Process\Process.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Process\ChildProcess.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="UI\UI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -98,5 +92,8 @@
     <ClInclude Include="Processors\Processor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Outputs\final.txt" />
   </ItemGroup>
 </Project>

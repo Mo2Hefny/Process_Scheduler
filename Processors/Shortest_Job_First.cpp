@@ -14,11 +14,12 @@ void SJF::AddToRDY(Process* p)
 void SJF::Execute()
 {
 	OverHeat();
-	if (state == OVERHEAT)	return;
+	if (state != OVERHEAT)
+	{
+		NextState();
 
-	NextState();
-
-	Algorithm();
+		Algorithm();
+	}
 	AddTime();		// Adds to the processor's BUSY/IDLE time.
 }
 
@@ -69,6 +70,7 @@ void SJF::Algorithm()
 	if (!RUN->GetRemainingTime())
 	{
 		RUN->Terminate(manager->GetTimeStep());
+		total_TRT += RUN->GetTurnAroundDuration();
 		manager->AddToList(manager->GetTerminatedList(), RUN);
 		if (RUN->HasChild())
 			manager->CheckOrphans();
@@ -83,6 +85,7 @@ void SJF::Algorithm()
 /**
 * @brief The processor dequeues a process from its RDY list or enqueues it
 * depending on the mode.
+* 
 * @param process - Reference to a pointer to the process.
 * @param mode - The processor acts as the donor if 0, acts as the receiver otherwise.\
 *

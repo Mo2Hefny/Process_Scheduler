@@ -134,7 +134,6 @@
     <ClCompile Include="Processors\Round_Robin.cpp" />
     <ClCompile Include="Processors\Shortest_Job_First.cpp" />
     <ClCompile Include="DEFS.h" />
-    <ClCompile Include="Process\ChildProcess.cpp" />
     <ClCompile Include="Process\Process.cpp" />
     <ClCompile Include="Scheduler\Scheduler.cpp" />
     <ClCompile Include="UI\UI.cpp" />
@@ -153,10 +152,12 @@
     <ClInclude Include="Processors\Processors.h" />
     <ClInclude Include="Processors\Round_Robin.h" />
     <ClInclude Include="Processors\Shortest_Job_First.h" />
-    <ClInclude Include="Process\ChildProcess.h" />
     <ClInclude Include="Process\Process.h" />
     <ClInclude Include="Scheduler\Scheduler.h" />
     <ClInclude Include="UI\UI.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Outputs\final.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

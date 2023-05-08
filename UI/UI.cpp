@@ -143,6 +143,7 @@ void UI::PrintRUN(int run_size, Process** run)
 		if (!run[i])
 			continue;
 		cout << run[i];
+		printf("(P%d)", i + 1);
 		run_size--;
 		if (run_size)	cout << ", ";
 	}
@@ -174,8 +175,12 @@ void UI::PrintOutput()
 {
 	if (mode == Silent)
 	{
-		cout << "Silent Mode.....    Simulation Starts...\n";
-		cout << "Simulation ends, Output file created\n";
+		if (manager->GetTimeStep() == 0)
+		{
+			cout << "Silent Mode.....    Simulation Starts...\n";
+			cout << "Simulation ends, Output file created\n";
+		}
+		return;
 	}
 	
 

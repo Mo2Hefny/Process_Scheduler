@@ -20,7 +20,9 @@ class Scheduler
 {
 	UI* console;
 	ifstream LoadedFile;
+	ofstream OutputFile;
 	ProcessorsInfo P_info;
+	Statistics stats;
 	unsigned timestep;
 
 	// Lists.
@@ -65,6 +67,13 @@ public:
 	* @brief Increases the number of total processes after forking.
 	*/
 	void IncrementProcessNum() { P_info.Num_process++; }
+
+	// Statistics
+	void Increment_RRmigration() { stats.RR_SJF_migrations++; }
+	void Increment_FCFSmigration() {stats.FCFS_RR_migrations++; }
+	void IncrementSteal() { stats.total_steal++; }
+	void IncrementKill() { stats.total_killed++; }
+	void IncrementFork() { stats.total_fork++; }
 
 	/**
 	* @brief Adds process to a chosen list.
@@ -119,10 +128,16 @@ public:
 	*
 	* @param IO_string - The I/O requests string that contains the needed data.
 	* @param size - Number of the I/O requests of the process.
-	*
+	* @param total - total IO requests durations.
+	* 
 	* @return I/O requests array.
 	*/
-	IO_process* ProcessIORequestsInput(string IO_string, int size);
+	IO_process* ProcessIORequestsInput(string IO_string, int size, int& total);
+
+	/**
+	* @brief Write the simulation results data into an output file.
+	*/
+	void WriteOutput();
 
 	/**
 	* @brief Load the Processors and Processes data from an input file.
@@ -138,6 +153,11 @@ public:
 	* @brief Simulation of the system.
 	*/
 	void Execute();
+
+	/**
+	* @brief Sets the output file name and organizes its path.
+	*/
+	void SetOutputFile();
 };
 
 #endif
