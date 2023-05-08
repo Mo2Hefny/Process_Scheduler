@@ -70,6 +70,16 @@ public:
 	*/
 	void OverHeat();
 
+	/**
+	* @brief The processor dequeues a process from its RDY list or enqueues it
+	* depending on the mode.
+	*
+	* @param process - Reference to a pointer to the process.
+	* @param mode - The processor acts as the donor if 0, acts as the receiver otherwise.
+	*
+	* @returns True on success, false otherwise.
+	*/
+	virtual bool Work_Stealing(Process*& process, int mode) = 0;
 	virtual void Algorithm() = 0;
 	virtual void Execute() = 0;
 };

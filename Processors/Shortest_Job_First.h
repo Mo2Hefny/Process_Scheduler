@@ -34,6 +34,17 @@ public:
 	* @brief The simulation of the processor's algorithm.
 	*/
 	virtual void Execute();
+
+	/**
+	* @brief The processor dequeues a process from its RDY list or enqueues it
+	* depending on the mode.
+	*
+	* @param process - Reference to a pointer to the process.
+	* @param mode - The processor acts as the donor if 0, acts as the receiver otherwise.
+	*
+	* @returns True on success, false otherwise.
+	*/
+	virtual bool Work_Stealing(Process*& process, int mode);
 };
 
 #endif

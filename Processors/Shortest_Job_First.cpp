@@ -79,3 +79,26 @@ void SJF::Algorithm()
 		}
 	}
 }
+
+/**
+* @brief The processor dequeues a process from its RDY list or enqueues it
+* depending on the mode.
+* @param process - Reference to a pointer to the process.
+* @param mode - The processor acts as the donor if 0, acts as the receiver otherwise.\
+*
+* @returns True on success, false otherwise.
+*/
+bool SJF::Work_Stealing(Process*& process, int mode)
+{
+	if (!mode)
+	{
+		if (!RDY.dequeue(process)) return false;
+		time_left -= process->GetRemainingTime();
+	}
+	else
+	{
+		RDY.enqueue(process);
+		time_left += process->GetRemainingTime();
+	}
+	return true;
+}

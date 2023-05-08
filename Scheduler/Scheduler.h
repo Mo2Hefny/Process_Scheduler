@@ -35,6 +35,10 @@ class Scheduler
 	RR* RR_Processors;
 	Processor** Processors;
 
+	// Pointers.
+	Processor* LQF;
+	Processor* SQF;
+
 public:
 	/**
 	* @brief Scheduler class constructor.
@@ -99,10 +103,15 @@ public:
 	void AddToRR(Process* p);
 
 	/**
+	* @brief The shortest ready queue in the system looks at the longest ready
+	* queue to see how full it is.
+	*/
+	void WorkStealing();
+
+	/**
 	* @brief Checks for orphan processes in the FCFS processors
 	* after any process ermination.
 	*/
-
 	void CheckOrphans();
 
 	/**

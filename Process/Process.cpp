@@ -1,5 +1,5 @@
 #include "Process.h"
-
+#include <windows.h>
 /**
 * @brief Process class constructor.
 * 
@@ -65,7 +65,7 @@ bool Process::ForkChild(Process* child)
 }
 
 /**
-* @breif Terminates the process and its children.
+* @brief Terminates the process and its children.
 * 
 * @parameter time - Termination time.
 */
@@ -86,17 +86,22 @@ void Process::Terminate(int time)
 
 ostream& operator<< (ostream& out, const Process* process)
 {
-	if (process->parent)
+	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+	GetConsoleScreenBufferInfo(consoleHandle, &consoleInfo);
+	WORD currentColor = consoleInfo.wAttributes;
+	if (process->parent && currentColor != 4)
 	{
 		printf("\033[3;104;30m");
 	}
-	else if (process->HasChild())
+	else if (process->HasChild() && currentColor != 4)
 	{
 		printf("\033[3;100;30m");
 	}
 
 	out << process->P_data.PID << '(' << process->GetRemainingTime() << ')';
 
-	printf("\033[0m");
+	if (currentColor != 4)
+		printf("\033[0m");
 	return out;
 }

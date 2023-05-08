@@ -59,12 +59,23 @@ public:
 	virtual void Execute();
 
 	/**
-	* @breif Checks its RUN process and RDY list for the SEGKILL order.
+	* @brief The processor dequeues a process from its RDY list or enqueues it
+	* depending on the mode.
+	* 
+	* @param process - Reference to a pointer to the process.
+	* @param mode - The processor acts as the donor if 0, acts as the receiver otherwise.
+	* 
+	* @returns True on success, false otherwise.
+	*/
+	virtual bool Work_Stealing(Process*& process, int mode);
+
+	/**
+	* @brief Checks its RUN process and RDY list for the SEGKILL order.
 	*/
 	void CheckSIGKILL();
 
 	/**
-	* @breif Terminates the RUN process.
+	* @brief Terminates the RUN process.
 	*/
 	void TerminateRUN();
 };

@@ -69,12 +69,12 @@ public:
 	bool ForkChild(Process* child);
 
 	/**
-	* @breif Adds to the total execution time for the process.
+	* @brief Adds to the total execution time for the process.
 	*/
 	void ExecutingProcess() { P_data.ET++; }
 
 	/**
-	* @breif Terminates the process and its children.
+	* @brief Terminates the process and its children.
 	* 
 	* @parameter time - Termination time.
 	*/

@@ -125,6 +125,44 @@ void Scheduler::AddToRR(Process* p)
 }
 
 /**
+* @brief The shortest ready queue in the system looks at the longest ready
+* queue to see how full it is.
+*/
+void Scheduler::WorkStealing()
+{
+	// Set SQF and LQF.
+	int shortestqueue_index = 0;
+	int longestqueue_index = 0;
+	for (int i = 1; i < P_info.NT; i++)
+	{
+		if (Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft())
+			shortestqueue_index = i;
+		if (Processors[i]->GetTimeLeft() > Processors[longestqueue_index]->GetTimeLeft())
+			longestqueue_index = i;
+	}
+	LQF = Processors[longestqueue_index];
+	SQF = Processors[shortestqueue_index];
+
+	int sqf_time = SQF->GetTimeLeft();
+	int lqf_time = LQF->GetTimeLeft();
+
+	float STEAL_LIMIT = (lqf_time - sqf_time) * 100.0 / lqf_time;
+
+	while (STEAL_LIMIT > 40.0)
+	{
+		Process* process;
+		if (LQF->Work_Stealing(process, 0))
+		{
+			SQF->Work_Stealing(process, 1);
+		}
+		sqf_time = SQF->GetTimeLeft();
+		lqf_time = LQF->GetTimeLeft();
+		STEAL_LIMIT = (float)(lqf_time - sqf_time) / lqf_time;
+	}
+
+}
+
+/**
 * @brief Checks for orphan processes in the FCFS processors
 * after any process ermination.
 */
@@ -266,6 +304,9 @@ void Scheduler::Execute()
 			current->SetResponseTime(timestep);
 			AddToReady(current);
 		}
+
+		if (timestep && timestep % P_info.STL == 0)
+			WorkStealing();
 
 		for (int i = 0; i < P_info.NF + P_info.NS + P_info.NR; i++)
 		{
