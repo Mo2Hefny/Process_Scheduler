@@ -98,6 +98,10 @@ ostream& operator<< (ostream& out, const Process* process)
 	{
 		printf("\033[3;100;30m");
 	}
+	else if (currentColor != 4)
+	{
+		printf("\x1B[93m");
+	}
 
 	out << process->P_data.PID << '(' << process->GetRemainingTime() << ')';
 

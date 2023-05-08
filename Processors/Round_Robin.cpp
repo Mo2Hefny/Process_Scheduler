@@ -132,7 +132,9 @@ bool RR::Work_Stealing(Process*& process, int mode)
 {
 	if (!mode)
 	{
-		if (!RDY.dequeue(process)) return false;
+		if (!RDY.peek(process)) return false;
+		if (process->HasParent()) return false;
+		RDY.dequeue(process);
 		time_left -= process->GetRemainingTime();
 	}
 	else

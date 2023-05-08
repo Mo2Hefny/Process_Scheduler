@@ -1,7 +1,40 @@
 #include "UI.h"
 #include "../Scheduler/Scheduler.h"
 #include <iostream>
+#include <thread>
 #include <conio.h>
+
+/**
+* @brief UI class constructor.
+*
+* @param app - Pointer to the scheduling manager.
+*/
+UI::UI(Scheduler* app)
+{
+	manager = app; 
+	cout << "Please select the program running mode:\n";
+	cout << "[1] Interactive Mode.\n";
+	cout << "[2] Step-By-Step Mode.\n";
+	cout << "[3] Silent Mode.\n";
+	int m;
+	cin >> m;
+	while (m < 1 || m > 3)
+	{
+		cout << "Invalid answer please try again => ";
+		cin >> m;
+	}
+
+	switch (m)
+	{
+	case 1: mode = Interactive; break;
+	case 2: mode = Step_by_step; break;
+	case 3: mode = Silent; break;
+	}
+	cout << "Clearing console........";
+	// Pause for 1 second
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+	std::cout << "\033[2J\033[1;1H";		// Clears Console
+}
 
 /**
 * @brief Print Processors' RDY Lists.
@@ -139,22 +172,37 @@ void UI::PrintTRM()
 */
 void UI::PrintOutput()
 {
+	if (mode == Silent)
+	{
+		cout << "Silent Mode.....    Simulation Starts...\n";
+		cout << "Simulation ends, Output file created\n";
+	}
+	
+
 	int run_size = 0;
 	Processor** Processors = manager->GetProcessors();
 	Process** run = new Process * [manager->GetProcessorsInfo().NT];
+	
 	cout << "Current Timestep:" << manager->GetTimeStep() << endl;
 
 	PrintRDY(run_size, Processors, run);
-	
 	PrintBLK();
-
 	PrintRUN(run_size, run);
-
 	PrintTRM();
+
+	if (mode == Interactive)
+	{
+		cout << "PRESS ANY KEY TO MOVE TO THE NEXT STEP !" << endl;
+		_getch();								// Waits for any key input
+	}
+	else
+	{
+		cout << "PLEASE WAIT FOR 1 SECOND !" << endl;
+		// Pause for 1 second
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+	}
+	std::cout << "\033[2J\033[1;1H";		// Clears Console
 	
-	cout << "PRESS ANY KEY TO MOVE TO THE NEXT STEP !" << endl;
-	_getch();								// Waits for any key input
-	//std::cout << "\033[2J\033[1;1H";		// Clears Console
 }
 
 /**

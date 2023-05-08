@@ -19,13 +19,14 @@ class Scheduler; //forward class declaration
 class UI
 {
 	Scheduler* manager;
+	ProgramInterface mode;
 public:
 	/**
 	* @brief UI class constructor.
 	* 
 	* @param app - Pointer to the scheduling manager.
 	*/
-	UI(Scheduler* app) { manager = app; }
+	UI(Scheduler* app);
 
 	/**
 	* @brief Allows the user to monitor the processes transition between different states.
