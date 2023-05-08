@@ -81,7 +81,7 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		if (run[i])
 			run_size++;
 		PriorityQueue<Process*>* SJF_RDY = sjf->GetRDY();
-		cout << "processor " << i + 1 << " [" << SJF_NAME << "] " << '(' << sjf->GetTimeLeft() << ')' << ':' << SJF_RDY->size() << " RDY: ";
+		cout << "processor " << i + 1 << " [" << SJF_NAME << "]" << '(' << sjf->GetTimeLeft() << ')' << ':' << SJF_RDY->size() << " RDY: ";
 		SJF_RDY->PrintList();
 
 		if (sjf->GetState() == OVERHEAT)
@@ -98,7 +98,7 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		if (run[i])
 			run_size++;
 		LinkedQueue<Process*>* RR_RDY = rr->GetRDY();
-		cout << "processor " << i + 1 << " [" << RR_NAME << "] " << '(' << rr->GetTimeLeft() << ')' << ':' << RR_RDY->size() << " RDY: ";
+		cout << "processor " << i + 1 << " [" << RR_NAME << "]" << '(' << rr->GetTimeLeft() << ')' << ':' << RR_RDY->size() << " RDY: ";
 		RR_RDY->PrintList();
 		if (rr->GetState() == OVERHEAT)
 			printf("\033[0m");

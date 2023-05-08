@@ -1,4 +1,5 @@
 #include "Scheduler.h"
+#include <filesystem>
 #include <fstream>
 #include <algorithm>
 #include <cctype>
@@ -196,10 +197,11 @@ void Scheduler::CheckOrphans()
 void Scheduler::LoadFile()
 {
 	string file_name;
+	string path = "Inputs\\";
 	do
 	{
 		file_name = console->GetFileName() + ".txt";
-		LoadedFile.open(file_name);
+		LoadedFile.open(path + file_name);
 	} while (!LoadedFile.is_open());
 	LoadedFile >> P_info.NF >> P_info.NS >> P_info.NR;			// No. of processors of each type.
 	P_info.NT = P_info.NF + P_info.NS + P_info.NR;
@@ -357,7 +359,7 @@ void Scheduler::SetOutputFile()
 	string file_name;
 	cout << "Enter the name of the output file: ";
 	cin >> file_name;
-	string path = "C:\\Users\\Moamen\\OneDrive\\GitHub\\Process_Scheduler\\Outputs\\";
+	string path = "Outputs\\";
 	file_name = file_name + ".txt";
 	while (ifstream(path + file_name))
 	{
