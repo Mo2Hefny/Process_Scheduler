@@ -54,6 +54,11 @@ public:
 	* @returns True on success, false otherwise.
 	*/
 	virtual bool Work_Stealing(Process*& process, int mode);
+
+	/**
+	* @brief Moves all the processes to another processor's list when overheated.
+	*/
+	virtual void EmptyProcessor();
 };
 
 #endif

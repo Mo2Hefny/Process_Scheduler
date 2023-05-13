@@ -67,8 +67,7 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		cout << "processor " << i + 1 << " [FCFS]"<<'('<<fcfs->GetTimeLeft()<<')' << ':' << FCFS_RDY->size() << " RDY: ";
 		FCFS_RDY->PrintList();
 		
-		if (fcfs->GetState() == OVERHEAT)
-			printf("\033[0m");
+		printf("\033[0m");
 	}
 	
 	// Print SJF Processors' RDY Lists.
@@ -84,8 +83,7 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		cout << "processor " << i + 1 << " [" << SJF_NAME << "]" << '(' << sjf->GetTimeLeft() << ')' << ':' << SJF_RDY->size() << " RDY: ";
 		SJF_RDY->PrintList();
 
-		if (sjf->GetState() == OVERHEAT)
-			printf("\033[0m");
+		printf("\033[0m");
 	}
 	
 	// Print RR Processors' RDY Lists.
@@ -100,8 +98,7 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		LinkedQueue<Process*>* RR_RDY = rr->GetRDY();
 		cout << "processor " << i + 1 << " [" << RR_NAME << "]" << '(' << rr->GetTimeLeft() << ')' << ':' << RR_RDY->size() << " RDY: ";
 		RR_RDY->PrintList();
-		if (rr->GetState() == OVERHEAT)
-			printf("\033[0m");
+		printf("\033[0m");
 	}
 }
 

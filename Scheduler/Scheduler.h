@@ -94,22 +94,28 @@ public:
 	* @brief Sets the child process to a FCFS processor's RDY list.
 	*
 	* @param p - Pointer to the process.
+	* 
+	* @returns - Boolean.
 	*/
-	void AddToFCFS(Process* p);
+	bool AddToFCFS(Process* p);
 
 	/**
 	* @brief Migrates the process to a SJF processor's RDY list.
 	*
 	* @param p - Pointer to the process.
+	* 
+	* @returns - Boolean.
 	*/
-	void AddToSJF(Process* p);
+	bool AddToSJF(Process* p);
 
 	/**
 	* @brief Migrates the process to a RR processor's RDY list.
 	*
 	* @param p - Pointer to the process.
+	* 
+	* @returns - Boolean.
 	*/
-	void AddToRR(Process* p);
+	bool AddToRR(Process* p);
 
 	/**
 	* @brief The shortest ready queue in the system looks at the longest ready

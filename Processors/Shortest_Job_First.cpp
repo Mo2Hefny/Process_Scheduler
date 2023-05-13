@@ -107,3 +107,24 @@ bool SJF::Work_Stealing(Process*& process, int mode)
 	}
 	return true;
 }
+
+/**
+* @brief Moves all the processes to another processor's list when overheated.
+*/
+void SJF::EmptyProcessor()
+{
+	if (RUN)
+	{
+		AddTimeleft(-(RUN->GetRemainingTime()));
+		manager->AddToReady(RUN);
+		RUN = nullptr;
+	}
+	Process* process;
+	int size = RDY.size();
+	while (size--)
+	{
+		if (!RDY.dequeue(process)) break;
+		AddTimeleft(-(process->GetRemainingTime()));
+		manager->AddToReady(process);
+	}
+}

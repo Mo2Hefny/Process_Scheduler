@@ -38,7 +38,7 @@ void Processor::AddTime()
 {
 	if (state == BUSY)
 		time_busy++;
-	else
+	else if (state == IDLE)
 		time_idle++;
 }
 
@@ -65,17 +65,13 @@ void Processor::OverHeat()
 	}
 	else
 	{
+		cooldown = 0;
 		int random_overheat = rand() % 100 + 1;
 		if (random_overheat <= manager->GetProcessorsInfo().Heat_prob)
 		{
 			state = OVERHEAT;
 			cooldown = manager->GetProcessorsInfo().cooldown;
-			if (RUN)
-			{
-				AddTimeleft(-(RUN->GetRemainingTime()));
-				manager->AddToReady(RUN);
-				RUN = nullptr;
-			}
+			EmptyProcessor();
 		}
 	}
 }

@@ -78,6 +78,11 @@ public:
 	* @brief Terminates the RUN process.
 	*/
 	void TerminateRUN();
+
+	/**
+	* @brief Moves all the processes to another processor's list when overheated.
+	*/
+	virtual void EmptyProcessor();
 };
 
 #endif

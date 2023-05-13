@@ -68,9 +68,9 @@ void RR::Migrate()
 
 	while (RUN && RUN->GetRemainingTime() < manager->GetProcessorsInfo().RTF && manager->GetProcessorsInfo().NS)
 	{
+		if (!manager->AddToSJF(RUN)) break;
 		AddTimeleft(-(RUN->GetRemainingTime()));
 		manager->Increment_RRmigration();
-		manager->AddToSJF(RUN);
 		if (!RDY.dequeue(RUN))
 		{
 			state = IDLE;
@@ -149,4 +149,25 @@ bool RR::Work_Stealing(Process*& process, int mode)
 		time_left += process->GetRemainingTime();
 	}
 	return true;
+}
+
+/**
+* @brief Moves all the processes to another processor's list when overheated.
+*/
+void RR::EmptyProcessor()
+{
+	if (RUN)
+	{
+		AddTimeleft(-(RUN->GetRemainingTime()));
+		manager->AddToReady(RUN);
+		RUN = nullptr;
+	}
+	Process* process;
+	int size = RDY.size();
+	while (size--)
+	{
+		if (!RDY.dequeue(process)) break;
+		AddTimeleft(-(process->GetRemainingTime()));
+		manager->AddToReady(process);
+	}
 }

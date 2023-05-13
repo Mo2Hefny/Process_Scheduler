@@ -59,73 +59,112 @@ void Scheduler::AddToList(LinkedQueue<Process*>* List, Process* p)
 */
 void Scheduler::AddToReady(Process* p)
 {
-	int shortestqueue_index = 0;
-	for (int i = 1; i < P_info.NT; i++)
+	int shortestqueue_index = -1;
+	int coldest_index = 0;
+	for (int i = 0; i < P_info.NT; i++)
 	{
-		if (Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft())
+		if ((shortestqueue_index == -1 || Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft()) && !Processors[i]->GetCooldown())
 			shortestqueue_index = i;
+
+		if (Processors[i]->GetCooldown() < Processors[coldest_index]->GetCooldown())
+			coldest_index = i;
 	}
 
 	//p->SetTransitionTime(timestep);		//MIGHT BE REMOVED//
-
-	Processors[shortestqueue_index]->AddToRDY(p);
+	if (shortestqueue_index == -1)
+	{
+		if (Processors[coldest_index]->GetState() == OVERHEAT)
+			Processors[coldest_index]->SetState(IDLE);
+		Processors[coldest_index]->AddToRDY(p);
+	}	
+	else
+		Processors[shortestqueue_index]->AddToRDY(p);
 }
 
 /**
 * @brief Sets the child process to a FCFS processor's RDY list.
 *
 * @param p - Pointer to the process.
+* 
+* @returns - Boolean.
 */
-void Scheduler::AddToFCFS(Process* p)
+bool Scheduler::AddToFCFS(Process* p)
 {
-	int shortestqueue_index = 0;
-	for (int i = 1; i < P_info.NF; i++)
+	int shortestqueue_index = -1;
+	int coldest_index = 0;
+	for (int i = 0; i < P_info.NF; i++)
 	{
-		if (Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft())
+		if ((shortestqueue_index == -1 || Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft()) && !Processors[i]->GetCooldown())
 			shortestqueue_index = i;
+
+		if (Processors[i]->GetCooldown() < Processors[coldest_index]->GetCooldown())
+			coldest_index = i;
 	}
 
 	//p->SetTransitionTime(timestep);		//MIGHT BE REMOVED//
-
-	Processors[shortestqueue_index]->AddToRDY(p);
+	if (shortestqueue_index == -1)
+	{
+		if (Processors[coldest_index]->GetState() == OVERHEAT)
+			Processors[coldest_index]->SetState(IDLE);
+		Processors[coldest_index]->AddToRDY(p);
+		return true;
+	}
+	else
+	{
+		Processors[shortestqueue_index]->AddToRDY(p);
+		return true;
+	}
+	return false;
 }
 
 /**
 * @brief Migrates the process to a SJF processor's RDY list.
 *
 * @param p - Pointer to the process.
+* 
+* @returns - Boolean.
 */
-void Scheduler::AddToSJF(Process* p)
+bool Scheduler::AddToSJF(Process* p)
 {
 	int shortestqueue_index = P_info.NF;
 	for (int i = P_info.NF + 1; i < P_info.NF + P_info.NS; i++)
 	{
-		if (Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft())
+		if (Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft() && !Processors[i]->GetCooldown())
 			shortestqueue_index = i;
 	}
 
 	//p->SetTransitionTime(timestep);		//MIGHT BE REMOVED//
-
+	
+	if (Processors[shortestqueue_index]->GetCooldown()) return false;
+	
 	Processors[shortestqueue_index]->AddToRDY(p);
+
+	return true;
 }
 
 /**
 * @brief Migrates the process to a RR processor's RDY list.
 *
 * @param p - Pointer to the process.
+* 
+* @returns - Boolean.
 */
-void Scheduler::AddToRR(Process* p)
+bool Scheduler::AddToRR(Process* p)
 {
 	int shortestqueue_index = P_info.NF + P_info.NS;
 	for (int i = P_info.NF + P_info.NS + 1; i < P_info.NT; i++)
 	{
-		if (Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft())
+		if (Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft() && !Processors[i]->GetCooldown())
 			shortestqueue_index = i;
 	}
 
 	//p->SetTransitionTime(timestep);		//MIGHT BE REMOVED//
 
+	if (Processors[shortestqueue_index]->GetCooldown()) return false;
+
 	Processors[shortestqueue_index]->AddToRDY(p);
+
+	return true;
 }
 
 /**
@@ -203,6 +242,11 @@ void Scheduler::LoadFile()
 		file_name = console->GetFileName() + ".txt";
 		LoadedFile.open(path + file_name);
 	} while (!LoadedFile.is_open());
+	cout << "Loading File........";
+	// Pause for 1 second
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+	std::cout << "\033[2J\033[1;1H";		// Clears Console
+
 	LoadedFile >> P_info.NF >> P_info.NS >> P_info.NR;			// No. of processors of each type.
 	P_info.NT = P_info.NF + P_info.NS + P_info.NR;
 	LoadedFile >> P_info.Time_slice >> P_info.cooldown;					// Time slice for RR && Overheating cooldown for processors.

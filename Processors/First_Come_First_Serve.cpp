@@ -99,9 +99,9 @@ void FCFS::Migrate()
 {
 	while (RUN && !RUN->HasParent() && RUN->GetRemainingTime() > manager->GetProcessorsInfo().MaxW && manager->GetProcessorsInfo().NR)
 	{
+		if (!manager->AddToRR(RUN)) break;
 		AddTimeleft(-(RUN->GetRemainingTime()));
 		manager->Increment_FCFSmigration();
-		manager->AddToRR(RUN);
 		if (!RDY.dequeue(RUN))
 		{
 			state = IDLE;
@@ -256,4 +256,28 @@ bool FCFS::Work_Stealing(Process*& process, int mode)
 		time_left += process->GetRemainingTime();
 	}
 	return true;
+}
+
+/**
+* @brief Moves all the processes to another processor's list when overheated.
+*/
+void FCFS::EmptyProcessor()
+{
+	if (RUN)
+	{
+		AddTimeleft(-(RUN->GetRemainingTime()));
+		manager->AddToReady(RUN);
+		RUN = nullptr;
+	}
+	Process* process;
+	int size = RDY.size();
+	while (size--)
+	{
+		if (!RDY.dequeue(process)) break;
+		AddTimeleft(-(process->GetRemainingTime()));
+		if (process->HasParent())
+			manager->AddToFCFS(process);
+		else
+			manager->AddToReady(process);
+	}
 }

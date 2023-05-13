@@ -38,6 +38,7 @@ public:
 	virtual void AddToRDY(Process* p) = 0;
 
 	// Getters
+	unsigned int GetCooldown() const { return cooldown; }
 	float GetPload() const { return time_busy * 100.0/ total_TRT; }
 	float GetPUtil() const { return time_busy * 100.0 / (time_busy + time_idle); }
 	unsigned int GetTimeLeft() const { return time_left; }
@@ -45,6 +46,7 @@ public:
 	Process* GetRun() { return RUN; }
 
 	// Setters
+	void SetState(ProcessorState STATE) { state = STATE; }
 
 	/**
 	* @brief  Adds to the total time left for the processor's queue.
@@ -69,6 +71,11 @@ public:
 	* @brief Generates a random number to check if the processor overheats.
 	*/
 	void OverHeat();
+
+	/**
+	* @brief Moves all the processes to another processor's list when overheated.
+	*/
+	virtual void EmptyProcessor() = 0;
 
 	/**
 	* @brief The processor dequeues a process from its RDY list or enqueues it
