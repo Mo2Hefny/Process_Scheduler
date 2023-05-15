@@ -102,5 +102,6 @@
   <ItemGroup>
     <Text Include="Outputs\final.txt" />
     <Text Include="Inputs\T2.txt" />
+    <Text Include="Inputs\full.txt" />
   </ItemGroup>
 </Project>

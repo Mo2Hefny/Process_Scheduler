@@ -52,7 +52,8 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 	cout << endl;
 
 	string SJF_NAME = (manager->GetProcessorsInfo().NF) ? "SJF " : "SJF";
-	string RR_NAME = (manager->GetProcessorsInfo().NF) ? "RR  " : (manager->GetProcessorsInfo().NS) ? "RR " : "RR";
+	string EDF_NAME = (manager->GetProcessorsInfo().NF) ? "EDF " : "EDF";
+	string RR_NAME = (manager->GetProcessorsInfo().NF) ? "RR  " : (manager->GetProcessorsInfo().NS || manager->GetProcessorsInfo().NE) ? "RR " : "RR";
 
 	// Print FCFS Processors' RDY Lists.
 	for (int i = 0; i < manager->GetProcessorsInfo().NF; i++)
@@ -87,7 +88,7 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 	}
 	
 	// Print RR Processors' RDY Lists.
-	for (int i = manager->GetProcessorsInfo().NF + manager->GetProcessorsInfo().NS; i < manager->GetProcessorsInfo().NT; i++)
+	for (int i = manager->GetProcessorsInfo().NF + manager->GetProcessorsInfo().NS; i < manager->GetProcessorsInfo().NT - manager->GetProcessorsInfo().NE; i++)
 	{
 		RR* rr = dynamic_cast<RR*>(Processors[i]);
 		if (rr->GetState() == OVERHEAT)
@@ -98,6 +99,22 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		LinkedQueue<Process*>* RR_RDY = rr->GetRDY();
 		cout << "processor " << i + 1 << " [" << RR_NAME << "]" << '(' << rr->GetTimeLeft() << ')' << ':' << RR_RDY->size() << " RDY: ";
 		RR_RDY->PrintList();
+		printf("\033[0m");
+	}
+
+	// Print EDF Processors' RDY Lists.
+	for (int i = manager->GetProcessorsInfo().NT - manager->GetProcessorsInfo().NE; i < manager->GetProcessorsInfo().NT; i++)
+	{
+		EDF* edf = dynamic_cast<EDF*>(Processors[i]);
+		if (edf->GetState() == OVERHEAT)
+			printf("\x1B[31m");
+		run[i] = Processors[i]->GetRun();
+		if (run[i])
+			run_size++;
+		PriorityQueue<Process*>* EDF_RDY = edf->GetRDY();
+		cout << "processor " << i + 1 << " [" << EDF_NAME << "]" << '(' << edf->GetTimeLeft() << ')' << ':' << EDF_RDY->size() << " RDY: ";
+		EDF_RDY->PrintList();
+
 		printf("\033[0m");
 	}
 }

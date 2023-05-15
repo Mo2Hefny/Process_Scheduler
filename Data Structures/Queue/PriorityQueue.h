@@ -45,7 +45,7 @@ public:
 			backPtr = newnode;
 			return true;
 		}
-		if (frontPtr->getPriority() < newnode->getPriority())
+		if (frontPtr->getPriority() > newnode->getPriority())
 		{
 			newnode->setNext(frontPtr);
 			frontPtr = newnode;
@@ -54,7 +54,7 @@ public:
 		Node<T>* ptr = frontPtr;
 		while (ptr->getNext())
 		{
-			if (ptr->getNext()->getPriority() < newnode->getPriority())
+			if (ptr->getNext()->getPriority() > newnode->getPriority())
 			{
 				newnode->setNext(ptr->getNext());
 				ptr->setNext(newnode);

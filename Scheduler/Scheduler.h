@@ -35,6 +35,7 @@ class Scheduler
 	FCFS* FCFS_Processors;
 	SJF* SJF_Processors;
 	RR* RR_Processors;
+	EDF* EDF_Processors;
 	Processor** Processors;
 
 	// Pointers.
@@ -144,6 +145,16 @@ public:
 	* @brief Write the simulation results data into an output file.
 	*/
 	void WriteOutput();
+
+	/**
+	* @brief Write the processes statistics into the output file.
+	*/
+	void ProcessStatistics();
+
+	/**
+	* @brief Write the processors statistics into the output file.
+	*/
+	void ProcessorStatistics();
 
 	/**
 	* @brief Load the Processors and Processes data from an input file.

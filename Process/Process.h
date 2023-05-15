@@ -5,6 +5,8 @@
 #include <iostream>
 using namespace std;
 
+class Scheduler; //forward class declaration
+
 /**
 * @class Process
 * 
@@ -15,7 +17,9 @@ class Process
 	ProcessInfo P_data;
 	IO_process* IO;			// Array of I/O requests.
 	bool terminated;
-	static unsigned int total_TRT, PID;
+	bool late;
+	static unsigned int total_TRT, PID, total_early;
+	Scheduler* manager;
 	//int Transition_Time;		// Time of the last list transition.
 
 	// Forking.
@@ -37,8 +41,9 @@ public:
 	*
 	* @param P_info - The Process Information as AT, CT, PID, etc...
 	* @param IO_requests - The I/O requests array for this process.
+	* @param app - Pointer to the Scheduler mannager.
 	*/
-	Process(ProcessInfo, IO_process*);
+	Process(ProcessInfo, IO_process*, Scheduler*);
 
 	/**
 	* @brief Process class destructor.
@@ -50,12 +55,16 @@ public:
 	// Setters.
 	void SetResponseTime(int t) { P_data.RT = t; }
 	static void SetForkPID(unsigned int id) { Process::PID = id; }
+	void SetLate(bool b) { late = b; }
 	//void SetTransitionTime(int t) { Transition_Time = t; }
 
 	// Getters.
 	int GetArrivalTime() const { return P_data.AT; }
 	int GetResponseTime() const { return P_data.RT; }
 	int GetCPUTime() const { return P_data.CT; }
+	int GetDeadline() const { return P_data.Deadline; }
+	bool GetLate() const { return late; }
+	Scheduler* GetScheduler() const { return manager; }
 	int GetRemainingTime() const { return P_data.CT - P_data.ET; }
 	int GetExecutedTime() const { return P_data.ET; }
 	int GetTurnAroundDuration() const { return P_data.TT - P_data.AT + 1; }
@@ -63,6 +72,7 @@ public:
 	int GetCurrWaitingTime(int TimeStep) const { return TimeStep - P_data.AT - P_data.ET; }
 	static unsigned int GetTotalTRT() { return Process::total_TRT; }
 	static unsigned int GetForkPID() { return Process::PID; }
+	static unsigned int GetTotalEarly() { return Process::total_early; }
 
 	//int GetTransitionTime() const { return Transition_Time; }
 	ProcessInfo GetProcessInfo() const { return P_data; }
@@ -81,10 +91,8 @@ public:
 
 	/**
 	* @brief Terminates the process and its children.
-	* 
-	* @parameter time - Termination time.
 	*/
-	void Terminate(int time);
+	void Terminate();
 
 	friend ostream& operator<< (ostream& out, const Process* process);
 

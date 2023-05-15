@@ -93,7 +93,7 @@ void RR::Algorithm()
 		DecTimeleft();	// Decreases the processor's time left.
 		if (!RUN->GetRemainingTime())
 		{
-			RUN->Terminate(manager->GetTimeStep());
+			RUN->Terminate();
 			manager->AddToList(manager->GetTerminatedList(), RUN);
 			if (RUN->HasChild())
 				manager->CheckOrphans();
@@ -138,9 +138,8 @@ bool RR::Work_Stealing(Process*& process, int mode)
 {
 	if (!mode)
 	{
-		if (!RDY.peek(process)) return false;
-		if (process->HasParent()) return false;
-		RDY.dequeue(process);
+		if (!RDY.dequeue(process)) return false;
+
 		time_left -= process->GetRemainingTime();
 	}
 	else

@@ -3,7 +3,7 @@
 
 void EDF::AddToRDY(Process* p)
 {
-	RDY.enqueue(p, p->GetCPUTime());
+	RDY.enqueue(p, p->GetDeadline());
 	AddTimeleft(p->GetRemainingTime());
 }
 
@@ -65,9 +65,9 @@ void EDF::Algorithm()
 {
 	if (state == IDLE)	return;
 	Process* temp;
-	if(RDY.peek(temp)&& RUN->GetCPUTime() > temp->GetCPUTime())
+	if(RDY.peek(temp) && RUN->GetDeadline() > temp->GetDeadline())
 	{
-		RDY.enqueuelast(RUN);
+		RDY.enqueue(RUN, RUN->GetDeadline());
 		RDY.dequeue(RUN);
 	}
 	RUN->ExecutingProcess();
@@ -75,8 +75,7 @@ void EDF::Algorithm()
 	// If the Process finishes execution.
 	if (!RUN->GetRemainingTime())
 	{
-		RUN->Terminate(manager->GetTimeStep());
-		total_TRT += RUN->GetTurnAroundDuration();
+		RUN->Terminate();
 		manager->AddToList(manager->GetTerminatedList(), RUN);
 		if (RUN->HasChild())
 			manager->CheckOrphans();
@@ -101,15 +100,35 @@ bool EDF::Work_Stealing(Process*& process, int mode)
 {
 	if (!mode)
 	{
-		if (!RDY.peek(process)) return false;
-		if (process->HasParent()) return false;
-		RDY.dequeue(process);
+		if (!RDY.dequeue(process)) return false;
+
 		time_left -= process->GetRemainingTime();
 	}
 	else
 	{
-		RDY.enqueue(process, process->GetCPUTime());
+		RDY.enqueue(process, process->GetDeadline());
 		time_left += process->GetRemainingTime();
 	}
 	return true;
+}
+
+/**
+* @brief Moves all the processes to another processor's list when overheated.
+*/
+void EDF::EmptyProcessor()
+{
+	if (RUN)
+	{
+		AddTimeleft(-(RUN->GetRemainingTime()));
+		manager->AddToReady(RUN);
+		RUN = nullptr;
+	}
+	Process* process;
+	int size = RDY.size();
+	while (size--)
+	{
+		if (!RDY.dequeue(process)) break;
+		AddTimeleft(-(process->GetRemainingTime()));
+		manager->AddToReady(process);
+	}
 }

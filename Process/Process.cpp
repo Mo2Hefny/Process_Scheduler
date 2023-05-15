@@ -1,7 +1,8 @@
 #include "Process.h"
+#include "../Scheduler/Scheduler.h"
 #include <windows.h>
 
-unsigned int Process::total_TRT = 0;
+unsigned int Process::total_TRT = 0, Process::total_early = 0;
 unsigned int Process::PID;
 
 /**
@@ -9,12 +10,14 @@ unsigned int Process::PID;
 * 
 * @param P_info - The Process Information as AT, CT, PID, etc...
 * @param IO_requests - The I/O requests array for this process.
+* @param app - Pointer to the Scheduler mannager.
 */
-Process::Process(ProcessInfo P_info, IO_process* IO_requests)
+Process::Process(ProcessInfo P_info, IO_process* IO_requests, Scheduler* app)
 {
 	P_data = P_info;
 	IO = IO_requests;
-	terminated = false;
+	terminated = late = false;
+	manager = app;
 	//Transition_Time = -1;
 
 	parent = nullptr;
@@ -37,6 +40,7 @@ Process::Process(const Process& other)
 		IO[i].IO_D = other.IO[i].IO_D;
 	}
 	terminated = other.terminated;
+	late = other.late;
 	l_child = other.l_child;
 	r_child = other.r_child;
 	//Transition_Time = other.Transition_Time;
@@ -72,12 +76,12 @@ bool Process::ForkChild(Process* child)
 
 /**
 * @brief Terminates the process and its children.
-* 
-* @parameter time - Termination time.
 */
-void Process::Terminate(int time)
+void Process::Terminate()
 {
 	if (terminated) return;
+	
+	int time = manager->GetTimeStep();
 
 	terminated = true;
 	if (parent && !parent->IsTerminated())
@@ -89,8 +93,13 @@ void Process::Terminate(int time)
 	P_data.TT = time;
 	Process::total_TRT += P_data.TT - P_data.AT + 1;
 
-	if (l_child)	l_child->Terminate(time);
-	if (r_child)	r_child->Terminate(time);
+	if (GetDeadline() > time)
+		Process::total_early++;
+	else
+		late = true;
+
+	if (l_child)	l_child->Terminate();
+	if (r_child)	r_child->Terminate();
 }
 
 ostream& operator<< (ostream& out, const Process* process)
@@ -99,22 +108,28 @@ ostream& operator<< (ostream& out, const Process* process)
 	CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
 	GetConsoleScreenBufferInfo(consoleHandle, &consoleInfo);
 	WORD currentColor = consoleInfo.wAttributes;
-	if (process->parent && currentColor != 4)
+	if (process->GetDeadline() <= process->manager->GetTimeStep() && !process->IsTerminated() || process->late)
 	{
-		printf("\033[3;104;30m");
+		if (process->parent && currentColor != 4)
+			printf("\033[3;38;2;239;113;38;48;2;15;99;113m");
+		else if (process->HasChild() && currentColor != 4)
+			printf("\033[3;38;2;239;113;38;48;2;255;255;255m");
+		else
+			printf("\x1B[3;38;2;239;113;38;1;4m");
+	}
+	else if (process->parent && currentColor != 4)
+	{
+		printf("\033[3;48;2;15;99;113;30m");
 	}
 	else if (process->HasChild() && currentColor != 4)
 	{
-		printf("\033[3;100;30m");
+		printf("\033[3;48;2;255;255;255;30m");
 	}
-	else if (currentColor != 4)
-	{
+	else
 		printf("\x1B[93m");
-	}
+	
+	out << process->P_data.PID << '(' << process->GetRemainingTime() << ')' << '(' << process->GetDeadline() << ')';
 
-	out << process->P_data.PID << '(' << process->GetRemainingTime() << ')';
-
-	if (currentColor != 4)
-		printf("\033[0m");
+	printf("\033[0m");
 	return out;
 }

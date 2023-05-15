@@ -159,6 +159,7 @@
     <ClInclude Include="UI\UI.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Inputs\full.txt" />
     <Text Include="Inputs\T2.txt" />
     <Text Include="Outputs\final.txt" />
   </ItemGroup>

@@ -7,6 +7,7 @@ struct ProcessInfo
 	int PID;			// Process ID.
 	int RT;				// Response Time.
 	int CT;				// CPU time.
+	int Deadline;				// Deadline.
 	int ET;				// Execution time.
 	int IO_requests;	// Number of time the process requests I/O
 	int TT;				// Termination time.
@@ -54,6 +55,7 @@ struct ProcessorsInfo
 	int NF;				// Number of FCFS processors.
 	int NS;				// Number of SJF processors.
 	int NR;				// Number of RR processors.
+	int NE;				// Number of EDF processors.
 	int NT;				// Number of processors.
 	int Time_slice;		// Time slice for RR.
 	int cooldown;		// Overheat Cooldown.

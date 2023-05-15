@@ -73,8 +73,7 @@ void Scheduler::AddToReady(Process* p)
 	//p->SetTransitionTime(timestep);		//MIGHT BE REMOVED//
 	if (shortestqueue_index == -1)
 	{
-		if (Processors[coldest_index]->GetState() == OVERHEAT)
-			Processors[coldest_index]->SetState(IDLE);
+		Processors[coldest_index]->SetState(IDLE);
 		Processors[coldest_index]->AddToRDY(p);
 	}	
 	else
@@ -104,8 +103,7 @@ bool Scheduler::AddToFCFS(Process* p)
 	//p->SetTransitionTime(timestep);		//MIGHT BE REMOVED//
 	if (shortestqueue_index == -1)
 	{
-		if (Processors[coldest_index]->GetState() == OVERHEAT)
-			Processors[coldest_index]->SetState(IDLE);
+		Processors[coldest_index]->SetState(IDLE);
 		Processors[coldest_index]->AddToRDY(p);
 		return true;
 	}
@@ -152,7 +150,7 @@ bool Scheduler::AddToSJF(Process* p)
 bool Scheduler::AddToRR(Process* p)
 {
 	int shortestqueue_index = P_info.NF + P_info.NS;
-	for (int i = P_info.NF + P_info.NS + 1; i < P_info.NT; i++)
+	for (int i = P_info.NF + P_info.NS + 1; i < P_info.NT - P_info.NE; i++)
 	{
 		if (Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft() && !Processors[i]->GetCooldown())
 			shortestqueue_index = i;
@@ -248,8 +246,8 @@ void Scheduler::LoadFile()
 	std::this_thread::sleep_for(std::chrono::seconds(1));
 	std::cout << "\033[2J\033[1;1H";		// Clears Console
 
-	LoadedFile >> P_info.NF >> P_info.NS >> P_info.NR;			// No. of processors of each type.
-	P_info.NT = P_info.NF + P_info.NS + P_info.NR;
+	LoadedFile >> P_info.NF >> P_info.NS >> P_info.NR >> P_info.NE;			// No. of processors of each type.
+	P_info.NT = P_info.NF + P_info.NS + P_info.NR + P_info.NE;
 	LoadedFile >> P_info.Time_slice >> P_info.cooldown;					// Time slice for RR && Overheating cooldown for processors.
 	LoadedFile >> P_info.RTF >> P_info.MaxW >> P_info.STL >> P_info.Fork_prob >> P_info.Heat_prob;
 	LoadedFile >> P_info.Num_process;
@@ -257,7 +255,7 @@ void Scheduler::LoadFile()
 	for (int j = 0; j < P_info.Num_process; j++)
 	{
 		ProcessInfo P_data;
-		LoadedFile >> P_data.AT >> P_data.PID >> P_data.CT >> P_data.IO_requests;
+		LoadedFile >> P_data.AT >> P_data.PID >> P_data.CT >> P_data.Deadline >> P_data.IO_requests;
 
 		if (P_data.PID >= unique_PID) unique_PID = P_data.PID + 1;
 
@@ -270,7 +268,7 @@ void Scheduler::LoadFile()
 			IO = ProcessIORequestsInput(IO_string, P_data.IO_requests, total);
 		}
 		P_data.total_IO_D = total;
-		Process* New_Process = new Process(P_data, IO);
+		Process* New_Process = new Process(P_data, IO, this);
 		AddToList(GetNewList(), New_Process);
 	}
 	Process::SetForkPID(unique_PID);
@@ -330,8 +328,12 @@ void Scheduler::ReadInput()
 		SJF_Processors = new SJF[P_info.NS];
 	if (P_info.NR > 0)
 		RR_Processors = new RR[P_info.NR];
-	if (P_info.NF > 0 || P_info.NS > 0 || P_info.NR > 0)
-	Processors = new Processor*[P_info.NF + P_info.NS + P_info.NR];
+	if (P_info.NE > 0)
+		EDF_Processors = new EDF[P_info.NE];
+
+	if (P_info.NT > 0)
+		Processors = new Processor*[P_info.NT];
+
 	for (int i = 0; i < P_info.NF; i++)
 	{
 		FCFS_Processors[i].SetScheduler(this);
@@ -347,6 +349,11 @@ void Scheduler::ReadInput()
 		RR_Processors[i].SetScheduler(this);
 		RR_Processors[i].SetTimeSlice(P_info.Time_slice);
 		Processors[i + P_info.NF + P_info.NS] = &RR_Processors[i];
+	}
+	for (int i = 0; i < P_info.NE; i++)
+	{
+		EDF_Processors[i].SetScheduler(this);
+		Processors[i + P_info.NF + P_info.NS + P_info.NR] = &EDF_Processors[i];
 	}
 }
 
@@ -374,7 +381,7 @@ void Scheduler::Execute()
 		if (timestep && timestep % P_info.STL == 0)
 			WorkStealing();
 
-		for (int i = 0; i < P_info.NF + P_info.NS + P_info.NR; i++)
+		for (int i = 0; i < P_info.NT; i++)
 		{
 			Processors[i]->Execute();
 		}
@@ -444,6 +451,20 @@ void Scheduler::SetOutputFile()
 void Scheduler::WriteOutput()
 {
 	SetOutputFile();
+	ProcessStatistics();
+
+	ProcessorStatistics();
+
+
+	cout << "Output file has been created.\nCheck the \"Outputs\" folder.\n";
+	OutputFile.close();
+}
+
+/**
+* @brief Write the processes statistics into the output file.
+*/
+void Scheduler::ProcessStatistics()
+{
 	OutputFile << "TT\t\t\t\tPID\t\t\t\tAT\t\t\t\tCT\t\t\t\tIO_D\t\t\t\t\tWT\t\t\t\tRT\t\t\t\tTRT\n";
 	Process* process;
 	int total_WT = 0, total_RT = 0, total_TRT = 0;
@@ -471,7 +492,14 @@ void Scheduler::WriteOutput()
 	OutputFile << "\nWork Steal %: " << stats.total_steal * 100.0 / n << "%";
 	OutputFile << "\nForked Process: " << stats.total_fork * 100.0 / n << "%";
 	OutputFile << "\nKilled Process: " << stats.total_killed * 100.0 / n << "%";
+	OutputFile << "\nEarly Process: " << Process::GetTotalEarly() * 100.0 / n << "%";
+}
 
+/**
+* @brief Write the processors statistics into the output file.
+*/
+void Scheduler::ProcessorStatistics()
+{
 	OutputFile << "\n\nProcessors: " << P_info.NT << "[" << P_info.NF << " FCFS, " << P_info.NS << " SJR, " << P_info.NR << "RR]";
 	OutputFile << "\nProcessors Load\n";
 	for (int i = 0; i < P_info.NT; i++)
@@ -490,8 +518,4 @@ void Scheduler::WriteOutput()
 			OutputFile << ",\t\t";
 	}
 	OutputFile << "\nAvg utilization = " << total_util / P_info.NT << endl;
-
-
-	cout << "Output file has been created.\nCheck the \"Outputs\" folder.\n";
-	OutputFile.close();
 }

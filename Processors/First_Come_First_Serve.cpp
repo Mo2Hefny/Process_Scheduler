@@ -31,7 +31,7 @@ void FCFS::AddToRDY(Process* p)
 void FCFS::TerminateRUN()
 {
 	AddTimeleft(-(RUN->GetRemainingTime()));
-	RUN->Terminate(manager->GetTimeStep());
+	RUN->Terminate();
 	manager->AddToList(manager->GetTerminatedList(), RUN);
 	state = IDLE;
 	RUN = nullptr;
@@ -125,8 +125,9 @@ void FCFS::Fork()
 	ProcessInfo new_P_data;
 	new_P_data.AT = new_P_data.RT = manager->GetTimeStep();
 	new_P_data.CT = RUN->GetRemainingTime();
+	new_P_data.Deadline = RUN->GetDeadline();
 	new_P_data.PID = Process::GetForkPID();
-	Process* New_Process = new Process(new_P_data, NULL);
+	Process* New_Process = new Process(new_P_data, NULL, manager);
 
 	if (!RUN->ForkChild(New_Process))
 	{
@@ -152,7 +153,7 @@ void FCFS::Algorithm()
 	if (!RUN->GetRemainingTime())
 	{
 		AddTimeleft(-(RUN->GetRemainingTime()));
-		RUN->Terminate(manager->GetTimeStep());
+		RUN->Terminate();
 		manager->AddToList(manager->GetTerminatedList(), RUN);
 		if (RUN->HasChild())
 		{
@@ -197,7 +198,7 @@ void FCFS::CheckSIGKILL()
 	if (RDY.DeleteNode(process, ID))
 	{
 		AddTimeleft(-(process->GetRemainingTime()));
-		process->Terminate(manager->GetTimeStep());
+		process->Terminate();
 		manager->AddToList(manager->GetTerminatedList(), process);
 		if (process->HasChild())
 			manager->CheckOrphans();
@@ -210,7 +211,7 @@ void FCFS::CheckSIGKILL()
 	if (state == BUSY && RUN->GetProcessInfo().PID == ID)
 	{
 		AddTimeleft(-(RUN->GetRemainingTime()));
-		RUN->Terminate(manager->GetTimeStep());
+		RUN->Terminate();
 		manager->AddToList(manager->GetTerminatedList(), RUN);
 		if (RUN->HasChild())
 		{
@@ -285,7 +286,7 @@ void FCFS::EmptyProcessor()
 				manager->AddToFCFS(process);
 			else
 			{
-				process->Terminate(manager->GetTimeStep());
+				process->Terminate();
 				manager->AddToList(manager->GetTerminatedList(), process);
 			}
 		}
