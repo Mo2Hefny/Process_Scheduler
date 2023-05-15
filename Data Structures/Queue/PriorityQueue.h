@@ -38,6 +38,7 @@ public:
 	bool enqueue(T& newEntry,int priority)
 	{
 		Node<T>* newnode = new Node<T>(newEntry,priority);
+		queue_size++;
 		if (!frontPtr)
 		{
 			frontPtr = newnode;
@@ -64,6 +65,17 @@ public:
 		backPtr->setNext(newnode);
 		backPtr = newnode;
 		return true;
+	}
+
+	void enqueuelast(T& newEntry)
+	{
+		Node<T>* newnode = new Node<T>(newEntry);
+		if (isEmpty())
+			frontPtr = newnode;
+		else
+			backPtr->setNext(newnode);
+		backPtr = newnode;
+		queue_size++;
 	}
 
 	void PrintList()	const
