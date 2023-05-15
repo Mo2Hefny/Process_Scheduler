@@ -129,6 +129,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Processors\Earliest_Deadline_First.cpp" />
     <ClCompile Include="Processors\First_Come_First_Serve.cpp" />
     <ClCompile Include="Processors\Processor.cpp" />
     <ClCompile Include="Processors\Round_Robin.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="Data Structures\Queue\QueueADT.h" />
     <ClInclude Include="Data Structures\Stack\ArrayStack.h" />
     <ClInclude Include="Data Structures\Stack\StackADT.h" />
+    <ClInclude Include="Processors\Earliest_Deadline_First.h" />
     <ClInclude Include="Processors\First_Come_First_Serve.h" />
     <ClInclude Include="Processors\Processor.h" />
     <ClInclude Include="Processors\Processors.h" />

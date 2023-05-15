@@ -1,9 +1,9 @@
-#include "Shortest_Job_First.h"
+#include "Earliest_Deadline_First.h"
 #include "../Scheduler/Scheduler.h"
 
-void SJF::AddToRDY(Process* p)
+void EDF::AddToRDY(Process* p)
 {
-	RDY.enqueue(p,p->GetCPUTime());
+	RDY.enqueue(p, p->GetCPUTime());
 	AddTimeleft(p->GetRemainingTime());
 }
 
@@ -11,7 +11,7 @@ void SJF::AddToRDY(Process* p)
 /**
 * @brief The simulation of the processor's algorithm.
 */
-void SJF::Execute()
+void EDF::Execute()
 {
 	OverHeat();
 	if (state != OVERHEAT)
@@ -28,7 +28,7 @@ void SJF::Execute()
 * @brief Generates a random number from 1 to 100 to set the next
 * state of each process in RUN state.
 */
-void SJF::NextState()
+void EDF::NextState()
 {
 	if (state == BUSY)
 	{
@@ -61,15 +61,22 @@ void SJF::NextState()
 /**
 * @brief The processor's algorithm.
 */
-void SJF::Algorithm()
+void EDF::Algorithm()
 {
 	if (state == IDLE)	return;
+	Process* temp;
+	if(RDY.peek(temp)&& RUN->GetCPUTime() > temp->GetCPUTime())
+	{
+		RDY.enqueuelast(RUN);
+		RDY.dequeue(RUN);
+	}
 	RUN->ExecutingProcess();
 	DecTimeleft();	// Decreases the processor's time left.
 	// If the Process finishes execution.
 	if (!RUN->GetRemainingTime())
 	{
 		RUN->Terminate(manager->GetTimeStep());
+		total_TRT += RUN->GetTurnAroundDuration();
 		manager->AddToList(manager->GetTerminatedList(), RUN);
 		if (RUN->HasChild())
 			manager->CheckOrphans();
@@ -84,13 +91,13 @@ void SJF::Algorithm()
 /**
 * @brief The processor dequeues a process from its RDY list or enqueues it
 * depending on the mode.
-* 
+*
 * @param process - Reference to a pointer to the process.
 * @param mode - The processor acts as the donor if 0, acts as the receiver otherwise.\
 *
 * @returns True on success, false otherwise.
 */
-bool SJF::Work_Stealing(Process*& process, int mode)
+bool EDF::Work_Stealing(Process*& process, int mode)
 {
 	if (!mode)
 	{
@@ -101,29 +108,8 @@ bool SJF::Work_Stealing(Process*& process, int mode)
 	}
 	else
 	{
-		RDY.enqueue(process,process->GetCPUTime());
+		RDY.enqueue(process, process->GetCPUTime());
 		time_left += process->GetRemainingTime();
 	}
 	return true;
-}
-
-/**
-* @brief Moves all the processes to another processor's list when overheated.
-*/
-void SJF::EmptyProcessor()
-{
-	if (RUN)
-	{
-		AddTimeleft(-(RUN->GetRemainingTime()));
-		manager->AddToReady(RUN);
-		RUN = nullptr;
-	}
-	Process* process;
-	int size = RDY.size();
-	while (size--)
-	{
-		if (!RDY.dequeue(process)) break;
-		AddTimeleft(-(process->GetRemainingTime()));
-		manager->AddToReady(process);
-	}
 }

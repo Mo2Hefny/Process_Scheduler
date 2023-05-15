@@ -42,6 +42,9 @@
     <ClCompile Include="Processors\Processor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Processors\Earliest_Deadline_First.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Processors\First_Come_First_Serve.h">
@@ -90,6 +93,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Processors\Processor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Processors\Earliest_Deadline_First.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
