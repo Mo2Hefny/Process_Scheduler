@@ -15,6 +15,7 @@ class Process
 	ProcessInfo P_data;
 	IO_process* IO;			// Array of I/O requests.
 	bool terminated;
+	static unsigned int total_TRT, PID;
 	//int Transition_Time;		// Time of the last list transition.
 
 	// Forking.
@@ -48,6 +49,7 @@ public:
 
 	// Setters.
 	void SetResponseTime(int t) { P_data.RT = t; }
+	static void SetForkPID(unsigned int id) { Process::PID = id; }
 	//void SetTransitionTime(int t) { Transition_Time = t; }
 
 	// Getters.
@@ -56,8 +58,12 @@ public:
 	int GetCPUTime() const { return P_data.CT; }
 	int GetRemainingTime() const { return P_data.CT - P_data.ET; }
 	int GetExecutedTime() const { return P_data.ET; }
-	int GetTurnAroundDuration() const { return P_data.TT - P_data.AT; }
-	int GetWaitingTime() const { return GetTurnAroundDuration() - P_data.CT; }
+	int GetTurnAroundDuration() const { return P_data.TT - P_data.AT + 1; }
+	int GetWaitingTime() const { return GetTurnAroundDuration() - P_data.ET; }
+	int GetCurrWaitingTime(int TimeStep) const { return TimeStep - P_data.AT - P_data.ET; }
+	static unsigned int GetTotalTRT() { return Process::total_TRT; }
+	static unsigned int GetForkPID() { return Process::PID; }
+
 	//int GetTransitionTime() const { return Transition_Time; }
 	ProcessInfo GetProcessInfo() const { return P_data; }
 	IO_process* GetIORequests() { return IO; }

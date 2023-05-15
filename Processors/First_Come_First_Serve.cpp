@@ -32,7 +32,6 @@ void FCFS::TerminateRUN()
 {
 	AddTimeleft(-(RUN->GetRemainingTime()));
 	RUN->Terminate(manager->GetTimeStep());
-	total_TRT += RUN->GetTurnAroundDuration();
 	manager->AddToList(manager->GetTerminatedList(), RUN);
 	state = IDLE;
 	RUN = nullptr;
@@ -97,7 +96,8 @@ void FCFS::NextState()
 */
 void FCFS::Migrate()
 {
-	while (RUN && !RUN->HasParent() && RUN->GetRemainingTime() > manager->GetProcessorsInfo().MaxW && manager->GetProcessorsInfo().NR)
+	if (!manager->GetProcessorsInfo().NR) return;
+	while (RUN && !RUN->HasParent() && RUN->GetCurrWaitingTime(manager->GetTimeStep()) > manager->GetProcessorsInfo().MaxW)
 	{
 		if (!manager->AddToRR(RUN)) break;
 		AddTimeleft(-(RUN->GetRemainingTime()));
@@ -125,7 +125,7 @@ void FCFS::Fork()
 	ProcessInfo new_P_data;
 	new_P_data.AT = new_P_data.RT = manager->GetTimeStep();
 	new_P_data.CT = RUN->GetRemainingTime();
-	new_P_data.PID = rand() % 1000;
+	new_P_data.PID = Process::GetForkPID();
 	Process* New_Process = new Process(new_P_data, NULL);
 
 	if (!RUN->ForkChild(New_Process))
@@ -153,7 +153,6 @@ void FCFS::Algorithm()
 	{
 		AddTimeleft(-(RUN->GetRemainingTime()));
 		RUN->Terminate(manager->GetTimeStep());
-		total_TRT += RUN->GetTurnAroundDuration();
 		manager->AddToList(manager->GetTerminatedList(), RUN);
 		if (RUN->HasChild())
 		{
@@ -199,7 +198,6 @@ void FCFS::CheckSIGKILL()
 	{
 		AddTimeleft(-(process->GetRemainingTime()));
 		process->Terminate(manager->GetTimeStep());
-		total_TRT += process->GetTurnAroundDuration();
 		manager->AddToList(manager->GetTerminatedList(), process);
 		if (process->HasChild())
 			manager->CheckOrphans();
@@ -213,7 +211,6 @@ void FCFS::CheckSIGKILL()
 	{
 		AddTimeleft(-(RUN->GetRemainingTime()));
 		RUN->Terminate(manager->GetTimeStep());
-		total_TRT += RUN->GetTurnAroundDuration();
 		manager->AddToList(manager->GetTerminatedList(), RUN);
 		if (RUN->HasChild())
 		{
@@ -245,10 +242,17 @@ bool FCFS::Work_Stealing(Process*& process, int mode)
 {
 	if (!mode)
 	{
-		if (!RDY.peek(process)) return false;
-		if (process->HasParent()) return false;
-		RDY.dequeue(process);
-		time_left -= process->GetRemainingTime();
+		for (int i = 0; i < RDY.size(); i++)
+		{
+			RDY.GetPos(process, i);
+			if (!process->HasParent())
+			{
+				RDY.DeletePos(process, i);
+				time_left -= process->GetRemainingTime();
+				return true;
+			}
+		}
+		return false;
 	}
 	else
 	{
@@ -276,7 +280,15 @@ void FCFS::EmptyProcessor()
 		if (!RDY.dequeue(process)) break;
 		AddTimeleft(-(process->GetRemainingTime()));
 		if (process->HasParent())
-			manager->AddToFCFS(process);
+		{
+			if (manager->GetProcessorsInfo().NF > 1)
+				manager->AddToFCFS(process);
+			else
+			{
+				process->Terminate(manager->GetTimeStep());
+				manager->AddToList(manager->GetTerminatedList(), process);
+			}
+		}
 		else
 			manager->AddToReady(process);
 	}

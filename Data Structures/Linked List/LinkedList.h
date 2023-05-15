@@ -210,24 +210,50 @@ public:
 	void Reverse()
 	{}
 
-	T DeletePos(int pos)
+	bool GetPos(T& frntEntry, const int& index)
 	{
+		if (!Head || index > list_size)	return false;
+		Node<T>* p = Head;
+		int i = 0;
+		while (p)
+		{
+			if (i == index)
+			{
+				frntEntry = p->getItem();
+				return true;
+			}
+			p = p->getNext();
+			i++;
+		}
+		return false;
+	}
+
+	bool DeletePos(T& frntEntry, const int& index)
+	{
+		if (!Head || index > list_size)	return false;
 		Node<T>* dummy = new Node<T>;
 		dummy->setNext(Head);
-		Node<T>* prev = dummy, *p = Head;
-		while (p->getNext() && --pos)
+		Node<T>* p = Head, * prev = dummy;
+		int i = 0;
+		while (p)
 		{
-			p = p->getNext();
+			if (i == index)
+			{
+				frntEntry = p->getItem();
+				if (p == Head)	Head = Head->getNext();
+				prev->setNext(p->getNext());
+				p->setItem(NULL);
+				delete p;
+				delete dummy;
+				list_size--;
+				return true;
+			}
 			prev = prev->getNext();
+			p = p->getNext();
+			i++;
 		}
-		prev->setNext(p->getNext());
 		delete dummy;
-		if (p == Head)	Head = Head->getNext();
-		T excess = p->getItem();
-		p->setItem(NULL);
-		delete p;
-		list_size--;
-		return excess;
+		return false;
 	}
 
 	void FindOrphans(LinkedList <T>& orph_list) {

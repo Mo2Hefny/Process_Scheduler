@@ -70,7 +70,6 @@ void SJF::Algorithm()
 	if (!RUN->GetRemainingTime())
 	{
 		RUN->Terminate(manager->GetTimeStep());
-		total_TRT += RUN->GetTurnAroundDuration();
 		manager->AddToList(manager->GetTerminatedList(), RUN);
 		if (RUN->HasChild())
 			manager->CheckOrphans();

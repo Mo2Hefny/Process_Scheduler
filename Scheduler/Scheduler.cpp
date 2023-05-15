@@ -174,15 +174,16 @@ bool Scheduler::AddToRR(Process* p)
 void Scheduler::WorkStealing()
 {
 	// Set SQF and LQF.
-	int shortestqueue_index = 0;
-	int longestqueue_index = 0;
-	for (int i = 1; i < P_info.NT; i++)
+	int shortestqueue_index = -1;
+	int longestqueue_index = -1;
+	for (int i = 0; i < P_info.NT; i++)
 	{
-		if (Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft())
+		if ((shortestqueue_index == -1 || Processors[i]->GetTimeLeft() < Processors[shortestqueue_index]->GetTimeLeft()) && !Processors[i]->GetCooldown())
 			shortestqueue_index = i;
-		if (Processors[i]->GetTimeLeft() > Processors[longestqueue_index]->GetTimeLeft())
+		if ((longestqueue_index == -1 || Processors[i]->GetTimeLeft() > Processors[longestqueue_index]->GetTimeLeft()) && !Processors[i]->GetCooldown())
 			longestqueue_index = i;
 	}
+	if (shortestqueue_index == -1 || longestqueue_index == -1)	return;
 	LQF = Processors[longestqueue_index];
 	SQF = Processors[shortestqueue_index];
 
@@ -252,10 +253,13 @@ void Scheduler::LoadFile()
 	LoadedFile >> P_info.Time_slice >> P_info.cooldown;					// Time slice for RR && Overheating cooldown for processors.
 	LoadedFile >> P_info.RTF >> P_info.MaxW >> P_info.STL >> P_info.Fork_prob >> P_info.Heat_prob;
 	LoadedFile >> P_info.Num_process;
+	unsigned int unique_PID = 0;
 	for (int j = 0; j < P_info.Num_process; j++)
 	{
 		ProcessInfo P_data;
 		LoadedFile >> P_data.AT >> P_data.PID >> P_data.CT >> P_data.IO_requests;
+
+		if (P_data.PID >= unique_PID) unique_PID = P_data.PID + 1;
 
 		string IO_string = "";
 		IO_process* IO = NULL;
@@ -269,7 +273,7 @@ void Scheduler::LoadFile()
 		Process* New_Process = new Process(P_data, IO);
 		AddToList(GetNewList(), New_Process);
 	}
-
+	Process::SetForkPID(unique_PID);
 	int t, id;
 	LinkedList<SIGKILL*>* sigkill_list = FCFS::GetSIGKILL();
 	while (LoadedFile >> t >> id) {
@@ -357,11 +361,14 @@ void Scheduler::Execute()
 		int new_size = New_List.size();
 		Process* current;
 		New_List.peek(current);
-		if (current->GetArrivalTime() == timestep)
+		while (current && current->GetArrivalTime() == timestep)
 		{
 			New_List.dequeue(current);
 			current->SetResponseTime(timestep);
 			AddToReady(current);
+
+			current = nullptr;
+			New_List.peek(current);
 		}
 
 		if (timestep && timestep % P_info.STL == 0)
@@ -457,6 +464,7 @@ void Scheduler::WriteOutput()
 		delete process;
 	}
 	float n = (P_info.Num_process ? P_info.Num_process : 1);
+
 	OutputFile << "\nProcesses: " << P_info.Num_process;
 	OutputFile << "\nAvg WT: " << total_WT / (int)n << ", \t\tAvg RT = " << total_RT / (int)n << ", \t\tAvg TRT = " << total_TRT / (int)n;
 	OutputFile << "\nMigration %: \t\t\tRTF = " << stats.RR_SJF_migrations * 100.0 / n << "%, \t\tMaxW = " << stats.FCFS_RR_migrations * 100.0 / n << "%";

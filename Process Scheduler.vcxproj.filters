@@ -95,5 +95,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Outputs\final.txt" />
+    <Text Include="Inputs\T2.txt" />
   </ItemGroup>
 </Project>

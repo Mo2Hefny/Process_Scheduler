@@ -157,6 +157,7 @@
     <ClInclude Include="UI\UI.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Inputs\T2.txt" />
     <Text Include="Outputs\final.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

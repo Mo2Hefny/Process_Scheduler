@@ -1,5 +1,9 @@
 #include "Process.h"
 #include <windows.h>
+
+unsigned int Process::total_TRT = 0;
+unsigned int Process::PID;
+
 /**
 * @brief Process class constructor.
 * 
@@ -57,9 +61,11 @@ bool Process::ForkChild(Process* child)
 	if (!l_child)
 	{
 		l_child = child;
+		Process::PID++;
 		return true;
 	}
 	r_child = child;
+	Process::PID++;
 
 	return true;
 }
@@ -71,6 +77,8 @@ bool Process::ForkChild(Process* child)
 */
 void Process::Terminate(int time)
 {
+	if (terminated) return;
+
 	terminated = true;
 	if (parent && !parent->IsTerminated())
 	{
@@ -78,8 +86,9 @@ void Process::Terminate(int time)
 		else if (parent->r_child == this) parent->r_child = nullptr;
 	}
 
-
 	P_data.TT = time;
+	Process::total_TRT += P_data.TT - P_data.AT + 1;
+
 	if (l_child)	l_child->Terminate(time);
 	if (r_child)	r_child->Terminate(time);
 }

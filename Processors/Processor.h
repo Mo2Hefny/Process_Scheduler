@@ -16,7 +16,7 @@ class Processor
 {
 protected:
 	Scheduler* manager;
-	unsigned int time_left, time_busy, time_idle, total_TRT, cooldown;
+	unsigned int time_left, time_busy, time_idle, cooldown;
 	Process* RUN;
 	ProcessorState state;
 
@@ -39,7 +39,7 @@ public:
 
 	// Getters
 	unsigned int GetCooldown() const { return cooldown; }
-	float GetPload() const { return time_busy * 100.0/ total_TRT; }
+	float GetPload() const { return time_busy * 100.0/ Process::GetTotalTRT(); }
 	float GetPUtil() const { return time_busy * 100.0 / (time_busy + time_idle); }
 	unsigned int GetTimeLeft() const { return time_left; }
 	ProcessorState GetState() const { return state; }
