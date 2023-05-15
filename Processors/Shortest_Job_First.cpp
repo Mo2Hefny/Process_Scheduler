@@ -3,7 +3,7 @@
 
 void SJF::AddToRDY(Process* p)
 {
-	RDY.enqueue(p);
+	RDY.enqueue(p,p->GetCPUTime());
 	AddTimeleft(p->GetRemainingTime());
 }
 
@@ -102,7 +102,7 @@ bool SJF::Work_Stealing(Process*& process, int mode)
 	}
 	else
 	{
-		RDY.enqueue(process);
+		RDY.enqueue(process,process->GetCPUTime());
 		time_left += process->GetRemainingTime();
 	}
 	return true;
