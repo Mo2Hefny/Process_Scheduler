@@ -166,6 +166,70 @@ bool Scheduler::AddToRR(Process* p)
 }
 
 /**
+* @brief Handles process migration from FCFS to RR suitable processors for more
+* time efficiency.
+*/
+void Scheduler::MigrateToRR()
+{
+	if (!P_info.NR) return;
+	for (int i = 0; i < P_info.NF; i++)
+	{
+		Process* RUN = FCFS_Processors[i].GetRun();
+		LinkedList<Process*>* RDY = FCFS_Processors[i].GetRDY();
+		while (RUN && !RUN->HasParent() && RUN->GetCurrWaitingTime(GetTimeStep()) > P_info.MaxW)
+		{
+			if (!AddToRR(RUN)) break;
+			FCFS_Processors[i].AddTimeleft(-(RUN->GetRemainingTime()));
+			if (!RUN->GetRRMig())
+			{
+				Increment_FCFSmigration();
+				RUN->SetRRMig(true);
+			}
+			if (!RDY->dequeue(RUN))
+			{
+				FCFS_Processors[i].SetState(IDLE);
+				RUN = nullptr;
+			}
+		}
+		FCFS_Processors[i].SetRun(RUN);
+	}
+}
+
+/**
+* @brief Handles process migration from RR to SJF suitable processors for more
+* time efficiency.
+*/
+void Scheduler::MigrateToSJF()
+{
+	if (!P_info.NS) return;
+
+	for (int i = 0; i < P_info.NR; i++)
+	{
+		Process* RUN = RR_Processors[i].GetRun();
+		LinkedQueue<Process*>* RDY = RR_Processors[i].GetRDY();
+		// Forces current RUN state to finish its duration if it was denied migration in the first time.
+		if (RR_Processors[i].GetTimeSliceLeft() != P_info.Time_slice) continue;
+
+		while (RUN && RUN->GetRemainingTime() < P_info.RTF)
+		{
+			if (!AddToSJF(RUN)) break;
+			RR_Processors[i].AddTimeleft(-(RUN->GetRemainingTime()));
+			if (!RUN->GetSJFMig())
+			{
+				Increment_RRmigration();
+				RUN->SetSJFMig(true);
+			}
+			if (!RDY->dequeue(RUN))
+			{
+				RR_Processors[i].SetState(IDLE);
+				RUN = nullptr;
+			}
+		}
+		RR_Processors[i].SetRun(RUN);
+	}
+}
+
+/**
 * @brief The shortest ready queue in the system looks at the longest ready
 * queue to see how full it is.
 */
@@ -380,6 +444,9 @@ void Scheduler::Execute()
 
 		if (timestep && timestep % P_info.STL == 0)
 			WorkStealing();
+
+		MigrateToRR();
+		MigrateToSJF();
 
 		for (int i = 0; i < P_info.NT; i++)
 		{

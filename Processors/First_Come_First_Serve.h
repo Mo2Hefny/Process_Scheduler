@@ -34,12 +34,7 @@ public:
 	*/
 	virtual void NextState();
 
-	/**
-	* @brief Handles process migration to suitable processors for more
-	* time efficiency.
-	*/
-	void Migrate();
-
+	
 	/**
 	* @brief Handles the Forking possibility for the current process in RUN state.
 	* 

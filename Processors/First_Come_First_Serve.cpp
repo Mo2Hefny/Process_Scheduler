@@ -48,7 +48,6 @@ void FCFS::Execute()
 		CheckSIGKILL();
 
 		NextState();
-		Migrate();
 		Fork();
 		Algorithm();
 	}
@@ -86,30 +85,6 @@ void FCFS::NextState()
 		if (RDY.dequeue(RUN))
 		{
 			state = BUSY;
-		}
-	}
-}
-
-/**
-* @brief Handles process migration to suitable processors for more
-* time efficiency.
-*/
-void FCFS::Migrate()
-{
-	if (!manager->GetProcessorsInfo().NR) return;
-	while (RUN && !RUN->HasParent() && RUN->GetCurrWaitingTime(manager->GetTimeStep()) > manager->GetProcessorsInfo().MaxW)
-	{
-		if (!manager->AddToRR(RUN)) break;
-		AddTimeleft(-(RUN->GetRemainingTime()));
-		if (!RUN->GetRRMig())
-		{
-			manager->Increment_FCFSmigration();
-			RUN->SetRRMig(true);
-		}
-		if (!RDY.dequeue(RUN))
-		{
-			state = IDLE;
-			RUN = nullptr;
 		}
 	}
 }

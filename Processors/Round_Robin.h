@@ -21,18 +21,13 @@ public:
 
 	//Getters.
 	LinkedQueue<Process*>* GetRDY() { return &RDY; }
+	int GetTimeSliceLeft() const { return Time_slice; }
 
 	/*
 	* @brief Generates a random number from 1 to 100 to set the next
 	* state of each process in RUN state.
 	*/
 	virtual void NextState();
-	
-	/**
-	* @brief Handles process migration to suitable processors for more
-	* time efficiency.
-	*/
-	void Migrate();
 
 	/**
 	* @brief The processor's algorithm.

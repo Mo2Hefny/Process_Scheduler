@@ -47,6 +47,7 @@ public:
 
 	// Setters
 	void SetState(ProcessorState STATE) { state = STATE; }
+	void SetRun(Process* p) { RUN = p; }
 
 	/**
 	* @brief  Adds to the total time left for the processor's queue.

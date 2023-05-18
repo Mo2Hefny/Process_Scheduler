@@ -119,6 +119,18 @@ public:
 	bool AddToRR(Process* p);
 
 	/**
+	* @brief Handles process migration from FCFS to suitable RR processors for more
+	* time efficiency.
+	*/
+	void MigrateToRR();
+
+	/**
+	* @brief Handles process migration from RR to suitable SJF processors for more
+	* time efficiency.
+	*/
+	void MigrateToSJF();
+
+	/**
 	* @brief The shortest ready queue in the system looks at the longest ready
 	* queue to see how full it is.
 	*/

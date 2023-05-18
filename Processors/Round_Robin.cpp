@@ -17,8 +17,6 @@ void RR::Execute()
 	if (state != OVERHEAT)
 	{
 		NextState();
-
-		Migrate();		//Check Process Migration
 		Algorithm();
 	}
 	AddTime();		// Adds to the processor's BUSY/IDLE time.
@@ -54,33 +52,6 @@ void RR::NextState()
 	{
 		if (RDY.dequeue(RUN))
 			state = BUSY;
-	}
-}
-
-/**
-* @brief Handles process migration to suitable processors for more
-* time efficiency.
-*/
-void RR::Migrate()
-{
-	// Forces current RUN state to finish its duration if it was denied migration in the first time.
-	if (Time_slice != manager->GetProcessorsInfo().Time_slice)	return;
-	if (!manager->GetProcessorsInfo().NS) return;
-
-	while (RUN && RUN->GetRemainingTime() < manager->GetProcessorsInfo().RTF)
-	{
-		if (!manager->AddToSJF(RUN)) break;
-		AddTimeleft(-(RUN->GetRemainingTime()));
-		if (!RUN->GetSJFMig())
-		{
-			manager->Increment_RRmigration();
-			RUN->SetSJFMig(true);
-		}
-		if (!RDY.dequeue(RUN))
-		{
-			state = IDLE;
-			RUN = nullptr;
-		}
 	}
 }
 
