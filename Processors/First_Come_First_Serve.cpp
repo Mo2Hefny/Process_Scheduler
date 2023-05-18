@@ -275,7 +275,18 @@ void FCFS::EmptyProcessor()
 	if (RUN)
 	{
 		AddTimeleft(-(RUN->GetRemainingTime()));
-		manager->AddToReady(RUN);
+		if (RUN->HasParent())
+		{
+			if (manager->GetProcessorsInfo().NF > 1)
+				manager->AddToFCFS(RUN);
+			else
+			{
+				RUN->Terminate();
+				manager->AddToList(manager->GetTerminatedList(), RUN);
+			}
+		}
+		else
+			manager->AddToReady(RUN);
 		RUN = nullptr;
 	}
 	Process* process;
