@@ -222,6 +222,7 @@ bool FCFS::Work_Stealing(Process*& process, int mode)
 {
 	if (!mode)
 	{
+		int sizo = RDY.size() ;
 		for (int i = 0; i < RDY.size(); i++)
 		{
 			RDY.GetPos(process, i);

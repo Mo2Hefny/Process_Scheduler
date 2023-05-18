@@ -66,7 +66,9 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		if (run[i])
 			run_size++;
 		LinkedList<Process*>* FCFS_RDY = fcfs->GetRDY();
-		cout << "processor " << i + 1 << " [FCFS]"<<'('<<fcfs->GetTimeLeft()<<')' << ':' << FCFS_RDY->size() << " RDY: ";
+		cout << "processor " << i + 1 << " [FCFS]";
+		cout << '(' << fcfs->GetTimeLeft() << ')';
+		cout<< ':' << FCFS_RDY->size() << " RDY: ";
 		FCFS_RDY->PrintList();
 	}
 	
@@ -80,7 +82,9 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		if (run[i])
 			run_size++;
 		PriorityQueue<Process*>* SJF_RDY = sjf->GetRDY();
-		cout << "processor " << i + 1 << " [" << SJF_NAME << "]" << '(' << sjf->GetTimeLeft() << ')' << ':' << SJF_RDY->size() << " RDY: ";
+		cout << "processor " << i + 1 << " [" << SJF_NAME << "]";
+		cout << '(' << sjf->GetTimeLeft() << ')';
+		cout << ':' << SJF_RDY->size() << " RDY: ";
 		SJF_RDY->PrintList();
 	}
 	
@@ -94,7 +98,9 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		if (run[i])
 			run_size++;
 		LinkedQueue<Process*>* RR_RDY = rr->GetRDY();
-		cout << "processor " << i + 1 << " [" << RR_NAME << "]" << '(' << rr->GetTimeLeft() << ')' << ':' << RR_RDY->size() << " RDY: ";
+		cout << "processor " << i + 1 << " [" << RR_NAME << "]";
+		cout << '(' << rr->GetTimeLeft() << ')';
+		cout << ':' << RR_RDY->size() << " RDY: ";
 		RR_RDY->PrintList();
 	}
 
@@ -108,7 +114,9 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		if (run[i])
 			run_size++;
 		PriorityQueue<Process*>* EDF_RDY = edf->GetRDY();
-		cout << "processor " << i + 1 << " [" << EDF_NAME << "]" << '(' << edf->GetTimeLeft() << ')' << ':' << EDF_RDY->size() << " RDY: ";
+		cout << "processor " << i + 1 << " [" << EDF_NAME << "]";
+		cout << '(' << edf->GetTimeLeft() << ')';
+		cout << ':' << EDF_RDY->size() << " RDY: ";
 		EDF_RDY->PrintList();
 	}
 }

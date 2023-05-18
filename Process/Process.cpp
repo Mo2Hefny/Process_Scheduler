@@ -128,7 +128,8 @@ ostream& operator<< (ostream& out, const Process* process)
 	else
 		printf(Early);
 
-	out << process->P_data.PID << '(' << process->GetRemainingTime() << ')' << '(' << process->GetDeadline() << ')';
+	out << process->P_data.PID;
+    out<< '(' << process->GetRemainingTime() << ')' << '(' << process->GetDeadline() << ')';  //< TRACK CPU TIME >
 
 	printf(Text);
 	return out;

@@ -264,7 +264,7 @@ void Scheduler::WorkStealing()
 		}
 		sqf_time = SQF->GetTimeLeft();
 		lqf_time = LQF->GetTimeLeft();
-		STEAL_LIMIT = (float)(lqf_time - sqf_time) / lqf_time;
+		STEAL_LIMIT = (float)(lqf_time - sqf_time)*100.0 / lqf_time;
 	}
 
 }
