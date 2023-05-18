@@ -22,7 +22,7 @@ Forked Process: 42.8571%
 Killed Process: 14.2857%
 Early Process: 50%
 
-Processors: 4[1 FCFS, 1 SJR, 1RR]
+Processors: 4[1 FCFS, 1 SJR, 1 RR,1 EDF]
 Processors Load
 p1 = 16.0256%,		p2 = 7.37179%,		p3 = 11.5385%,		p4 = 10.2564%
 

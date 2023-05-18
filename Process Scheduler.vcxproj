@@ -160,7 +160,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Inputs\full.txt" />
-    <Text Include="Inputs\T2.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

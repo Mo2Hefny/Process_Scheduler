@@ -100,7 +100,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Inputs\T2.txt" />
     <Text Include="Inputs\full.txt" />
   </ItemGroup>
 </Project>

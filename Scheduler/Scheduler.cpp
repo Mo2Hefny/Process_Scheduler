@@ -500,7 +500,7 @@ void Scheduler::ProcessStatistics()
 */
 void Scheduler::ProcessorStatistics()
 {
-	OutputFile << "\n\nProcessors: " << P_info.NT << "[" << P_info.NF << " FCFS, " << P_info.NS << " SJR, " << P_info.NR << "RR]";
+	OutputFile << "\n\nProcessors: " << P_info.NT << "[" << P_info.NF << " FCFS, " << P_info.NS << " SJR, " << P_info.NR << " RR, " << P_info.NE << " EDF]";
 	OutputFile << "\nProcessors Load\n";
 	for (int i = 0; i < P_info.NT; i++)
 	{
