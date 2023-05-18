@@ -98,8 +98,8 @@ void CreateMainMenu()
 	for (int i = 0; i < 16; i++)	cout << "-";
 	cout << "+\n|      ";
 	printf(Late);
-	cout << "Early";
-	printf(Text); cout << "     |  ";
+	cout << "Late";
+	printf(Text); cout << "      |  ";
 	printf(MigLate);
 	cout << "RR/SJF [L]";
 	printf(Text); cout << "  |   ";
