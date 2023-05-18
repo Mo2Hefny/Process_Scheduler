@@ -12,6 +12,7 @@
 UI::UI(Scheduler* app)
 {
 	manager = app; 
+	std::cout << "\033[2J\033[1;1H";
 	cout << "Please select the program running mode:\n";
 	cout << "[1] Interactive Mode.\n";
 	cout << "[2] Step-By-Step Mode.\n";
@@ -67,8 +68,6 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		LinkedList<Process*>* FCFS_RDY = fcfs->GetRDY();
 		cout << "processor " << i + 1 << " [FCFS]"<<'('<<fcfs->GetTimeLeft()<<')' << ':' << FCFS_RDY->size() << " RDY: ";
 		FCFS_RDY->PrintList();
-		
-		printf("\033[0m");
 	}
 	
 	// Print SJF Processors' RDY Lists.
@@ -83,8 +82,6 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		PriorityQueue<Process*>* SJF_RDY = sjf->GetRDY();
 		cout << "processor " << i + 1 << " [" << SJF_NAME << "]" << '(' << sjf->GetTimeLeft() << ')' << ':' << SJF_RDY->size() << " RDY: ";
 		SJF_RDY->PrintList();
-
-		printf("\033[0m");
 	}
 	
 	// Print RR Processors' RDY Lists.
@@ -99,7 +96,6 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		LinkedQueue<Process*>* RR_RDY = rr->GetRDY();
 		cout << "processor " << i + 1 << " [" << RR_NAME << "]" << '(' << rr->GetTimeLeft() << ')' << ':' << RR_RDY->size() << " RDY: ";
 		RR_RDY->PrintList();
-		printf("\033[0m");
 	}
 
 	// Print EDF Processors' RDY Lists.
@@ -114,8 +110,6 @@ void UI::PrintRDY(int& run_size, Processor** Processors, Process**& run)
 		PriorityQueue<Process*>* EDF_RDY = edf->GetRDY();
 		cout << "processor " << i + 1 << " [" << EDF_NAME << "]" << '(' << edf->GetTimeLeft() << ')' << ':' << EDF_RDY->size() << " RDY: ";
 		EDF_RDY->PrintList();
-
-		printf("\033[0m");
 	}
 }
 

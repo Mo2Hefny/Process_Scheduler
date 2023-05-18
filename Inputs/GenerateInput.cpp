@@ -10,8 +10,8 @@ using namespace std;
 
 void solve() {
     cout << 2 << ' ' << 1 << ' ' << 3 << endl;
-    cout << 3 << endl;
-    cout << 4 << ' '  << 50 << ' ' << 100 << ' ' << 10 << ' ' << 3 << endl;
+    cout << 3 << 5 << endl;
+    cout << 4 << ' '  << 50 << ' ' << 100 << ' ' << 10 << ' ' << 1 << endl;
     srand(time(0));
     multimap<int, pair<int, int>>processes;
     cout << 35 << endl;

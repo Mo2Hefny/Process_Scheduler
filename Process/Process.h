@@ -18,6 +18,7 @@ class Process
 	IO_process* IO;			// Array of I/O requests.
 	bool terminated;
 	bool late;
+	bool RR_mig, SJF_mig;
 	static unsigned int total_TRT, PID, total_early;
 	Scheduler* manager;
 	//int Transition_Time;		// Time of the last list transition.
@@ -56,6 +57,8 @@ public:
 	void SetResponseTime(int t) { P_data.RT = t; }
 	static void SetForkPID(unsigned int id) { Process::PID = id; }
 	void SetLate(bool b) { late = b; }
+	void SetRRMig(bool b) { RR_mig = b; }
+	void SetSJFMig(bool b) { SJF_mig = b; }
 	//void SetTransitionTime(int t) { Transition_Time = t; }
 
 	// Getters.
@@ -64,6 +67,8 @@ public:
 	int GetCPUTime() const { return P_data.CT; }
 	int GetDeadline() const { return P_data.Deadline; }
 	bool GetLate() const { return late; }
+	bool GetRRMig() const { return RR_mig; }
+	bool GetSJFMig() const { return SJF_mig; }
 	Scheduler* GetScheduler() const { return manager; }
 	int GetRemainingTime() const { return P_data.CT - P_data.ET; }
 	int GetExecutedTime() const { return P_data.ET; }

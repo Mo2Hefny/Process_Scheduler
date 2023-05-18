@@ -88,7 +88,8 @@ public:
 			cout << (p->getNext() ? ", " : " ");
 			p = p->getNext();
 		}
-		printf("\033[0m\n");
+		printf(Text);
+		printf("\n");
 	}
 
 	bool dequeue(T& frntEntry)

@@ -16,7 +16,7 @@ Process::Process(ProcessInfo P_info, IO_process* IO_requests, Scheduler* app)
 {
 	P_data = P_info;
 	IO = IO_requests;
-	terminated = late = false;
+	terminated = late = RR_mig = SJF_mig = false;
 	manager = app;
 	//Transition_Time = -1;
 
@@ -104,32 +104,32 @@ void Process::Terminate()
 
 ostream& operator<< (ostream& out, const Process* process)
 {
-	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-	CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
-	GetConsoleScreenBufferInfo(consoleHandle, &consoleInfo);
-	WORD currentColor = consoleInfo.wAttributes;
 	if (process->GetDeadline() <= process->manager->GetTimeStep() && !process->IsTerminated() || process->late)
 	{
-		if (process->parent && currentColor != 4)
-			printf("\033[3;38;2;239;113;38;48;2;15;99;113m");
-		else if (process->HasChild() && currentColor != 4)
-			printf("\033[3;38;2;239;113;38;48;2;255;255;255m");
+		if (process->parent)
+			printf(ChildLate);
+		else if (process->HasChild())
+			printf(ParentLate);
+		else if (process->GetRRMig() || process->GetSJFMig())
+			printf(MigLate);
 		else
-			printf("\x1B[3;38;2;239;113;38;1;4m");
+			printf(Late);
 	}
-	else if (process->parent && currentColor != 4)
+	else if (process->parent)
 	{
-		printf("\033[3;48;2;15;99;113;30m");
+		printf(Child);
 	}
-	else if (process->HasChild() && currentColor != 4)
+	else if (process->HasChild())
 	{
-		printf("\033[3;48;2;255;255;255;30m");
+		printf(Parent);
 	}
+	else if (process->GetRRMig() || process->GetSJFMig())
+		printf(MigEarly);
 	else
-		printf("\x1B[93m");
-	
+		printf(Early);
+
 	out << process->P_data.PID << '(' << process->GetRemainingTime() << ')' << '(' << process->GetDeadline() << ')';
 
-	printf("\033[0m");
+	printf(Text);
 	return out;
 }

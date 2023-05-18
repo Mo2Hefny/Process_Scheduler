@@ -101,7 +101,11 @@ void FCFS::Migrate()
 	{
 		if (!manager->AddToRR(RUN)) break;
 		AddTimeleft(-(RUN->GetRemainingTime()));
-		manager->Increment_FCFSmigration();
+		if (!RUN->GetRRMig())
+		{
+			manager->Increment_FCFSmigration();
+			RUN->SetRRMig(true);
+		}
 		if (!RDY.dequeue(RUN))
 		{
 			state = IDLE;

@@ -66,7 +66,7 @@ void Processor::OverHeat()
 	else
 	{
 		cooldown = 0;
-		int random_overheat = rand() % 100 + 1;
+		int random_overheat = rand() % 1000 + 1;
 		if (random_overheat <= manager->GetProcessorsInfo().Heat_prob)
 		{
 			state = OVERHEAT;

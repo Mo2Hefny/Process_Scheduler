@@ -71,7 +71,11 @@ void RR::Migrate()
 	{
 		if (!manager->AddToSJF(RUN)) break;
 		AddTimeleft(-(RUN->GetRemainingTime()));
-		manager->Increment_RRmigration();
+		if (!RUN->GetSJFMig())
+		{
+			manager->Increment_RRmigration();
+			RUN->SetSJFMig(true);
+		}
 		if (!RDY.dequeue(RUN))
 		{
 			state = IDLE;

@@ -1,13 +1,31 @@
 #ifndef _DEFS_
 #define _DEFS_
 
+#include <Windows.h>
+
+#define Text "\033[0;38;2;232;230;227;48;2;1;4;9m"
+#define Title "\033[0;38;2;232;230;227;48;2;70;133;255m"
+#define SmallTitle "\033[0;38;2;232;230;227;48;2;34;29;33m"
+
+#define ParentLate "\033[38;2;226;93;75;48;2;21;103;168m"
+#define Parent "\033[38;2;255;254;251;48;2;21;103;168m"
+
+#define ChildLate "\033[38;2;226;93;75;48;2;15;99;113m"
+#define Child "\033[38;2;255;254;251;48;2;15;99;113m"
+
+#define Late "\033[38;2;226;93;75;1;48;2;1;4;9m"
+#define Early "\x1B[93;48;2;1;4;9m"
+
+#define MigLate "\033[38;2;226;93;75;1;48;2;1;4;9;4;3m"
+#define MigEarly "\x1B[93;48;2;1;4;9;4;3m"
+
 struct ProcessInfo
 {
 	int AT;				// Arrival time.
 	int PID;			// Process ID.
 	int RT;				// Response Time.
 	int CT;				// CPU time.
-	int Deadline;				// Deadline.
+	int Deadline;		// Deadline.
 	int ET;				// Execution time.
 	int IO_requests;	// Number of time the process requests I/O
 	int TT;				// Termination time.
