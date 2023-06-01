@@ -1,7 +1,7 @@
 # Process Scheduler
 
 ## Description
-- This is a program that simulates the operation of the process scheduler in a multiprocessor system and calculates some related statistics in order to help improce the overall scheduling system.
+- This program simulates the process scheduler's operation in a multiprocessor system and calculates some related statistics to help improve the overall scheduling system.
 - This program was written in C++ as our second programming project for Cairo University.
 
 ## Simulation
