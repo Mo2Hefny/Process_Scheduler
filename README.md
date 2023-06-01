@@ -12,10 +12,10 @@
 - **SJF migration**: A process that migrated from a RR processor to a SJF processor.
 - **Parent**: A process that is a parent of a forked process.
 - **Child**: A process that was forked in a FCFS processor.  
-![States](https://github.com/Mo2Hefny/Process_Scheduler/assets/111001850/1d90e83e-5a2f-4ac0-ae1d-528fd9158019)  
+![States](https://github.com/Mo2Hefny/Process_Scheduler/assets/111001850/209ced38-2c51-4f50-8582-b6346b92be05)  
 
 ### II. Input file  
-![Input](https://github.com/Mo2Hefny/Process_Scheduler/assets/111001850/b4ca8f92-6afd-46f7-8163-477c9a7923ad)  
+![Input](https://github.com/Mo2Hefny/Process_Scheduler/assets/111001850/6e4c20c9-c888-452d-9aff-45ff03e72b88)   
 
 ### III. Simulation
 #####  Assumptions
@@ -35,7 +35,7 @@
 - Handle process forking.
 - Handle process killing and orphan processes.
 - Collect statistics for the output file.  
-![Simulation](https://github.com/Mo2Hefny/Process_Scheduler/assets/111001850/7136eb19-0f1a-494d-a8e7-d7aa5365e260)  
+![Simulation](https://github.com/Mo2Hefny/Process_Scheduler/assets/111001850/36469383-cd47-4624-9c53-5569d530c706)  
 
 ### IV. Output file
 Contains the simulation statistics and it can be broken down to two parts:
@@ -46,7 +46,7 @@ Contains the simulation statistics and it can be broken down to two parts:
 ###### - **Processors statistics** :
 1. Processors load.
 2. Processors utilization.  
-![Output](https://github.com/Mo2Hefny/Process_Scheduler/assets/111001850/e8c02b25-eb73-401d-98b7-0b63e036cc7d)  
+![Output](https://github.com/Mo2Hefny/Process_Scheduler/assets/111001850/f3d36573-638c-40bc-95c6-8a3d36865f02)  
 
 ## Authors
 
