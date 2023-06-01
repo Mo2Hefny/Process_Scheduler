@@ -8,8 +8,8 @@
 ### I. Processes states
 - **Early**: A process that didn't pass its deadline time.
 - **Late**: A process that missed its deadline time.
-- **RR migration**: A process that migrated from a FCFS processor to a RR processor.
-- **SJF migration**: A process that migrated from a RR processor to a SJF processor.
+- **RR migration**: A process that migrated from an FCFS processor to an RR processor.
+- **SJF migration**: A process that migrated from an RR processor to an SJF processor.
 - **Parent**: A process that is a parent of a forked process.
 - **Child**: A process that was forked in a FCFS processor.  
 
