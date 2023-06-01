@@ -12,6 +12,7 @@
 - **SJF migration**: A process that migrated from a RR processor to a SJF processor.
 - **Parent**: A process that is a parent of a forked process.
 - **Child**: A process that was forked in a FCFS processor.  
+
 ![States](https://github.com/Mo2Hefny/Process_Scheduler/assets/111001850/209ced38-2c51-4f50-8582-b6346b92be05)  
 
 ### II. Input file  
@@ -35,6 +36,7 @@
 - Handle process forking.
 - Handle process killing and orphan processes.
 - Collect statistics for the output file.  
+
 ![Simulation](https://github.com/Mo2Hefny/Process_Scheduler/assets/111001850/36469383-cd47-4624-9c53-5569d530c706)  
 
 ### IV. Output file
@@ -46,6 +48,7 @@ Contains the simulation statistics and it can be broken down to two parts:
 ###### - **Processors statistics** :
 1. Processors load.
 2. Processors utilization.  
+
 ![Output](https://github.com/Mo2Hefny/Process_Scheduler/assets/111001850/f3d36573-638c-40bc-95c6-8a3d36865f02)  
 
 ## Authors
